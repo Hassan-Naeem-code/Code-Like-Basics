@@ -5,6 +5,7 @@ import AchievementProvider from '@/components/Common/AchievementProvider'
 import ConsoleProtectionClient from '@/components/Common/ConsoleProtectionClient'
 import ServiceWorkerRegistration from '@/components/Common/ServiceWorkerRegistration'
 import ClientShell from '@/components/Layout/ClientShell'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 
 const inter = Inter({ subsets: ['latin'], display: 'swap' })
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
@@ -100,6 +101,7 @@ export default function RootLayout({
             {children}
           </ClientShell>
         </AchievementProvider>
+        <SpeedInsights />
       </body>
     </html>
   )
