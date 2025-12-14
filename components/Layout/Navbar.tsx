@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Home, Trophy, BookOpen, User } from 'lucide-react'
+import { Home, Trophy, BookOpen } from 'lucide-react'
 import { useUserStore } from '@/stores/userStore'
 import { useEffect } from 'react'
 import SoundToggle from '@/components/Common/SoundToggle'
@@ -75,15 +75,6 @@ export default function Navbar() {
               <span className="text-white font-bold">{user.totalXP}</span>
             </div>
           </div>
-
-          {/* User Avatar */}
-          <motion.div
-            className="w-10 h-10 rounded-full bg-christmas-gold flex items-center justify-center cursor-pointer"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <User className="w-6 h-6 text-gray-900" />
-          </motion.div>
         </div>
       </div>
 

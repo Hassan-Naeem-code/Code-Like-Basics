@@ -19,7 +19,7 @@ export default function SantaWithCart() {
   if (!windowWidth) return null
 
   return (
-    <div className="fixed top-20 left-0 right-0 z-30 pointer-events-none overflow-hidden h-32">
+    <div className="fixed bottom-4 left-0 right-0 z-30 pointer-events-none overflow-hidden h-36">
       {/* Santa with Cart Animation - Loops from left to right */}
       <motion.div
         className="absolute"

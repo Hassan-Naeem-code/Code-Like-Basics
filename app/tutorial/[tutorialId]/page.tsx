@@ -1,8 +1,8 @@
 'use client'
 
 import { use } from 'react'
-import { useRouter } from 'next/navigation'
-import { generateTutorial } from '@/utils/tutorialContent'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { generateProgressiveTutorial } from '@/utils/progressiveTutorialContent'
 import { getLanguageByModuleAndId } from '@/utils/techModules'
 import InteractiveTutorial from '@/components/Tutorials/InteractiveTutorial'
 
@@ -12,10 +12,13 @@ export default function TutorialPage({
   params: Promise<{ tutorialId: string }>
 }) {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { tutorialId } = use(params)
 
+  // Get difficulty from URL parameter
+  const difficulty = (searchParams.get('difficulty') as 'easy' | 'medium' | 'hard') || 'easy'
+
   // Parse moduleId-languageId format
-  // We need to find where module ends and language begins
   const knownModules = [
     'web-development',
     'mobile-development',
@@ -58,10 +61,9 @@ export default function TutorialPage({
     )
   }
 
-  const tutorial = generateTutorial(moduleId, languageId)
   const language = getLanguageByModuleAndId(moduleId, languageId)
 
-  if (!tutorial || !language) {
+  if (!language) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800">
         <div className="text-center text-white">
@@ -80,12 +82,16 @@ export default function TutorialPage({
     )
   }
 
+  // Generate progressive tutorial with selected difficulty
+  const tutorial = generateProgressiveTutorial(languageId, language.name, difficulty)
+
   return (
     <InteractiveTutorial
       tutorial={tutorial}
       language={language}
       moduleId={moduleId}
       languageId={languageId}
+      difficulty={difficulty}
     />
   )
 }

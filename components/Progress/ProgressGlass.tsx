@@ -22,7 +22,7 @@ const DRINK_COLORS = {
     steam: '#F5F5F5',
   },
   coke: {
-    liquid: '#2C1810',
+    liquid: '#3D0C02',
     foam: '#F5F5F5',
     bubbles: '#FFFFFF',
   },
@@ -107,7 +107,7 @@ export default function ProgressGlass({
           <BeerGlass fillPercentage={fillPercentage} colors={colors} showBubbles={showBubbles} />
         )}
         {drinkType === 'coffee' && (
-          <CoffeeCup fillPercentage={fillPercentage} colors={colors} />
+          <CoffeeMug fillPercentage={fillPercentage} colors={colors} />
         )}
         {drinkType === 'coke' && (
           <CokeGlass fillPercentage={fillPercentage} colors={colors} showBubbles={showBubbles} />
@@ -156,73 +156,99 @@ export default function ProgressGlass({
   )
 }
 
-// Beer Glass Component (Pint Glass)
-function BeerGlass({ fillPercentage, colors, showBubbles }: any) {
+type BeerGlassColors = { liquid: string; foam: string; foamBubbles?: string }
+// Beer Glass Component - Traditional Pint Glass
+function BeerGlass({ fillPercentage, colors, showBubbles }: { fillPercentage: number; colors: BeerGlassColors; showBubbles: boolean }) {
   return (
-    <div className="relative w-40 h-56">
-      <svg viewBox="0 0 120 180" className="w-full h-full drop-shadow-2xl">
+    <div className="relative w-44 h-60">
+      <svg viewBox="0 0 140 200" className="w-full h-full drop-shadow-2xl">
         <defs>
+          {/* Beer liquid gradient */}
           <linearGradient id="beerLiquid" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor={colors.liquid} stopOpacity="0.9" />
-            <stop offset="100%" stopColor={colors.liquid} />
+            <stop offset="0%" stopColor={colors.liquid} stopOpacity="0.95" />
+            <stop offset="100%" stopColor="#D97706" />
           </linearGradient>
-          <linearGradient id="glassShine" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="rgba(255,255,255,0.4)" />
-            <stop offset="50%" stopColor="rgba(255,255,255,0.1)" />
-            <stop offset="100%" stopColor="rgba(255,255,255,0.4)" />
+
+          {/* Glass shine */}
+          <linearGradient id="beerGlassShine" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="rgba(255,255,255,0.5)" />
+            <stop offset="50%" stopColor="rgba(255,255,255,0.15)" />
+            <stop offset="100%" stopColor="rgba(255,255,255,0.5)" />
           </linearGradient>
-          <clipPath id="beerClip">
-            <path d="M 35 20 L 30 160 L 90 160 L 85 20 Z" />
+
+          {/* Clip path for pint glass shape */}
+          <clipPath id="beerPintClip">
+            <path d="M 45 30 L 40 180 L 100 180 L 95 30 Z" />
           </clipPath>
         </defs>
 
-        {/* Liquid Fill with Animation */}
-        <g clipPath="url(#beerClip)">
+        {/* Beer Liquid with pouring animation */}
+        <g clipPath="url(#beerPintClip)">
           <motion.rect
-            x="30"
-            y="20"
+            x="40"
+            y="30"
             width="60"
-            height="140"
+            height="150"
             fill="url(#beerLiquid)"
-            initial={{ y: 160 }}
+            initial={{ y: 180 }}
             animate={{
-              y: 160 - (fillPercentage / 100) * 140,
+              y: 180 - (fillPercentage / 100) * 150,
             }}
             transition={{
               type: 'spring',
-              stiffness: 80,
-              damping: 12,
+              stiffness: 70,
+              damping: 15,
             }}
           />
 
-          {/* Beer Foam */}
+          {/* Beer Foam - appears when beer is filling */}
           {fillPercentage > 5 && (
             <>
+              {/* Main foam layer */}
               <motion.ellipse
-                cx="60"
-                cy={160 - (fillPercentage / 100) * 140 - 2}
+                cx="70"
+                cy={180 - (fillPercentage / 100) * 150 - 3}
                 rx="28"
-                ry="8"
+                ry="10"
                 fill={colors.foam}
-                opacity="0.95"
+                opacity="0.98"
+                animate={{
+                  ry: [10, 12, 10],
+                }}
+                transition={{
+                  duration: 2.5,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              />
+              {/* Secondary foam bubbles */}
+              <motion.ellipse
+                cx="70"
+                cy={180 - (fillPercentage / 100) * 150 - 10}
+                rx="24"
+                ry="8"
+                fill={colors.foamBubbles}
+                opacity="0.9"
                 animate={{
                   ry: [8, 10, 8],
+                  opacity: [0.9, 1, 0.9],
                 }}
                 transition={{
                   duration: 2,
                   repeat: Infinity,
                 }}
               />
+              {/* Top foam layer */}
               <motion.ellipse
-                cx="60"
-                cy={160 - (fillPercentage / 100) * 140 - 8}
-                rx="25"
+                cx="70"
+                cy={180 - (fillPercentage / 100) * 150 - 15}
+                rx="20"
                 ry="6"
-                fill={colors.foamBubbles}
-                opacity="0.8"
+                fill="#FFFBEB"
+                opacity="0.85"
                 animate={{
                   ry: [6, 8, 6],
-                  opacity: [0.8, 1, 0.8],
+                  opacity: [0.85, 0.95, 0.85],
                 }}
                 transition={{
                   duration: 1.8,
@@ -233,47 +259,83 @@ function BeerGlass({ fillPercentage, colors, showBubbles }: any) {
           )}
         </g>
 
-        {/* Glass Body (Pint shape) */}
+        {/* Glass Body - Pint Shape (wider at top, narrower at bottom) */}
         <path
-          d="M 35 20 L 30 160 L 90 160 L 85 20 Z"
-          fill="url(#glassShine)"
+          d="M 45 30 L 40 180 L 100 180 L 95 30 Z"
+          fill="url(#beerGlassShine)"
           stroke="#D1D5DB"
+          strokeWidth="3"
+        />
+
+        {/* Glass Rim (top opening) */}
+        <ellipse
+          cx="70"
+          cy="30"
+          rx="25"
+          ry="5"
+          fill="#E5E7EB"
+          stroke="#9CA3AF"
           strokeWidth="2.5"
         />
 
-        {/* Glass Rim */}
-        <ellipse cx="60" cy="20" rx="25" ry="4" fill="#E5E7EB" stroke="#9CA3AF" strokeWidth="2" />
-
-        {/* Glass Shine */}
-        <ellipse cx="45" cy="70" rx="10" ry="40" fill="white" opacity="0.35" />
+        {/* Glass shine highlight */}
+        <ellipse
+          cx="52"
+          cy="85"
+          rx="12"
+          ry="50"
+          fill="white"
+          opacity="0.4"
+        />
 
         {/* Glass Base */}
-        <ellipse cx="60" cy="160" rx="30" ry="5" fill="#D1D5DB" stroke="#9CA3AF" strokeWidth="2" />
+        <ellipse
+          cx="70"
+          cy="180"
+          rx="30"
+          ry="6"
+          fill="#D1D5DB"
+          stroke="#9CA3AF"
+          strokeWidth="2.5"
+        />
+
+        {/* Base ring detail */}
+        <ellipse
+          cx="70"
+          cy="180"
+          rx="25"
+          ry="4"
+          fill="none"
+          stroke="#9CA3AF"
+          strokeWidth="1.5"
+        />
       </svg>
 
-      {/* Rising Bubbles */}
+      {/* Rising Bubbles Animation */}
       <AnimatePresence>
         {showBubbles && fillPercentage > 0 && (
           <div className="absolute inset-0 pointer-events-none">
-            {[...Array(12)].map((_, i) => (
+            {[...Array(15)].map((_, i) => (
               <motion.div
                 key={i}
-                className="absolute w-2 h-2 bg-yellow-200/60 rounded-full"
+                className="absolute rounded-full bg-yellow-100/70"
                 style={{
-                  left: `${40 + Math.random() * 20}%`,
-                  bottom: `${(fillPercentage / 100) * 70}%`,
+                  width: Math.random() * 3 + 2 + 'px',
+                  height: Math.random() * 3 + 2 + 'px',
+                  left: `${40 + Math.random() * 25}%`,
+                  bottom: `${(fillPercentage / 100) * 75}%`,
                 }}
                 initial={{ opacity: 0.9, scale: 1 }}
                 animate={{
-                  y: -100 - Math.random() * 50,
+                  y: -120 - Math.random() * 60,
                   opacity: 0,
-                  scale: 0.5,
+                  scale: 0.4,
                 }}
                 exit={{ opacity: 0 }}
                 transition={{
-                  duration: Math.random() * 2 + 1.5,
+                  duration: Math.random() * 2.5 + 2,
                   ease: 'linear',
-                  delay: Math.random() * 0.3,
+                  delay: Math.random() * 0.4,
                 }}
               />
             ))}
@@ -284,91 +346,126 @@ function BeerGlass({ fillPercentage, colors, showBubbles }: any) {
   )
 }
 
-// Coffee Cup Component
-function CoffeeCup({ fillPercentage, colors }: any) {
+type CoffeeMugColors = { liquid: string; steam?: string }
+// Coffee Mug Component
+function CoffeeMug({ fillPercentage, colors }: { fillPercentage: number; colors: CoffeeMugColors }) {
   return (
-    <div className="relative w-40 h-56">
-      <svg viewBox="0 0 140 180" className="w-full h-full drop-shadow-2xl">
+    <div className="relative w-48 h-60">
+      <svg viewBox="0 0 160 200" className="w-full h-full drop-shadow-2xl">
         <defs>
           <linearGradient id="coffeeLiquid" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor={colors.liquid} stopOpacity="0.95" />
-            <stop offset="100%" stopColor={colors.liquid} />
+            <stop offset="0%" stopColor={colors.liquid} stopOpacity="0.98" />
+            <stop offset="100%" stopColor="#3E1F08" />
           </linearGradient>
-          <clipPath id="cupClip">
-            <path d="M 30 40 L 30 140 Q 30 150 40 150 L 80 150 Q 90 150 90 140 L 90 40 Z" />
+
+          {/* Mug clip path */}
+          <clipPath id="mugClip">
+            <rect x="35" y="50" width="70" height="120" rx="8" />
           </clipPath>
         </defs>
 
         {/* Coffee Liquid */}
-        <g clipPath="url(#cupClip)">
+        <g clipPath="url(#mugClip)">
           <motion.rect
-            x="30"
-            y="40"
-            width="60"
-            height="110"
+            x="35"
+            y="50"
+            width="70"
+            height="120"
             fill="url(#coffeeLiquid)"
-            initial={{ y: 150 }}
+            initial={{ y: 170 }}
             animate={{
-              y: 150 - (fillPercentage / 100) * 110,
+              y: 170 - (fillPercentage / 100) * 120,
             }}
             transition={{
               type: 'spring',
-              stiffness: 80,
-              damping: 12,
+              stiffness: 70,
+              damping: 15,
             }}
           />
         </g>
 
-        {/* Cup Body */}
-        <path
-          d="M 30 40 L 30 140 Q 30 150 40 150 L 80 150 Q 90 150 90 140 L 90 40 Z"
-          fill="rgba(255,255,255,0.25)"
+        {/* Mug Body */}
+        <rect
+          x="35"
+          y="50"
+          width="70"
+          height="120"
+          rx="8"
+          fill="rgba(255,255,255,0.3)"
           stroke="#E5E7EB"
-          strokeWidth="3"
+          strokeWidth="4"
         />
 
-        {/* Cup Handle */}
+        {/* Mug Handle */}
         <path
-          d="M 90 60 Q 110 70 110 90 Q 110 110 90 120"
+          d="M 105 75 Q 135 85 135 110 Q 135 135 105 145"
           fill="none"
           stroke="#E5E7EB"
+          strokeWidth="8"
+          strokeLinecap="round"
+        />
+        <path
+          d="M 105 80 Q 128 88 128 110 Q 128 132 105 140"
+          fill="none"
+          stroke="rgba(255,255,255,0.4)"
           strokeWidth="5"
           strokeLinecap="round"
         />
-        <path
-          d="M 90 65 Q 105 73 105 90 Q 105 107 90 115"
-          fill="none"
-          stroke="rgba(255,255,255,0.3)"
+
+        {/* Mug Rim */}
+        <ellipse
+          cx="70"
+          cy="50"
+          rx="35"
+          ry="7"
+          fill="#F3F4F6"
+          stroke="#D1D5DB"
           strokeWidth="3"
-          strokeLinecap="round"
         />
 
-        {/* Cup Rim */}
-        <ellipse cx="60" cy="40" rx="30" ry="5" fill="#F3F4F6" stroke="#D1D5DB" strokeWidth="2" />
+        {/* Mug shine */}
+        <ellipse
+          cx="52"
+          cy="95"
+          rx="10"
+          ry="40"
+          fill="white"
+          opacity="0.45"
+        />
 
-        {/* Cup Shine */}
-        <ellipse cx="45" cy="80" rx="8" ry="35" fill="white" opacity="0.4" />
+        {/* Mug Base */}
+        <ellipse
+          cx="70"
+          cy="170"
+          rx="35"
+          ry="6"
+          fill="#D1D5DB"
+          stroke="#9CA3AF"
+          strokeWidth="2"
+        />
 
-        {/* Steam Animation */}
-        {fillPercentage > 10 && (
+        {/* Steam Animation - appears when coffee is hot */}
+        {fillPercentage > 15 && (
           <>
-            {[...Array(3)].map((_, i) => (
+            {[...Array(4)].map((_, i) => (
               <motion.path
                 key={i}
-                d={`M ${50 + i * 8} 30 Q ${55 + i * 8} 20 ${50 + i * 8} 10`}
+                d={`M ${60 + i * 7} 40 Q ${63 + i * 7} 28 ${60 + i * 7} 15 Q ${57 + i * 7} 5 ${60 + i * 7} -5`}
                 fill="none"
                 stroke={colors.steam}
-                strokeWidth="2"
+                strokeWidth="2.5"
                 strokeLinecap="round"
-                opacity="0.6"
+                opacity="0.7"
                 animate={{
-                  y: [0, -10, -20],
-                  opacity: [0.6, 0.3, 0],
+                  y: [0, -15, -30],
+                  opacity: [0.7, 0.4, 0],
+                  pathLength: [0, 0.5, 1],
                 }}
                 transition={{
-                  duration: 2,
+                  duration: 2.5,
                   repeat: Infinity,
-                  delay: i * 0.4,
+                  delay: i * 0.5,
+                  ease: "easeOut"
                 }}
               />
             ))}
@@ -379,84 +476,87 @@ function CoffeeCup({ fillPercentage, colors }: any) {
   )
 }
 
-// Coke Glass Component (Tall Glass)
-function CokeGlass({ fillPercentage, colors, showBubbles }: any) {
+// Coke Glass Component with "Coke" Text
+type CokeGlassColors = { liquid: string; bubbles?: string; steam?: string }
+function CokeGlass({ fillPercentage, colors, showBubbles }: { fillPercentage: number; colors: CokeGlassColors; showBubbles: boolean }) {
   return (
-    <div className="relative w-40 h-56">
-      <svg viewBox="0 0 120 180" className="w-full h-full drop-shadow-2xl">
+    <div className="relative w-44 h-60">
+      <svg viewBox="0 0 140 200" className="w-full h-full drop-shadow-2xl">
         <defs>
           <linearGradient id="cokeLiquid" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor={colors.liquid} stopOpacity="0.95" />
+            <stop offset="0%" stopColor={colors.liquid} stopOpacity="0.98" />
             <stop offset="100%" stopColor="#000000" />
           </linearGradient>
+
+          {/* Glass clip path */}
           <clipPath id="cokeClip">
-            <rect x="35" y="25" width="50" height="135" rx="5" />
+            <rect x="42" y="35" width="56" height="145" rx="6" />
           </clipPath>
         </defs>
 
         {/* Coke Liquid */}
         <g clipPath="url(#cokeClip)">
           <motion.rect
-            x="35"
-            y="25"
-            width="50"
-            height="135"
+            x="42"
+            y="35"
+            width="56"
+            height="145"
             fill="url(#cokeLiquid)"
-            initial={{ y: 160 }}
+            initial={{ y: 180 }}
             animate={{
-              y: 160 - (fillPercentage / 100) * 135,
+              y: 180 - (fillPercentage / 100) * 145,
             }}
             transition={{
               type: 'spring',
-              stiffness: 80,
-              damping: 12,
+              stiffness: 70,
+              damping: 15,
             }}
           />
 
-          {/* Ice Cubes */}
-          {fillPercentage > 20 && (
+          {/* Ice Cubes floating in coke */}
+          {fillPercentage > 25 && (
             <>
               <motion.rect
-                x="45"
-                y={Math.max(40, 160 - (fillPercentage / 100) * 135 + 20)}
-                width="12"
-                height="12"
-                rx="2"
-                fill="rgba(255,255,255,0.3)"
-                stroke="rgba(255,255,255,0.5)"
-                strokeWidth="1"
+                x="52"
+                y={Math.max(50, 180 - (fillPercentage / 100) * 145 + 25)}
+                width="14"
+                height="14"
+                rx="3"
+                fill="rgba(255,255,255,0.35)"
+                stroke="rgba(255,255,255,0.6)"
+                strokeWidth="1.5"
                 animate={{
                   y: [
-                    Math.max(40, 160 - (fillPercentage / 100) * 135 + 20),
-                    Math.max(40, 160 - (fillPercentage / 100) * 135 + 25),
+                    Math.max(50, 180 - (fillPercentage / 100) * 145 + 25),
+                    Math.max(50, 180 - (fillPercentage / 100) * 145 + 32),
                   ],
                 }}
                 transition={{
-                  duration: 2,
+                  duration: 2.2,
                   repeat: Infinity,
                   repeatType: 'reverse',
                 }}
               />
               <motion.rect
-                x="62"
-                y={Math.max(55, 160 - (fillPercentage / 100) * 135 + 35)}
-                width="10"
-                height="10"
+                x="72"
+                y={Math.max(65, 180 - (fillPercentage / 100) * 145 + 40)}
+                width="12"
+                height="12"
                 rx="2"
-                fill="rgba(255,255,255,0.25)"
-                stroke="rgba(255,255,255,0.5)"
-                strokeWidth="1"
+                fill="rgba(255,255,255,0.3)"
+                stroke="rgba(255,255,255,0.55)"
+                strokeWidth="1.5"
                 animate={{
                   y: [
-                    Math.max(55, 160 - (fillPercentage / 100) * 135 + 35),
-                    Math.max(55, 160 - (fillPercentage / 100) * 135 + 40),
+                    Math.max(65, 180 - (fillPercentage / 100) * 145 + 40),
+                    Math.max(65, 180 - (fillPercentage / 100) * 145 + 47),
                   ],
                 }}
                 transition={{
-                  duration: 2.5,
+                  duration: 2.8,
                   repeat: Infinity,
                   repeatType: 'reverse',
-                  delay: 0.5,
+                  delay: 0.6,
                 }}
               />
             </>
@@ -465,49 +565,94 @@ function CokeGlass({ fillPercentage, colors, showBubbles }: any) {
 
         {/* Glass Body */}
         <rect
-          x="35"
-          y="25"
-          width="50"
-          height="135"
-          rx="5"
-          fill="rgba(255,255,255,0.15)"
+          x="42"
+          y="35"
+          width="56"
+          height="145"
+          rx="6"
+          fill="rgba(255,255,255,0.2)"
           stroke="#D1D5DB"
-          strokeWidth="2.5"
+          strokeWidth="3"
         />
 
-        {/* Glass Rim */}
-        <rect x="35" y="25" width="50" height="6" rx="3" fill="#E5E7EB" stroke="#9CA3AF" strokeWidth="2" />
+        {/* "Coke" Text on Glass */}
+        <text
+          x="70"
+          y="110"
+          fontSize="20"
+          fontWeight="bold"
+          fontFamily="Arial, sans-serif"
+          fill="#DC2626"
+          stroke="#FFFFFF"
+          strokeWidth="0.5"
+          textAnchor="middle"
+          style={{
+            fontStyle: 'italic',
+            letterSpacing: '1px'
+          }}
+        >
+          Coke
+        </text>
 
-        {/* Glass Shine */}
-        <rect x="42" y="50" width="8" height="80" rx="4" fill="white" opacity="0.35" />
+        {/* Glass Rim */}
+        <rect
+          x="42"
+          y="35"
+          width="56"
+          height="8"
+          rx="4"
+          fill="#E5E7EB"
+          stroke="#9CA3AF"
+          strokeWidth="2"
+        />
+
+        {/* Glass shine */}
+        <rect
+          x="50"
+          y="60"
+          width="10"
+          height="90"
+          rx="5"
+          fill="white"
+          opacity="0.4"
+        />
 
         {/* Glass Base */}
-        <rect x="35" y="155" width="50" height="5" rx="2" fill="#D1D5DB" />
+        <rect
+          x="42"
+          y="175"
+          width="56"
+          height="5"
+          rx="2"
+          fill="#D1D5DB"
+        />
       </svg>
 
       {/* Rising Bubbles for Coke */}
       <AnimatePresence>
         {showBubbles && fillPercentage > 0 && (
           <div className="absolute inset-0 pointer-events-none">
-            {[...Array(15)].map((_, i) => (
+            {[...Array(18)].map((_, i) => (
               <motion.div
                 key={i}
-                className="absolute w-1.5 h-1.5 bg-white/70 rounded-full"
+                className="absolute rounded-full bg-white/80"
                 style={{
-                  left: `${35 + Math.random() * 30}%`,
+                  width: Math.random() * 2 + 1.5 + 'px',
+                  height: Math.random() * 2 + 1.5 + 'px',
+                  left: `${35 + Math.random() * 32}%`,
                   bottom: `${(fillPercentage / 100) * 75}%`,
                 }}
-                initial={{ opacity: 0.8, scale: 1 }}
+                initial={{ opacity: 0.9, scale: 1 }}
                 animate={{
-                  y: -120 - Math.random() * 40,
+                  y: -140 - Math.random() * 50,
                   opacity: 0,
-                  scale: 0.3,
+                  scale: 0.2,
                 }}
                 exit={{ opacity: 0 }}
                 transition={{
-                  duration: Math.random() * 2.5 + 2,
+                  duration: Math.random() * 3 + 2.5,
                   ease: 'linear',
-                  delay: Math.random() * 0.5,
+                  delay: Math.random() * 0.6,
                 }}
               />
             ))}

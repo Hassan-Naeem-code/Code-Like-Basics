@@ -87,7 +87,7 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
 
     // Simulate code execution
     setTimeout(() => {
-      const simulatedOutput = `// Code executed successfully!\n// Language: ${language.name}\n// Lines of code: ${code.split('\n').length}\n\n// Output:\n${getSimulatedOutput(languageId, code)}\n\n// This is a simulated execution environment.\n// In a production app, this would connect to a real code execution service.`
+      const simulatedOutput = `// Code executed successfully!\n// Language: ${language.name}\n// Lines of code: ${(code || '').split('\n').length}\n\n// Output:\n${getSimulatedOutput(languageId, code || '')}\n\n// This is a simulated execution environment.\n// In a production app, this would connect to a real code execution service.`
 
       setOutput(simulatedOutput)
       setIsRunning(false)
@@ -251,7 +251,8 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
   )
 }
 
-function getSimulatedOutput(languageId: string, code: string): string {
+function getSimulatedOutput(languageId: string, _code?: string): string {
+  void _code
   // Simulate different outputs based on language
   const outputs: { [key: string]: string } = {
     javascript: '"Hello, World!"\n"Hello, Learner!"',

@@ -1,19 +1,50 @@
 import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
 import './globals.css'
-import FallingSnow from '@/components/Layout/FallingSnow'
-import AnimatedSanta from '@/components/Layout/AnimatedSanta'
-import Navbar from '@/components/Layout/Navbar'
 import AchievementProvider from '@/components/Common/AchievementProvider'
-import MusicPlayer from '@/components/Music/MusicPlayer'
-import SantaWithCart from '@/components/Layout/SantaWithCart'
 import ConsoleProtectionClient from '@/components/Common/ConsoleProtectionClient'
 import ServiceWorkerRegistration from '@/components/Common/ServiceWorkerRegistration'
+import ClientShell from '@/components/Layout/ClientShell'
+
+const inter = Inter({ subsets: ['latin'], display: 'swap' })
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+const heroImage = '/icons/icon-512x512.png'
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: 'Holiday Learning Platform - Learn Tech This Christmas!',
   description: 'Interactive learning platform with tutorials, games, and sandboxes. Learn software development, web dev, AI/ML, and more through engaging holiday-themed content!',
-  keywords: 'learning, education, programming, games, interactive, christmas, technology',
+  keywords: ['learning', 'education', 'programming', 'games', 'interactive', 'christmas', 'technology'],
+  applicationName: 'Holiday Learn',
   manifest: '/manifest.json',
+  alternates: {
+    canonical: siteUrl,
+  },
+  openGraph: {
+    type: 'website',
+    url: siteUrl,
+    title: 'Holiday Learning Platform - Learn Tech This Christmas!',
+    description: 'Interactive learning platform with tutorials, games, and sandboxes.',
+    siteName: 'Holiday Learn',
+    images: [
+      {
+        url: heroImage,
+        width: 512,
+        height: 512,
+        alt: 'Holiday Learning Platform',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Holiday Learning Platform - Learn Tech This Christmas!',
+    description: 'Interactive learning platform with tutorials, games, and sandboxes.',
+    images: [heroImage],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
@@ -22,6 +53,10 @@ export const metadata: Metadata = {
   icons: {
     apple: '/icons/icon-192x192.png',
   },
+  formatDetection: {
+    telephone: false,
+  },
+  category: 'education',
 }
 
 export const viewport = {
@@ -36,20 +71,34 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Holiday Learning Platform',
+    url: siteUrl,
+    description:
+      'Interactive learning platform with tutorials, games, and sandboxes. Learn software development, web dev, AI/ML, and more through engaging holiday-themed content!',
+    inLanguage: 'en',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: `${siteUrl}/search?q={search_term_string}`,
+      'query-input': 'required name=search_term_string',
+    },
+  }
+
   return (
     <html lang="en">
-      <body suppressHydrationWarning>
+      <body suppressHydrationWarning className={inter.className}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <ServiceWorkerRegistration />
         <ConsoleProtectionClient />
         <AchievementProvider>
-          <FallingSnow />
-          <AnimatedSanta />
-          <SantaWithCart />
-          <MusicPlayer />
-          <Navbar />
-          <main className="relative z-10">
+          <ClientShell>
             {children}
-          </main>
+          </ClientShell>
         </AchievementProvider>
       </body>
     </html>

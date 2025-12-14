@@ -59,7 +59,7 @@ export default function MusicPlayer() {
       })
 
       // Error handling
-      audioRef.current.addEventListener('error', (e) => {
+      audioRef.current.addEventListener('error', () => {
         console.warn('Audio file not found:', PLAYLIST[currentTrackIndex].src)
         console.warn('Please add MP3 files to /public/music/ folder')
         setIsLoaded(false)

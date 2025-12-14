@@ -54,8 +54,13 @@ export default function TutorialPlayer({
       setTimeout(() => {
         achievementManager.checkAll()
       }, 1000)
+
+      // Invoke completion callback if provided
+      if (typeof onComplete === 'function') {
+        onComplete(100)
+      }
     }
-  }, [currentSection, tutorialId, sections.length, updateTutorialProgress, updateTopicProgress, addXP])
+  }, [currentSection, tutorialId, sections.length, updateTutorialProgress, updateTopicProgress, addXP, onComplete])
 
   const handleNext = () => {
     if (currentSection < sections.length - 1) {

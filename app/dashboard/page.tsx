@@ -3,19 +3,16 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
-import { Sparkles, TrendingUp, Award, Flame } from 'lucide-react'
+import { Sparkles, TrendingUp, Flame } from 'lucide-react'
 import { TECHNOLOGY_MODULES } from '@/utils/techModules'
 import ModuleCard from '@/components/Dashboard/ModuleCard'
-import ProgressGlass from '@/components/Progress/ProgressGlass'
-import SantaDrinkingAnimation from '@/components/Progress/SantaDrinkingAnimation'
-import { getUserProfile, emptyGlass } from '@/lib/firebaseService'
+import { getUserProfile } from '@/lib/firebaseService'
 import type { UserProfile } from '@/lib/firebaseService'
 
 export default function DashboardPage() {
   const router = useRouter()
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
-  const [showSantaAnimation, setShowSantaAnimation] = useState(false)
 
   useEffect(() => {
     // Get user code from localStorage or session
@@ -43,27 +40,6 @@ export default function DashboardPage() {
     loadProfile()
   }, [router])
 
-  const handleGlassFull = async () => {
-    if (!userProfile) return
-
-    setShowSantaAnimation(true)
-  }
-
-  const handleSantaAnimationComplete = async () => {
-    if (!userProfile) return
-
-    // Empty the glass in Firebase
-    await emptyGlass(userProfile.code)
-
-    // Update local state
-    setUserProfile({
-      ...userProfile,
-      glassProgress: 0,
-    })
-
-    setShowSantaAnimation(false)
-  }
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
@@ -83,23 +59,6 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 pb-20">
-      {/* Santa Drinking Animation */}
-      <SantaDrinkingAnimation
-        isPlaying={showSantaAnimation}
-        drinkType={userProfile.drinkPreference || 'coffee'}
-        onComplete={handleSantaAnimationComplete}
-      />
-
-      {/* Fixed Progress Glass Above Music Icon */}
-      {userProfile.drinkPreference && (
-        <div className="fixed bottom-32 right-6 z-40">
-          <ProgressGlass
-            drinkType={userProfile.drinkPreference}
-            fillPercentage={userProfile.glassProgress}
-            onGlassFull={handleGlassFull}
-          />
-        </div>
-      )}
 
       {/* Animated Background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">

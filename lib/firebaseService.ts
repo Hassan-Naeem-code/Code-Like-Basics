@@ -1,14 +1,29 @@
 import { db } from './firebase'
 import {
-  collection,
   doc,
   getDoc,
   setDoc,
   updateDoc,
-  serverTimestamp,
   Timestamp,
 } from 'firebase/firestore'
 import { generateUniqueCode } from '@/utils/userCodeGenerator'
+
+export interface LanguageProgress {
+  difficulty: 'easy' | 'medium' | 'hard'
+  tutorialProgress: {
+    currentSection: number
+    completedSections: number[]
+    totalSections: number
+    completed: boolean
+  }
+  gameProgress: {
+    currentLevel: number
+    completedLevels: number[]
+    totalLevels: number
+    completed: boolean
+  }
+  lastAccessed: Timestamp
+}
 
 export interface UserProfile {
   code: string
@@ -20,6 +35,7 @@ export interface UserProfile {
   streak: number
   achievements: string[]
   glassProgress: number // 0-100, represents how full the glass is
+  languageProgress?: { [key: string]: LanguageProgress } // key format: "moduleId-languageId"
   createdAt: Timestamp
   lastActive: Timestamp
 }
@@ -170,4 +186,130 @@ export async function updateLastActive(code: string): Promise<void> {
   await updateDoc(userRef, {
     lastActive: Timestamp.now(),
   })
+}
+
+/**
+ * Gets language progress for a specific language
+ */
+export async function getLanguageProgress(
+  code: string,
+  languageKey: string // format: "moduleId-languageId"
+): Promise<LanguageProgress | null> {
+  const userRef = doc(db, USERS_COLLECTION, code)
+  const userDoc = await getDoc(userRef)
+
+  if (userDoc.exists()) {
+    const userData = userDoc.data() as UserProfile
+    return userData.languageProgress?.[languageKey] || null
+  }
+  return null
+}
+
+/**
+ * Initializes language progress when user starts learning
+ */
+export async function initializeLanguageProgress(
+  code: string,
+  languageKey: string,
+  difficulty: 'easy' | 'medium' | 'hard',
+  totalTutorialSections: number,
+  totalGameLevels: number
+): Promise<void> {
+  const userRef = doc(db, USERS_COLLECTION, code)
+  const userDoc = await getDoc(userRef)
+
+  if (userDoc.exists()) {
+    const userData = userDoc.data() as UserProfile
+    const languageProgress = userData.languageProgress || {}
+
+    languageProgress[languageKey] = {
+      difficulty,
+      tutorialProgress: {
+        currentSection: 0,
+        completedSections: [],
+        totalSections: totalTutorialSections,
+        completed: false,
+      },
+      gameProgress: {
+        currentLevel: 0,
+        completedLevels: [],
+        totalLevels: totalGameLevels,
+        completed: false,
+      },
+      lastAccessed: Timestamp.now(),
+    }
+
+    await updateDoc(userRef, {
+      languageProgress,
+      lastActive: Timestamp.now(),
+    })
+  }
+}
+
+/**
+ * Updates tutorial progress for a language
+ */
+export async function updateTutorialProgress(
+  code: string,
+  languageKey: string,
+  currentSection: number,
+  completedSections: number[],
+  completed: boolean
+): Promise<void> {
+  const userRef = doc(db, USERS_COLLECTION, code)
+  const userDoc = await getDoc(userRef)
+
+  if (userDoc.exists()) {
+    const userData = userDoc.data() as UserProfile
+    const languageProgress = userData.languageProgress || {}
+
+    if (languageProgress[languageKey]) {
+      languageProgress[languageKey].tutorialProgress = {
+        ...languageProgress[languageKey].tutorialProgress,
+        currentSection,
+        completedSections,
+        completed,
+      }
+      languageProgress[languageKey].lastAccessed = Timestamp.now()
+
+      await updateDoc(userRef, {
+        languageProgress,
+        lastActive: Timestamp.now(),
+      })
+    }
+  }
+}
+
+/**
+ * Updates game progress for a language
+ */
+export async function updateGameProgress(
+  code: string,
+  languageKey: string,
+  currentLevel: number,
+  completedLevels: number[],
+  completed: boolean
+): Promise<void> {
+  const userRef = doc(db, USERS_COLLECTION, code)
+  const userDoc = await getDoc(userRef)
+
+  if (userDoc.exists()) {
+    const userData = userDoc.data() as UserProfile
+    const languageProgress = userData.languageProgress || {}
+
+    if (languageProgress[languageKey]) {
+      languageProgress[languageKey].gameProgress = {
+        ...languageProgress[languageKey].gameProgress,
+        currentLevel,
+        completedLevels,
+        completed,
+      }
+      languageProgress[languageKey].lastAccessed = Timestamp.now()
+
+      await updateDoc(userRef, {
+        languageProgress,
+        lastActive: Timestamp.now(),
+      })
+    }
+  }
 }

@@ -51,9 +51,11 @@ export default function Home() {
   }
 
   const handleDrinkPreferenceComplete = (preference: 'beer' | 'coffee' | 'coke') => {
+    void preference
     // Save code and redirect to dashboard
     if (userCode) {
       localStorage.setItem('userCode', userCode)
+      // Optionally persist drink preference here in future
       router.push('/dashboard')
     }
   }
