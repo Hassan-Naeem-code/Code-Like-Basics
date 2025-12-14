@@ -1,54 +1,97 @@
 'use client'
 
-import HolidayBanner from '@/components/Layout/HolidayBanner'
-import TopicCard from '@/components/Common/TopicCard'
-import { TOPICS } from '@/utils/topicConfig'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import WelcomeScreen from '@/components/Onboarding/WelcomeScreen'
+import NewUserForm from '@/components/Onboarding/NewUserForm'
+import ReturningUserForm from '@/components/Onboarding/ReturningUserForm'
+import DrinkPreferenceScreen from '@/components/Onboarding/DrinkPreferenceScreen'
+
+type OnboardingStep = 'welcome' | 'new-user' | 'returning-user' | 'drink-preference'
 
 export default function Home() {
-  return (
-    <div className="min-h-screen pb-20">
-      <div className="container mx-auto px-4">
-        {/* Holiday Banner */}
-        <HolidayBanner />
+  const router = useRouter()
+  const [currentStep, setCurrentStep] = useState<OnboardingStep>('welcome')
+  const [userCode, setUserCode] = useState<string | null>(null)
+  const [userName, setUserName] = useState<string>('')
+  const [userAge, setUserAge] = useState<number>(0)
+  const [isLoading, setIsLoading] = useState(true)
 
-        {/* Welcome Section */}
-        <div className="text-center mb-12">
-          <p className="text-xl text-white/90 mb-4">
-            Choose a topic below and select your learning style:
-          </p>
-          <div className="flex justify-center gap-6 text-white/80 text-sm">
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">📖</span>
-              <span>Read interactive tutorials</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">🎮</span>
-              <span>Play engaging games</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">🛠️</span>
-              <span>Try hands-on sandboxes</span>
-            </div>
-          </div>
-        </div>
+  useEffect(() => {
+    // Check if user already has a code in localStorage
+    const existingCode = localStorage.getItem('userCode')
 
-        {/* Topic Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
-          {TOPICS.map((topic, index) => (
-            <TopicCard key={topic.id} topic={topic} index={index} />
-          ))}
-        </div>
+    if (existingCode) {
+      // User already onboarded, redirect to dashboard
+      router.push('/dashboard')
+    } else {
+      setIsLoading(false)
+    }
+  }, [router])
 
-        {/* Footer */}
-        <div className="text-center mt-16 text-white/60">
-          <p className="text-lg mb-2">
-            ✨ Made with love this holiday season ✨
-          </p>
-          <p className="text-sm">
-            100% Free • No Sign-up Required • Learn at Your Pace
-          </p>
-        </div>
+  const handleUserTypeSelect = (type: 'new' | 'returning') => {
+    if (type === 'new') {
+      setCurrentStep('new-user')
+    } else {
+      setCurrentStep('returning-user')
+    }
+  }
+
+  const handleNewUserComplete = (code: string, name: string, age: number) => {
+    setUserCode(code)
+    setUserName(name)
+    setUserAge(age)
+    setCurrentStep('drink-preference')
+  }
+
+  const handleReturningUserSuccess = (code: string) => {
+    // Save code and redirect to dashboard
+    localStorage.setItem('userCode', code)
+    router.push('/dashboard')
+  }
+
+  const handleDrinkPreferenceComplete = (preference: 'beer' | 'coffee' | 'coke') => {
+    // Save code and redirect to dashboard
+    if (userCode) {
+      localStorage.setItem('userCode', userCode)
+      router.push('/dashboard')
+    }
+  }
+
+  const handleBack = () => {
+    setCurrentStep('welcome')
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+        <div className="text-white text-2xl">Loading...</div>
       </div>
-    </div>
+    )
+  }
+
+  return (
+    <>
+      {currentStep === 'welcome' && (
+        <WelcomeScreen onSelectUserType={handleUserTypeSelect} />
+      )}
+
+      {currentStep === 'new-user' && (
+        <NewUserForm onComplete={handleNewUserComplete} onBack={handleBack} />
+      )}
+
+      {currentStep === 'returning-user' && (
+        <ReturningUserForm onSuccess={handleReturningUserSuccess} onBack={handleBack} />
+      )}
+
+      {currentStep === 'drink-preference' && userCode && (
+        <DrinkPreferenceScreen
+          code={userCode}
+          name={userName}
+          age={userAge}
+          onComplete={handleDrinkPreferenceComplete}
+        />
+      )}
+    </>
   )
 }
