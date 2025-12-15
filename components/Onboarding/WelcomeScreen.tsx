@@ -38,13 +38,13 @@ export default function WelcomeScreen({ onSelectUserType }: WelcomeScreenProps) 
         ))}
       </div>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-0">
         {/* Main Welcome Header */}
         <motion.div
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: 'easeOut' }}
-          className="text-center mb-16"
+          className="text-center mb-8 sm:mb-12 md:mb-16"
         >
           <motion.div
             animate={{
@@ -56,20 +56,20 @@ export default function WelcomeScreen({ onSelectUserType }: WelcomeScreenProps) 
               repeat: Infinity,
               repeatDelay: 1,
             }}
-            className="inline-block mb-8"
+            className="inline-block mb-4 sm:mb-6 md:mb-8"
           >
             <Image
               src="/logo.png"
               alt="CodeLikeBasics Logo"
               width={128}
               height={128}
-              className="object-contain mx-auto"
+              className="object-contain mx-auto w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32"
               priority
             />
           </motion.div>
 
           <motion.h1
-            className="text-7xl font-bold mb-6 bg-gradient-to-r from-yellow-200 via-pink-200 to-purple-200 bg-clip-text text-transparent"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-3 sm:mb-4 md:mb-6 bg-gradient-to-r from-yellow-200 via-pink-200 to-purple-200 bg-clip-text text-transparent px-2"
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2, duration: 0.8 }}
@@ -78,7 +78,7 @@ export default function WelcomeScreen({ onSelectUserType }: WelcomeScreenProps) 
           </motion.h1>
 
           <motion.p
-            className="text-2xl text-white/80 max-w-2xl mx-auto"
+            className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-white/80 max-w-2xl mx-auto px-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.8 }}
@@ -88,7 +88,7 @@ export default function WelcomeScreen({ onSelectUserType }: WelcomeScreenProps) 
         </motion.div>
 
         {/* User Type Selection Cards */}
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-4 sm:gap-6 md:gap-8 max-w-4xl mx-auto">
           {/* First Time User Card */}
           <motion.div
             initial={{ opacity: 0, x: -100 }}
@@ -100,38 +100,38 @@ export default function WelcomeScreen({ onSelectUserType }: WelcomeScreenProps) 
             className="relative cursor-pointer"
           >
             <motion.div
-              className="bg-gradient-to-br from-green-500 to-emerald-700 rounded-3xl p-8 shadow-2xl border-4 border-green-300/50 h-full"
+              className="bg-gradient-to-br from-green-500 to-emerald-700 rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl border-2 sm:border-4 border-green-300/50 h-full"
               whileHover={{ scale: 1.05, rotate: 2 }}
               whileTap={{ scale: 0.95 }}
             >
               <motion.div
                 animate={hoveredCard === 'new' ? { rotate: [0, 10, -10, 0] } : {}}
                 transition={{ duration: 0.5 }}
-                className="text-center mb-6"
+                className="text-center mb-4 sm:mb-6"
               >
-                <PartyPopper className="w-24 h-24 mx-auto text-white mb-4" />
+                <PartyPopper className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 mx-auto text-white mb-2 sm:mb-4" />
               </motion.div>
 
-              <h2 className="text-4xl font-bold text-white mb-4 text-center">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4 text-center">
                 First Time Here?
               </h2>
 
-              <p className="text-white/90 text-lg mb-6 text-center">
+              <p className="text-white/90 text-sm sm:text-base md:text-lg mb-4 sm:mb-6 text-center">
                 Start your amazing learning adventure! We&apos;ll create a unique code just for you to track your progress.
               </p>
 
               <motion.div
-                className="flex items-center justify-center gap-2 text-white font-semibold text-xl"
+                className="flex items-center justify-center gap-2 text-white font-semibold text-base sm:text-lg md:text-xl"
                 animate={hoveredCard === 'new' ? { x: [0, 10, 0] } : {}}
                 transition={{ duration: 0.5, repeat: Infinity }}
               >
                 <span>Let&apos;s Begin</span>
-                <ArrowRight className="w-6 h-6" />
+                <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
               </motion.div>
 
               {/* Decorative Elements */}
               <motion.div
-                className="absolute -top-2 -right-2 w-16 h-16 bg-yellow-300 rounded-full"
+                className="absolute -top-2 -right-2 w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 bg-yellow-300 rounded-full"
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
               />
@@ -149,38 +149,38 @@ export default function WelcomeScreen({ onSelectUserType }: WelcomeScreenProps) 
             className="relative cursor-pointer"
           >
             <motion.div
-              className="bg-gradient-to-br from-purple-500 to-pink-700 rounded-3xl p-8 shadow-2xl border-4 border-purple-300/50 h-full"
+              className="bg-gradient-to-br from-purple-500 to-pink-700 rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl border-2 sm:border-4 border-purple-300/50 h-full"
               whileHover={{ scale: 1.05, rotate: -2 }}
               whileTap={{ scale: 0.95 }}
             >
               <motion.div
                 animate={hoveredCard === 'returning' ? { rotate: [0, -10, 10, 0] } : {}}
                 transition={{ duration: 0.5 }}
-                className="text-center mb-6"
+                className="text-center mb-4 sm:mb-6"
               >
-                <Sparkles className="w-24 h-24 mx-auto text-white mb-4" />
+                <Sparkles className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 mx-auto text-white mb-2 sm:mb-4" />
               </motion.div>
 
-              <h2 className="text-4xl font-bold text-white mb-4 text-center">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4 text-center">
                 Welcome Back!
               </h2>
 
-              <p className="text-white/90 text-lg mb-6 text-center">
+              <p className="text-white/90 text-sm sm:text-base md:text-lg mb-4 sm:mb-6 text-center">
                 Have your unique code? Enter it to continue your learning journey and pick up where you left off!
               </p>
 
               <motion.div
-                className="flex items-center justify-center gap-2 text-white font-semibold text-xl"
+                className="flex items-center justify-center gap-2 text-white font-semibold text-base sm:text-lg md:text-xl"
                 animate={hoveredCard === 'returning' ? { x: [0, 10, 0] } : {}}
                 transition={{ duration: 0.5, repeat: Infinity }}
               >
                 <span>Continue Learning</span>
-                <ArrowRight className="w-6 h-6" />
+                <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
               </motion.div>
 
               {/* Decorative Elements */}
               <motion.div
-                className="absolute -top-2 -left-2 w-16 h-16 bg-blue-300 rounded-full"
+                className="absolute -top-2 -left-2 w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 bg-blue-300 rounded-full"
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
               />
@@ -193,9 +193,9 @@ export default function WelcomeScreen({ onSelectUserType }: WelcomeScreenProps) 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1, duration: 0.8 }}
-          className="text-center mt-16 text-white/60"
+          className="text-center mt-8 sm:mt-12 md:mt-16 text-white/60 px-4"
         >
-          <p className="text-lg">
+          <p className="text-xs sm:text-sm md:text-base lg:text-lg">
             100% Free • Track Your Progress • Earn Rewards • Have Fun!
           </p>
         </motion.div>

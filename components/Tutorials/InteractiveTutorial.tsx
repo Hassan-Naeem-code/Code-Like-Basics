@@ -237,27 +237,27 @@ export default function InteractiveTutorial({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
           >
             <motion.div
               initial={{ scale: 0.5, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.5, opacity: 0 }}
-              className="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-3xl p-12 text-center shadow-2xl max-w-md mx-4"
+              className="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl md:rounded-3xl p-6 sm:p-8 md:p-10 lg:p-12 text-center shadow-2xl max-w-md mx-4"
             >
               <motion.div
                 animate={{ rotate: 360, scale: [1, 1.2, 1] }}
                 transition={{ duration: 1, repeat: 3 }}
               >
-                <Trophy className="w-24 h-24 mx-auto text-white mb-6" />
+                <Trophy className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 mx-auto text-white mb-4 sm:mb-5 md:mb-6" />
               </motion.div>
-              <h2 className="text-5xl font-bold text-white mb-4">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 md:mb-4">
                 Congratulations! 🎉
               </h2>
-              <p className="text-2xl text-white/90 mb-4">
+              <p className="text-lg sm:text-xl md:text-2xl text-white/90 mb-3 md:mb-4">
                 You completed the {language.name} tutorial at {getDifficultyLabel()} level!
               </p>
-              <p className="text-xl text-white/80">
+              <p className="text-base sm:text-lg md:text-xl text-white/80">
                 +500 XP Bonus!
               </p>
             </motion.div>
@@ -265,25 +265,26 @@ export default function InteractiveTutorial({
         )}
       </AnimatePresence>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-2 sm:px-4 py-4 md:py-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
+        <div className="flex items-center justify-between mb-4 md:mb-8 flex-wrap gap-2 md:gap-4">
           <motion.button
             onClick={() => router.push(`/module/${moduleId}`)}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             whileHover={{ scale: 1.05, x: -5 }}
-            className="flex items-center gap-2 text-white/80 hover:text-white bg-white/10 backdrop-blur-sm px-4 py-2 rounded-xl transition-all"
+            className="flex items-center gap-1 md:gap-2 text-white/80 hover:text-white bg-white/10 backdrop-blur-sm px-2 sm:px-3 md:px-4 py-1.5 md:py-2 rounded-xl transition-all text-sm md:text-base"
           >
-            <ArrowLeft className="w-5 h-5" />
-            <span>Back to {language.name}</span>
+            <ArrowLeft className="w-4 h-4 md:w-5 md:h-5" />
+            <span className="hidden sm:inline">Back to {language.name}</span>
+            <span className="sm:hidden">Back</span>
           </motion.button>
 
-          <div className="flex items-center gap-4 bg-white/10 backdrop-blur-lg rounded-xl px-6 py-3">
-            <div className="text-4xl">{language.icon}</div>
+          <div className="flex items-center gap-2 sm:gap-3 md:gap-4 bg-white/10 backdrop-blur-lg rounded-xl px-3 sm:px-4 md:px-6 py-2 md:py-3">
+            <div className="text-2xl sm:text-3xl md:text-4xl">{language.icon}</div>
             <div>
-              <h1 className="text-2xl font-bold text-white">{language.name} Tutorial</h1>
-              <div className={`inline-block bg-gradient-to-r ${getDifficultyColor()} px-3 py-1 rounded-full text-xs font-bold text-white`}>
+              <h1 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-white">{language.name} Tutorial</h1>
+              <div className={`inline-block bg-gradient-to-r ${getDifficultyColor()} px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs font-bold text-white`}>
                 {getDifficultyLabel()}
               </div>
             </div>
@@ -291,8 +292,8 @@ export default function InteractiveTutorial({
         </div>
 
         {/* Progress Bar */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-2">
+        <div className="mb-4 md:mb-8">
+          <div className="flex items-center justify-between mb-2 text-xs sm:text-sm md:text-base">
               <p className="text-white font-semibold">
                 Section {clampedIndex + 1} of {totalSections || 1}
             </p>
@@ -300,7 +301,7 @@ export default function InteractiveTutorial({
                 {completedSections.length} / {totalSections || 1} completed
             </p>
           </div>
-          <div className="h-3 bg-white/10 rounded-full overflow-hidden">
+          <div className="h-2 md:h-3 bg-white/10 rounded-full overflow-hidden">
             <motion.div
               className="h-full bg-gradient-to-r from-green-400 to-emerald-500"
               initial={{ width: 0 }}
@@ -313,145 +314,149 @@ export default function InteractiveTutorial({
         </div>
 
         {/* Main Content */}
-        <div className="grid lg:grid-cols-2 gap-8">
+        <div className="grid lg:grid-cols-2 gap-4 md:gap-6 lg:gap-8">
           {/* Tutorial Content */}
           <motion.div
             key={currentSection}
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 50 }}
-            className="bg-white/95 backdrop-blur-lg rounded-3xl p-8 shadow-2xl"
+            className="bg-white/95 backdrop-blur-lg rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl"
           >
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-4xl font-bold text-gray-800">
+            <div className="flex items-center justify-between mb-4 md:mb-6 gap-2">
+              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-800">
                 {section?.title ?? 'Tutorial Section'}
               </h2>
               {completedSections.includes(currentSection) && (
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="bg-green-500 text-white p-3 rounded-full"
+                  className="bg-green-500 text-white p-2 md:p-3 rounded-full flex-shrink-0"
                 >
-                  <Check className="w-6 h-6" />
+                  <Check className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
                 </motion.div>
               )}
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-4 md:space-y-6">
               <div>
-                <p className="text-gray-700 text-lg leading-relaxed">
+                <p className="text-gray-700 text-sm sm:text-base md:text-lg leading-relaxed">
                   {section?.content ?? 'Content will appear here.'}
                 </p>
               </div>
 
               {section?.syntax && (
-                <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
-                  <h3 className="font-bold text-gray-800 mb-2">Syntax:</h3>
-                  <code className="text-blue-700 font-mono text-sm">{section?.syntax}</code>
+                <div className="bg-blue-50 border-l-4 border-blue-500 p-3 md:p-4 rounded">
+                  <h3 className="font-bold text-gray-800 mb-2 text-sm md:text-base">Syntax:</h3>
+                  <code className="text-blue-700 font-mono text-xs sm:text-sm">{section?.syntax}</code>
                 </div>
               )}
 
               {section?.usage && (
-                <div className="bg-purple-50 border-l-4 border-purple-500 p-4 rounded">
-                  <h3 className="font-bold text-gray-800 mb-2">Usage:</h3>
-                  <p className="text-gray-700">{section?.usage}</p>
+                <div className="bg-purple-50 border-l-4 border-purple-500 p-3 md:p-4 rounded">
+                  <h3 className="font-bold text-gray-800 mb-2 text-sm md:text-base">Usage:</h3>
+                  <p className="text-gray-700 text-xs sm:text-sm md:text-base">{section?.usage}</p>
                 </div>
               )}
 
               {section?.codeExample && (
-                <div className="bg-gray-900 rounded-xl p-4">
+                <div className="bg-gray-900 rounded-xl p-3 md:p-4">
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-bold text-white flex items-center gap-2">
-                      <Code2 className="w-5 h-5" />
+                    <h3 className="font-bold text-white flex items-center gap-1 md:gap-2 text-sm md:text-base">
+                      <Code2 className="w-4 h-4 md:w-5 md:h-5" />
                       Code Example
                     </h3>
                   </div>
-                  <pre className="text-green-400 font-mono text-sm overflow-x-auto whitespace-pre-wrap">
+                  <pre className="text-green-400 font-mono text-xs sm:text-sm overflow-x-auto whitespace-pre-wrap">
                     {section?.codeExample?.replace(/\\n/g, '\n')}
                   </pre>
                 </div>
               )}
 
               {section?.practiceTask && (
-                <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded">
-                  <h3 className="font-bold text-gray-800 mb-2">Practice Task:</h3>
-                  <p className="text-gray-700">{section?.practiceTask}</p>
+                <div className="bg-green-50 border-l-4 border-green-500 p-3 md:p-4 rounded">
+                  <h3 className="font-bold text-gray-800 mb-2 text-sm md:text-base">Practice Task:</h3>
+                  <p className="text-gray-700 text-xs sm:text-sm md:text-base">{section?.practiceTask}</p>
                 </div>
               )}
             </div>
 
             {/* Navigation Buttons */}
-            <div className="flex items-center justify-between mt-8 pt-6 border-t border-gray-200">
+            <div className="flex items-center justify-between mt-4 sm:mt-6 md:mt-8 pt-4 sm:pt-5 md:pt-6 border-t border-gray-200 gap-2">
               <button
                 onClick={handlePrevious}
                 disabled={currentSection === 0}
-                className="flex items-center gap-2 px-6 py-3 bg-gray-200 text-gray-800 rounded-xl font-semibold hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center gap-1 md:gap-2 px-3 sm:px-4 md:px-6 py-2 md:py-3 bg-gray-200 text-gray-800 rounded-xl font-semibold hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm md:text-base"
               >
-                <ArrowLeft className="w-5 h-5" />
-                Previous
+                <ArrowLeft className="w-4 h-4 md:w-5 md:h-5" />
+                <span className="hidden sm:inline">Previous</span>
+                <span className="sm:hidden">Prev</span>
               </button>
 
               <button
                 onClick={handleCompleteSection}
-                className="flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-bold hover:shadow-lg transition-all"
+                className="flex items-center gap-1 md:gap-2 px-3 sm:px-5 md:px-8 py-2 md:py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-bold hover:shadow-lg transition-all text-xs sm:text-sm md:text-base"
               >
                 {completedSections.includes(currentSection) ? (
                   <>
-                    <Check className="w-5 h-5" />
-                    Completed
+                    <Check className="w-4 h-4 md:w-5 md:h-5" />
+                    <span className="hidden sm:inline">Completed</span>
+                    <span className="sm:hidden">Done</span>
                   </>
                 ) : (
                   <>
-                    Complete & Earn 50 XP
+                    <span className="hidden md:inline">Complete & Earn 50 XP</span>
+                    <span className="hidden sm:inline md:hidden">Complete +50 XP</span>
+                    <span className="sm:hidden">Complete</span>
                   </>
                 )}
-                {!isLastSection && <ArrowRight className="w-5 h-5" />}
+                {!isLastSection && <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />}
               </button>
             </div>
           </motion.div>
 
           {/* Interactive Sandbox */}
-          <div className="bg-white/95 backdrop-blur-lg rounded-3xl p-8 shadow-2xl">
-            <h3 className="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-              <Code2 className="w-8 h-8" />
+          <div className="bg-white/95 backdrop-blur-lg rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl">
+            <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 mb-4 md:mb-6 flex items-center gap-1 md:gap-2">
+              <Code2 className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8" />
               Try It Yourself
             </h3>
 
-            <div className="space-y-4">
+            <div className="space-y-3 md:space-y-4">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
                   Code Editor
                 </label>
                 <textarea
                   value={sandboxCode}
                   onChange={(e) => setSandboxCode(e.target.value)}
-                  className="w-full h-64 bg-gray-900 text-green-400 font-mono text-sm p-4 rounded-xl border-2 border-gray-700 focus:border-purple-500 focus:outline-none resize-none"
+                  className="w-full h-48 sm:h-56 md:h-64 bg-gray-900 text-green-400 font-mono text-xs sm:text-sm p-3 md:p-4 rounded-xl border-2 border-gray-700 focus:border-purple-500 focus:outline-none resize-none"
                   placeholder="Write your code here..."
                 />
               </div>
 
               <button
                 onClick={handleRunCode}
-                className="w-full bg-gradient-to-r from-purple-500 to-pink-600 text-white font-bold py-4 rounded-xl hover:shadow-xl transition-all flex items-center justify-center gap-2"
+                className="w-full bg-gradient-to-r from-purple-500 to-pink-600 text-white font-bold py-2.5 sm:py-3 md:py-4 rounded-xl hover:shadow-xl transition-all flex items-center justify-center gap-2 text-sm sm:text-base"
               >
-                <Play className="w-5 h-5" />
+                <Play className="w-4 h-4 md:w-5 md:h-5" />
                 Run Code (+10 XP)
               </button>
 
               {sandboxOutput && (
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
                     Output
                   </label>
-                  <div className="bg-gray-900 text-gray-300 font-mono text-sm p-4 rounded-xl min-h-32 whitespace-pre-wrap">
+                  <div className="bg-gray-900 text-gray-300 font-mono text-xs sm:text-sm p-3 md:p-4 rounded-xl min-h-32 whitespace-pre-wrap">
                     {sandboxOutput}
                   </div>
                 </div>
               )}
             </div>
 
-            <div className="mt-6 bg-blue-50 border border-blue-200 rounded-xl p-4">
-              <p className="text-sm text-blue-800">
+            <div className="mt-4 sm:mt-5 md:mt-6 bg-blue-50 border border-blue-200 rounded-xl p-3 md:p-4">
+              <p className="text-xs sm:text-sm text-blue-800">
                 <strong>💡 Tip:</strong> Try modifying the code example above to see what happens!
                 Experiment and learn by doing.
               </p>
@@ -464,23 +469,23 @@ export default function InteractiveTutorial({
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-8 bg-gradient-to-r from-green-500 to-emerald-600 rounded-3xl p-8 text-center text-white"
+            className="mt-4 md:mt-8 bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 text-center text-white"
           >
-            <Trophy className="w-16 h-16 mx-auto mb-4" />
-            <h3 className="text-3xl font-bold mb-2">Tutorial Complete! 🎉</h3>
-            <p className="text-xl mb-6">
+            <Trophy className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 mx-auto mb-3 md:mb-4" />
+            <h3 className="text-2xl sm:text-2xl md:text-3xl font-bold mb-2">Tutorial Complete! 🎉</h3>
+            <p className="text-base sm:text-lg md:text-xl mb-4 sm:mb-5 md:mb-6">
               You&apos;ve mastered {language.name} at the {getDifficultyLabel()} level!
             </p>
-            <div className="flex gap-4 justify-center flex-wrap">
+            <div className="flex gap-2 sm:gap-3 md:gap-4 justify-center flex-wrap">
               <button
                 onClick={() => router.push(`/game/${moduleId}-${languageId}?difficulty=${difficulty}`)}
-                className="bg-white text-green-600 px-8 py-3 rounded-xl font-bold hover:shadow-xl transition-all"
+                className="bg-white text-green-600 px-4 sm:px-6 md:px-8 py-2 sm:py-2.5 md:py-3 rounded-xl font-bold hover:shadow-xl transition-all text-xs sm:text-sm md:text-base"
               >
                 Play Game Next
               </button>
               <button
                 onClick={() => router.push(`/sandbox/${moduleId}-${languageId}`)}
-                className="bg-white/20 backdrop-blur-sm text-white px-8 py-3 rounded-xl font-bold hover:bg-white/30 transition-all"
+                className="bg-white/20 backdrop-blur-sm text-white px-4 sm:px-6 md:px-8 py-2 sm:py-2.5 md:py-3 rounded-xl font-bold hover:bg-white/30 transition-all text-xs sm:text-sm md:text-base"
               >
                 Open Sandbox
               </button>

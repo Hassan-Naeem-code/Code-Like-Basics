@@ -224,44 +224,45 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-indigo-900 pb-10">
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto px-2 sm:px-4 py-4 md:py-6">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-4 md:mb-6 flex-wrap gap-2 md:gap-4">
           <motion.button
             onClick={() => router.push(`/module/${moduleId}`)}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             whileHover={{ scale: 1.05, x: -5 }}
-            className="flex items-center gap-2 text-white/80 hover:text-white bg-white/10 backdrop-blur-sm px-4 py-2 rounded-xl transition-all"
+            className="flex items-center gap-1 md:gap-2 text-white/80 hover:text-white bg-white/10 backdrop-blur-sm px-2 sm:px-3 md:px-4 py-1.5 md:py-2 rounded-xl transition-all text-sm md:text-base"
           >
-            <ArrowLeft className="w-5 h-5" />
-            <span>Back to {language.name}</span>
+            <ArrowLeft className="w-4 h-4 md:w-5 md:h-5" />
+            <span className="hidden sm:inline">Back to {language.name}</span>
+            <span className="sm:hidden">Back</span>
           </motion.button>
 
-          <div className="flex items-center gap-4 bg-white/10 backdrop-blur-lg rounded-xl px-6 py-3">
-            <div className="text-5xl">{language.icon}</div>
+          <div className="flex items-center gap-2 sm:gap-3 md:gap-4 bg-white/10 backdrop-blur-lg rounded-xl px-3 sm:px-4 md:px-6 py-2 md:py-3">
+            <div className="text-3xl sm:text-4xl md:text-5xl">{language.icon}</div>
             <div>
-              <h1 className="text-2xl font-bold text-white">{language.name} Sandbox</h1>
-              <p className="text-white/70">Code, Run, Learn</p>
+              <h1 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-white">{language.name} Sandbox</h1>
+              <p className="text-white/70 text-xs sm:text-sm">Code, Run, Learn</p>
             </div>
           </div>
         </div>
 
         {/* Mode Toggle */}
-        <div className="mb-6 flex items-center gap-4">
+        <div className="mb-4 md:mb-6 flex items-center gap-2 sm:gap-3 md:gap-4 flex-wrap">
           <button
             onClick={() => setExerciseMode(!exerciseMode)}
-            className={`px-6 py-3 rounded-xl font-bold transition-all ${
+            className={`px-3 sm:px-4 md:px-6 py-2 md:py-3 rounded-xl font-bold transition-all text-sm md:text-base ${
               exerciseMode
                 ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white'
                 : 'bg-white/10 text-white hover:bg-white/20'
             }`}
           >
-            <BookOpen className="w-5 h-5 inline mr-2" />
+            <BookOpen className="w-4 h-4 md:w-5 md:h-5 inline mr-1 md:mr-2" />
             {exerciseMode ? 'Practice Mode' : 'Free Sandbox'}
           </button>
           {exerciseMode && (
-            <div className="text-white/80 text-sm">
+            <div className="text-white/80 text-xs sm:text-sm">
               {completedExercises.length} / {exercises.length} exercises completed
             </div>
           )}
@@ -272,37 +273,37 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-purple-400/30"
+            className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-lg rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-6 mb-4 md:mb-6 border border-purple-400/30"
           >
-            <div className="flex items-start justify-between mb-4">
+            <div className="flex items-start justify-between mb-3 md:mb-4 gap-2">
               <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
-                  <h2 className="text-2xl font-bold text-white">{currentExercise.title}</h2>
+                <div className="flex items-center gap-2 md:gap-3 mb-2 flex-wrap">
+                  <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white">{currentExercise.title}</h2>
                   {completedExercises.includes(currentExerciseIndex) && (
-                    <div className="bg-green-500 text-white px-3 py-1 rounded-full flex items-center gap-1 text-sm">
-                      <Check className="w-4 h-4" />
+                    <div className="bg-green-500 text-white px-2 md:px-3 py-1 rounded-full flex items-center gap-1 text-xs sm:text-sm">
+                      <Check className="w-3 h-3 md:w-4 md:h-4" />
                       Completed
                     </div>
                   )}
                 </div>
-                <p className="text-white/90 mb-3">{currentExercise.description}</p>
-                <div className="bg-white/10 rounded-xl p-4 mb-4">
-                  <p className="text-white font-semibold mb-2">📝 Instructions:</p>
-                  <p className="text-white/90">{currentExercise.instructions}</p>
+                <p className="text-white/90 mb-3 text-sm sm:text-base">{currentExercise.description}</p>
+                <div className="bg-white/10 rounded-xl p-3 md:p-4 mb-3 md:mb-4">
+                  <p className="text-white font-semibold mb-2 text-xs sm:text-sm md:text-base">📝 Instructions:</p>
+                  <p className="text-white/90 text-xs sm:text-sm md:text-base">{currentExercise.instructions}</p>
                 </div>
 
                 {/* Hint & Solution Buttons */}
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 md:gap-3 flex-wrap">
                   <button
                     onClick={() => setShowHint(!showHint)}
-                    className="flex items-center gap-2 bg-yellow-500/20 text-yellow-300 px-4 py-2 rounded-xl hover:bg-yellow-500/30 transition-all"
+                    className="flex items-center gap-1 md:gap-2 bg-yellow-500/20 text-yellow-300 px-3 md:px-4 py-1.5 md:py-2 rounded-xl hover:bg-yellow-500/30 transition-all text-xs sm:text-sm"
                   >
-                    <Lightbulb className="w-4 h-4" />
+                    <Lightbulb className="w-3 h-3 md:w-4 md:h-4" />
                     {showHint ? 'Hide Hint' : 'Show Hint'}
                   </button>
                   <button
                     onClick={() => setShowSolution(!showSolution)}
-                    className="flex items-center gap-2 bg-orange-500/20 text-orange-300 px-4 py-2 rounded-xl hover:bg-orange-500/30 transition-all"
+                    className="flex items-center gap-1 md:gap-2 bg-orange-500/20 text-orange-300 px-3 md:px-4 py-1.5 md:py-2 rounded-xl hover:bg-orange-500/30 transition-all text-xs sm:text-sm"
                   >
                     {showSolution ? 'Hide Solution' : 'View Solution'}
                   </button>
@@ -315,9 +316,9 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
                       exit={{ opacity: 0, height: 0 }}
-                      className="mt-4 bg-yellow-500/20 border border-yellow-400/30 rounded-xl p-4"
+                      className="mt-3 md:mt-4 bg-yellow-500/20 border border-yellow-400/30 rounded-xl p-3 md:p-4"
                     >
-                      <p className="text-yellow-200">💡 Hint: {currentExercise.hint}</p>
+                      <p className="text-yellow-200 text-xs sm:text-sm md:text-base">💡 Hint: {currentExercise.hint}</p>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -329,10 +330,10 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
                       exit={{ opacity: 0, height: 0 }}
-                      className="mt-4 bg-orange-500/20 border border-orange-400/30 rounded-xl p-4"
+                      className="mt-3 md:mt-4 bg-orange-500/20 border border-orange-400/30 rounded-xl p-3 md:p-4"
                     >
-                      <p className="text-orange-200 mb-2">✨ Solution:</p>
-                      <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto">
+                      <p className="text-orange-200 mb-2 text-xs sm:text-sm md:text-base">✨ Solution:</p>
+                      <pre className="bg-gray-900 text-green-400 p-3 md:p-4 rounded-lg overflow-x-auto text-xs sm:text-sm">
                         <code>{currentExercise.solution}</code>
                       </pre>
                     </motion.div>
@@ -341,23 +342,23 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
               </div>
 
               {/* Navigation */}
-              <div className="flex flex-col gap-2 ml-4">
+              <div className="flex flex-col gap-1.5 md:gap-2 ml-2 sm:ml-3 md:ml-4">
                 <button
                   onClick={handlePreviousExercise}
                   disabled={currentExerciseIndex === 0}
-                  className="p-2 bg-white/10 rounded-lg hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                  className="p-1.5 md:p-2 bg-white/10 rounded-lg hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                 >
-                  <ChevronLeft className="w-5 h-5 text-white" />
+                  <ChevronLeft className="w-4 h-4 md:w-5 md:h-5 text-white" />
                 </button>
-                <div className="text-white text-center text-sm">
+                <div className="text-white text-center text-xs sm:text-sm">
                   {currentExerciseIndex + 1}/{exercises.length}
                 </div>
                 <button
                   onClick={handleNextExercise}
                   disabled={currentExerciseIndex === exercises.length - 1}
-                  className="p-2 bg-white/10 rounded-lg hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                  className="p-1.5 md:p-2 bg-white/10 rounded-lg hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                 >
-                  <ChevronRight className="w-5 h-5 text-white" />
+                  <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-white" />
                 </button>
               </div>
             </div>
@@ -365,77 +366,77 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
         )}
 
         {/* Toolbar */}
-        <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4 mb-6 flex items-center justify-between flex-wrap gap-4">
-          <div className="flex items-center gap-3">
+        <div className="bg-white/10 backdrop-blur-lg rounded-xl p-3 md:p-4 mb-4 md:mb-6 flex items-center justify-between flex-wrap gap-2 sm:gap-3 md:gap-4">
+          <div className="flex items-center gap-2 md:gap-3 flex-wrap">
             <button
               onClick={handleRunCode}
               disabled={isRunning}
-              className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-xl font-bold hover:shadow-xl transition-all disabled:opacity-50"
+              className="flex items-center gap-1 md:gap-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-3 sm:px-4 md:px-6 py-2 md:py-3 rounded-xl font-bold hover:shadow-xl transition-all disabled:opacity-50 text-xs sm:text-sm md:text-base"
             >
-              <Play className="w-5 h-5" />
+              <Play className="w-4 h-4 md:w-5 md:h-5" />
               {isRunning ? 'Running...' : exerciseMode ? 'Check Solution' : 'Run Code'}
             </button>
 
             <button
               onClick={handleReset}
-              className="flex items-center gap-2 bg-white/10 text-white px-4 py-3 rounded-xl hover:bg-white/20 transition-all"
+              className="flex items-center gap-1 md:gap-2 bg-white/10 text-white px-3 md:px-4 py-2 md:py-3 rounded-xl hover:bg-white/20 transition-all text-xs sm:text-sm md:text-base"
             >
-              <RotateCcw className="w-5 h-5" />
-              Reset
+              <RotateCcw className="w-4 h-4 md:w-5 md:h-5" />
+              <span className="hidden sm:inline">Reset</span>
             </button>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 md:gap-3 flex-wrap">
             <button
               onClick={handleSave}
-              className="flex items-center gap-2 bg-blue-500/20 text-blue-300 px-4 py-3 rounded-xl hover:bg-blue-500/30 transition-all"
+              className="flex items-center gap-1 md:gap-2 bg-blue-500/20 text-blue-300 px-3 md:px-4 py-2 md:py-3 rounded-xl hover:bg-blue-500/30 transition-all text-xs sm:text-sm md:text-base"
             >
-              <Save className="w-5 h-5" />
-              Save
+              <Save className="w-4 h-4 md:w-5 md:h-5" />
+              <span className="hidden sm:inline">Save</span>
             </button>
 
             <button
               onClick={handleDownload}
-              className="flex items-center gap-2 bg-purple-500/20 text-purple-300 px-4 py-3 rounded-xl hover:bg-purple-500/30 transition-all"
+              className="flex items-center gap-1 md:gap-2 bg-purple-500/20 text-purple-300 px-3 md:px-4 py-2 md:py-3 rounded-xl hover:bg-purple-500/30 transition-all text-xs sm:text-sm md:text-base"
             >
-              <Download className="w-5 h-5" />
-              Download
+              <Download className="w-4 h-4 md:w-5 md:h-5" />
+              <span className="hidden sm:inline">Download</span>
             </button>
           </div>
         </div>
 
         {/* Editor and Output */}
-        <div className="grid lg:grid-cols-2 gap-6">
+        <div className="grid lg:grid-cols-2 gap-3 md:gap-4 lg:gap-6">
           {/* Code Editor */}
-          <div className="bg-gray-900 rounded-2xl overflow-hidden shadow-2xl">
-            <div className="bg-gray-800 px-6 py-3 flex items-center gap-2 border-b border-gray-700">
-              <Code2 className="w-5 h-5 text-green-400" />
-              <span className="text-white font-semibold">Code Editor</span>
-              <span className="ml-auto text-gray-400 text-sm">
+          <div className="bg-gray-900 rounded-xl md:rounded-2xl overflow-hidden shadow-2xl">
+            <div className="bg-gray-800 px-3 sm:px-4 md:px-6 py-2 md:py-3 flex items-center gap-2 border-b border-gray-700">
+              <Code2 className="w-4 h-4 md:w-5 md:h-5 text-green-400" />
+              <span className="text-white font-semibold text-xs sm:text-sm md:text-base">Code Editor</span>
+              <span className="ml-auto text-gray-400 text-xs sm:text-sm">
                 {code.split('\n').length} lines
               </span>
             </div>
             <textarea
               value={code}
               onChange={(e) => setCode(e.target.value)}
-              className="w-full h-[600px] bg-gray-900 text-green-400 font-mono text-sm p-6 focus:outline-none resize-none"
+              className="w-full h-64 sm:h-96 md:h-[500px] lg:h-[600px] bg-gray-900 text-green-400 font-mono text-xs sm:text-sm p-3 sm:p-4 md:p-6 focus:outline-none resize-none"
               spellCheck={false}
               placeholder={`Write your ${language.name} code here...`}
             />
           </div>
 
           {/* Output Panel */}
-          <div className="bg-gray-900 rounded-2xl overflow-hidden shadow-2xl">
-            <div className="bg-gray-800 px-6 py-3 flex items-center gap-2 border-b border-gray-700">
-              <Terminal className="w-5 h-5 text-yellow-400" />
-              <span className="text-white font-semibold">Output</span>
+          <div className="bg-gray-900 rounded-xl md:rounded-2xl overflow-hidden shadow-2xl">
+            <div className="bg-gray-800 px-3 sm:px-4 md:px-6 py-2 md:py-3 flex items-center gap-2 border-b border-gray-700">
+              <Terminal className="w-4 h-4 md:w-5 md:h-5 text-yellow-400" />
+              <span className="text-white font-semibold text-xs sm:text-sm md:text-base">Output</span>
               {isRunning && (
-                <span className="ml-auto text-yellow-400 text-sm animate-pulse">
+                <span className="ml-auto text-yellow-400 text-xs sm:text-sm animate-pulse">
                   Executing...
                 </span>
               )}
             </div>
-            <div className="w-full h-[600px] bg-gray-900 text-gray-300 font-mono text-sm p-6 overflow-auto whitespace-pre-wrap">
+            <div className="w-full h-64 sm:h-96 md:h-[500px] lg:h-[600px] bg-gray-900 text-gray-300 font-mono text-xs sm:text-sm p-3 sm:p-4 md:p-6 overflow-auto whitespace-pre-wrap">
               {output || '// Click "Run Code" to see the output here...'}
             </div>
           </div>
@@ -446,24 +447,24 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="mt-6 bg-white/10 backdrop-blur-lg rounded-2xl p-6"
+          className="mt-4 md:mt-6 bg-white/10 backdrop-blur-lg rounded-xl md:rounded-2xl p-4 md:p-6"
         >
-          <div className="grid md:grid-cols-3 gap-6 text-white">
+          <div className="grid md:grid-cols-3 gap-4 md:gap-6 text-white">
             <div>
-              <h3 className="font-bold text-lg mb-2">🎯 Experiment Freely</h3>
-              <p className="text-white/80 text-sm">
+              <h3 className="font-bold text-sm sm:text-base md:text-lg mb-2">🎯 Experiment Freely</h3>
+              <p className="text-white/80 text-xs sm:text-sm">
                 Try different {language.name} syntax and see instant results. No setup required!
               </p>
             </div>
             <div>
-              <h3 className="font-bold text-lg mb-2">💾 Save Your Work</h3>
-              <p className="text-white/80 text-sm">
+              <h3 className="font-bold text-sm sm:text-base md:text-lg mb-2">💾 Save Your Work</h3>
+              <p className="text-white/80 text-xs sm:text-sm">
                 Save your code to browser storage or download it to your computer.
               </p>
             </div>
             <div>
-              <h3 className="font-bold text-lg mb-2">⭐ Earn XP</h3>
-              <p className="text-white/80 text-sm">
+              <h3 className="font-bold text-sm sm:text-base md:text-lg mb-2">⭐ Earn XP</h3>
+              <p className="text-white/80 text-xs sm:text-sm">
                 Every time you run code, you earn {XP_REWARDS.SANDBOX_EXECUTE} XP. Keep experimenting!
               </p>
             </div>

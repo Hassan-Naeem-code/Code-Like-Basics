@@ -318,23 +318,23 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
         >
           <div className="bg-white/95 backdrop-blur-lg rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl mb-4 md:mb-6">
             {/* Topic Badge */}
-            <div className="flex items-center justify-between mb-6">
-              <div className="bg-purple-100 px-4 py-2 rounded-full">
-                <span className="text-purple-700 font-semibold text-sm">📚 {question.topic}</span>
+            <div className="flex items-center justify-between mb-4 md:mb-6 flex-wrap gap-2">
+              <div className="bg-purple-100 px-3 md:px-4 py-1.5 md:py-2 rounded-full">
+                <span className="text-purple-700 font-semibold text-xs sm:text-sm">📚 {question.topic}</span>
               </div>
               {completedLevels.includes(currentLevel) && (
-                <div className="bg-green-500 text-white px-4 py-2 rounded-full flex items-center gap-2">
-                  <Check className="w-4 h-4" />
-                  <span className="text-sm font-bold">Completed</span>
+                <div className="bg-green-500 text-white px-3 md:px-4 py-1.5 md:py-2 rounded-full flex items-center gap-1.5 md:gap-2">
+                  <Check className="w-3 h-3 md:w-4 md:h-4" />
+                  <span className="text-xs sm:text-sm font-bold">Completed</span>
                 </div>
               )}
             </div>
 
-            <h2 className="text-3xl font-bold text-gray-800 mb-8">
+            <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 mb-4 md:mb-8">
               {question.question}
             </h2>
 
-            <div className="space-y-4">
+            <div className="space-y-2 sm:space-y-3 md:space-y-4">
               {question.options.map((option, index) => (
                 <motion.button
                   key={index}
@@ -342,7 +342,7 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
                   disabled={selectedAnswer !== null}
                   whileHover={selectedAnswer === null ? { scale: 1.02, x: 5 } : {}}
                   whileTap={selectedAnswer === null ? { scale: 0.98 } : {}}
-                  className={`w-full p-6 rounded-2xl font-semibold text-left transition-all ${
+                  className={`w-full p-3 sm:p-4 md:p-6 rounded-xl md:rounded-2xl font-semibold text-left transition-all text-sm sm:text-base ${
                     selectedAnswer === null
                       ? 'bg-gray-100 hover:bg-gray-200 text-gray-800'
                       : selectedAnswer === index
@@ -354,11 +354,11 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
                       : 'bg-gray-100 text-gray-800 opacity-50'
                   }`}
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-bold">
+                  <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
+                    <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full bg-white/20 flex items-center justify-center font-bold text-sm sm:text-base">
                       {String.fromCharCode(65 + index)}
                     </div>
-                    {option}
+                    <span className="flex-1">{option}</span>
                   </div>
                 </motion.button>
               ))}
@@ -372,25 +372,25 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className={`max-w-4xl mx-auto rounded-3xl p-6 ${
+                className={`max-w-4xl mx-auto rounded-2xl md:rounded-3xl p-4 sm:p-5 md:p-6 ${
                   isCorrect
                     ? 'bg-green-500/20 border-2 border-green-500'
                     : 'bg-red-500/20 border-2 border-red-500'
                 }`}
               >
-                <h3 className="text-2xl font-bold text-white mb-2">
+                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-2">
                   {isCorrect ? '✅ Correct! Great job!' : '❌ Not quite right'}
                 </h3>
-                <p className="text-white/90 text-lg mb-4">{question.explanation}</p>
+                <p className="text-white/90 text-sm sm:text-base md:text-lg mb-3 md:mb-4">{question.explanation}</p>
                 {isCorrect && !completedLevels.includes(currentLevel) && (
-                  <p className="text-white font-semibold">
+                  <p className="text-white font-semibold text-sm sm:text-base">
                     +20 XP Earned!
                   </p>
                 )}
                 <button
                   onClick={handleNext}
                   disabled={currentLevel >= totalLevels - 1}
-                  className="mt-4 bg-white text-gray-800 px-8 py-3 rounded-xl font-bold hover:shadow-xl transition-all disabled:opacity-50"
+                  className="mt-3 md:mt-4 bg-white text-gray-800 px-4 sm:px-6 md:px-8 py-2 sm:py-2.5 md:py-3 rounded-xl font-bold hover:shadow-xl transition-all disabled:opacity-50 text-sm sm:text-base"
                 >
                   {currentLevel < totalLevels - 1 ? 'Next Level' : 'Completed!'}
                 </button>
@@ -404,27 +404,27 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
           >
-            <div className="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-3xl p-12 text-center shadow-2xl max-w-md mx-4">
+            <div className="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl md:rounded-3xl p-6 sm:p-8 md:p-10 lg:p-12 text-center shadow-2xl max-w-md mx-4">
               <motion.div
                 animate={{ rotate: 360, scale: [1, 1.2, 1] }}
                 transition={{ duration: 1, repeat: 3 }}
               >
-                <Trophy className="w-24 h-24 mx-auto text-white mb-6" />
+                <Trophy className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 mx-auto text-white mb-4 sm:mb-5 md:mb-6" />
               </motion.div>
-              <h2 className="text-5xl font-bold text-white mb-4">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 md:mb-4">
                 🎉 Amazing!
               </h2>
-              <p className="text-2xl text-white/90 mb-4">
+              <p className="text-lg sm:text-xl md:text-2xl text-white/90 mb-3 md:mb-4">
                 You completed all {totalLevels} levels of {language.name} at {getDifficultyLabel()}!
               </p>
-              <p className="text-xl text-white/80 mb-6">
+              <p className="text-base sm:text-lg md:text-xl text-white/80 mb-4 sm:mb-5 md:mb-6">
                 +300 XP Bonus!
               </p>
               <button
                 onClick={() => router.push(`/module/${moduleId}`)}
-                className="bg-white text-orange-600 px-8 py-4 rounded-xl font-bold hover:shadow-xl transition-all"
+                className="bg-white text-orange-600 px-5 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 rounded-xl font-bold hover:shadow-xl transition-all text-sm sm:text-base"
               >
                 Back to Module
               </button>
