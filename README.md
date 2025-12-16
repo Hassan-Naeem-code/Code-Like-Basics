@@ -1,6 +1,6 @@
 # 🎄 **CodeLikeBasics** - Interactive Learning Platform
 
-> An interactive, festive learning platform where beginners master technology through **three engaging paths**: tutorials, games, and sandboxes. Learn at your own pace, earn XP, and unlock achievements—all starting from the basics.
+> An interactive, gamified learning platform where beginners master programming and technology through engaging tutorials, quiz games, and hands-on coding sandboxes. Progress through multiple difficulty levels, earn XP, unlock achievements, and receive certificates.
 
 <div align="center">
 
@@ -10,7 +10,7 @@
 ![License](https://img.shields.io/badge/License-MIT-green)
 ![React](https://img.shields.io/badge/React-18-61dafb)
 
-[🚀 Deploy](#-deployment) • [📖 Docs](#-project-structure) • [🤝 Contribute](#-contributing) • [📄 License](#-license)
+[🚀 Quick Start](#-quick-start) • [📖 Features](#-key-features) • [💻 Tech Stack](#-tech-stack) • [📁 Structure](#-project-structure)
 
 </div>
 
@@ -18,36 +18,54 @@
 
 ## ✨ Key Features
 
-### 🎓 **Three Learning Paths**
+### 🎓 **Three Learning Paths Per Topic**
 
-| Path | Description | Best For |
-|------|-------------|----------|
-| 📖 **Tutorials** | Animated, interactive lessons with diagrams | Understanding concepts |
-| 🎮 **Games** | Engaging drag-and-drop challenges | Active, gamified learning |
-| 🛠️ **Sandboxes** | Hands-on code experimentation | Practical application |
+| Path | Description | Certification |
+|------|-------------|---------------|
+| 📖 **Tutorials** | Interactive animated lessons with quizzes | Complete all lessons |
+| 🎮 **Quiz Games** | Multiple-choice questions across difficulty levels | Score 75%+ to earn certificate |
+| 💻 **Code Sandboxes** | Live code editor with exercises | Complete 75%+ exercises correctly |
 
-### 🎯 **7 Tech Domains**
+### 🏆 **Certificate System**
+
+- Complete tutorial lessons to unlock certificate
+- Pass quiz games with **75% or higher** final score
+- Submit sandbox exercises and achieve **75% accuracy**
+- Certificates display your name and completion date
+- Download and share your achievements
+
+### 📚 **9 Technology Modules with 43+ Languages**
 
 ```
-💻 Software Development    🌐 Web Development         📱 Mobile App Dev
-🤖 AI & Machine Learning   📊 Data Science            🎨 Graphics Design
-📝 Content Creation
+🌐 Web Development        📱 Mobile App Development    📊 Data Science
+🤖 AI & Machine Learning  🎮 Game Development          🔧 Backend Development
+🔐 DevOps & Cloud         🛡️ Cybersecurity            ⛓️ Blockchain & Database
 ```
 
-### 🎁 **Gamification System**
+**All languages include:**
+- Easy, Medium, Hard difficulty levels
+- 8 exercises per difficulty level  
+- Progressive learning path
+- Real-time code output simulation
+- XP rewards for completion
 
-- ⭐ **XP Rewards** — Earn experience for every activity
-- 📈 **Level Progression** — Unlock new content as you advance
-- 🏆 **12+ Achievements** — Unlock exclusive badges
-- 🔥 **Streak Tracking** — Build daily learning habits
-- 📊 **Progress Dashboard** — Real-time analytics
+### 🎯 **Gamification System**
 
-### 🎅 **Festive Experience**
+- ⭐ **XP Rewards** — Earn points for tutorials, games, and sandbox exercises
+- 📈 **Progress Tracking** — Visual progress glass fills as you learn
+- 🏆 **Achievements** — 12+ badges including First Steps, Speed Demon, Night Owl, and more
+- 🔥 **Streak System** — Build daily learning habits
+- 📊 **Real-time Dashboard** — Track XP, achievements, and completion status
+- 🎯 **User Profiles** — Personalized learning experience with session management
 
-- ❄️ Animated falling snow
-- 🎅 Interactive Santa character
-- 🎄 Holiday-themed UI with smooth animations
-- ✨ Polished user experience
+### 🎄 **Festive Themed UI**
+
+- ❄️ Animated falling snow effects
+- 🎅 Interactive Santa character with cart animation
+- 🎵 Background music player (Christmas Carol)
+- 🔊 Toggle sound effects
+- ✨ Smooth animations with Framer Motion
+- 🎨 Beautiful gradient designs
 
 ---
 
@@ -93,14 +111,15 @@ npm run type-check   # TypeScript type checking
 
 | Category | Technologies |
 |----------|---------------|
-| **Frontend** | Next.js 15, React 18, TypeScript |
-| **Styling** | Tailwind CSS, CSS Modules |
-| **Animations** | Framer Motion, GSAP |
-| **Interactions** | dnd-kit (Drag & Drop) |
-| **State** | Zustand |
-| **Visualization** | Recharts |
-| **Icons** | Lucide React |
-| **Storage** | localStorage |
+| **Framework** | Next.js 15.5.9 (App Router) |
+| **Frontend** | React 18.3, TypeScript 5.3 |
+| **Styling** | Tailwind CSS 3.4, CSS Modules |
+| **Animations** | Framer Motion 11.15, canvas-confetti |
+| **State Management** | Zustand 5.0 |
+| **Database** | Firebase 11.1 (Firestore, Auth) |
+| **Icons** | Lucide React 0.468 |
+| **Code Editor** | react-simple-code-editor 0.14 |
+| **Audio** | HTML5 Audio API |
 | **Deployment** | Vercel |
 
 ---
@@ -109,161 +128,266 @@ npm run type-check   # TypeScript type checking
 
 ```
 codelikebasics/
-├── app/                      # Next.js App Router
-│   ├── page.tsx             # Home page
-│   ├── dashboard/           # Learning dashboard
-│   ├── tutorial/[id]/       # Tutorial pages
-│   ├── game/[id]/           # Game pages
-│   ├── sandbox/[id]/        # Sandbox pages
-│   └── achievements/        # Achievements page
+├── app/                      # Next.js 15 App Router
+│   ├── page.tsx             # Onboarding (new/returning user)
+│   ├── dashboard/           # Main learning dashboard
+│   ├── tutorial/[tutorialId]/ # Interactive tutorials
+│   ├── game/[gameId]/       # Quiz games
+│   ├── sandbox/[sandboxId]/ # Code sandboxes
+│   ├── module/[moduleId]/   # Language selection
+│   ├── achievements/        # Achievements page
+│   └── progress/            # Progress tracking page
 │
-├── components/              # React components
-│   ├── Layout/             # Layout (Navbar, Santa, Snow)
-│   ├── Tutorials/          # Tutorial UI
-│   ├── Games/              # Game UI
-│   ├── Sandbox/            # Sandbox UI
-│   ├── Progress/           # Progress tracking
-│   ├── Common/             # Shared components
-│   └── Music/              # Audio components
+├── components/
+│   ├── Layout/             # Navbar, Santa, FallingSnow, HolidayBanner
+│   ├── Tutorials/          # TutorialPlayer, InteractiveTutorial, QuizComponent
+│   ├── Games/              # UniversalGame, GameHUD, GameContainer
+│   ├── Sandbox/            # UniversalSandbox, SandboxContainer
+│   ├── Dashboard/          # ModuleCard, LanguageCard
+│   ├── Progress/           # ProgressGlass, SantaDrinkingAnimation
+│   ├── Common/             # Certificate, AchievementNotification, SoundToggle
+│   ├── Onboarding/         # WelcomeScreen, NewUserForm, ReturningUserForm
+│   └── Music/              # MusicPlayer
 │
-├── games/                  # Game implementations
-│   ├── SoftwareDev/
-│   ├── WebDev/
-│   ├── MobileApp/
-│   ├── AIML/
-│   ├── DataScience/
-│   ├── GraphicsDesign/
-│   └── ContentCreation/
+├── games/
+│   ├── SoftwareDev/        # CodeBlockGame
+│   ├── WebDev/             # HTMLBuilderGame
+│   ├── MobileApp/          # UserFlowGame
+│   ├── AIML/               # NeuralNetworkGame
+│   ├── DataScience/        # DataPipelineGame
+│   ├── GraphicsDesign/     # DesignMatcherGame
+│   └── ContentCreation/    # ContentMixerGame
 │
-├── tutorials/              # Tutorial content modules
+├── tutorials/              # Tutorial content for all 7 topics
+│   ├── softwareDev.tsx
+│   ├── webDev.tsx
+│   ├── mobileAppDev.tsx
+│   ├── aiMachineLearning.tsx
+│   ├── dataScience.tsx
+│   ├── graphicsDesign.tsx
+│   └── contentCreation.tsx
+│
 ├── stores/                 # Zustand state management
-├── utils/                  # Utility functions
-├── hooks/                  # Custom React hooks
-├── styles/                 # Global styles
-└── public/                 # Static assets
+│   ├── userStore.ts        # User profile & session
+│   ├── gameStore.ts        # Game state
+│   └── tutorialStore.ts    # Tutorial progress
+│
+├── utils/
+│   ├── techModules.ts      # 9 modules with 43+ languages
+│   ├── topicConfig.ts      # 7 main topic configurations
+│   ├── achievementManager.ts # Achievement system
+│   ├── soundManager.ts     # Sound effects
+│   ├── storage.ts          # localStorage utilities
+│   ├── security.ts         # Session security
+│   └── tutorialContent.ts  # Tutorial generators
+│
+├── hooks/
+│   └── useXP.ts            # XP rewards system
+│
+├── lib/
+│   ├── firebase.ts         # Firebase config
+│   └── firebaseService.ts  # Firestore operations
+│
+├── public/
+│   ├── music/              # Background music (christmas-carol.mp3)
+│   └── a/                  # Audio assets
+│
+└── styles/
+    └── globals.css         # Global styles & Tailwind
 ```
 
 ---
 
 ## 🎮 **Usage**
 
-### For Users
+### For Learners
 
-1. **Select a Topic** — Choose from 7 tech domains
-2. **Pick Your Path** — Tutorial, Game, or Sandbox
-3. **Learn & Play** — Engage with interactive content
-4. **Earn XP** — Complete activities for experience points
-5. **Track Progress** — Monitor your learning journey on the dashboard
-6. **Unlock Achievements** — Complete challenges for badges
+1. **First Visit**
+   - Choose "New User" or "Returning User"
+   - Enter your name and select drink preference
+   - Get unique session code (save it to track progress)
 
-### For Developers
+2. **Dashboard**
+   - View 9 technology modules with 43+ languages
+   - See XP, achievements, and progress glass
+   - Track learning streak
 
-#### Adding a New Game
+3. **Learning Paths**
+   - **Tutorials**: Complete animated lessons with embedded quizzes
+   - **Quiz Games**: Answer questions across Easy/Medium/Hard levels
+   - **Code Sandboxes**: Write code, submit exercises, get instant feedback
 
-1. Create a new game component in `games/YourTopic/YourGame.tsx`
-2. Register in `utils/techModules.ts`
-3. Create game page at `app/game/[gameId]/page.tsx`
+4. **Certification**
+   - **Tutorials**: Complete all lessons
+   - **Quiz Games**: Score 75%+ across all questions to earn certificate
+   - **Sandboxes**: Submit all exercises, score 75%+ correct answers
 
-#### Adding a Tutorial
-
-1. Create tutorial content in `tutorials/yourTopic.tsx`
-2. Register in `utils/topicConfig.ts`
-3. Link from dashboard
-
-#### Customizing Topics
-
-Edit `utils/topicConfig.ts` to add new tech domains.
+5. **Progress Tracking**
+   - Earn XP for every activity
+   - Fill Santa's progress glass
+   - Unlock achievements (12+ available)
+   - Build daily learning streaks
 
 ---
 
-## 🔧 **Configuration**
+## 📊 **Available Content**
 
-### Key Files
+### 7 Main Topics (Classic Learning Path)
+
+| Topic | Tutorial | Quiz Game | Sandbox |
+|-------|----------|-----------|---------|
+| 💻 Software Development | ✅ 8 Lessons | ✅ Code Block Game | ✅ Code Simulator |
+| 🌐 Web Development | ✅ 8 Lessons | ✅ HTML Builder Game | ✅ Web Builder |
+| 📱 Mobile App Development | ✅ 8 Lessons | ✅ User Flow Game | ✅ App Designer |
+| 🤖 AI & Machine Learning | ✅ 8 Lessons | ✅ Neural Network Game | ✅ AI Playground |
+| 📊 Data Science | ✅ 8 Lessons | ✅ Data Pipeline Game | ✅ Data Lab |
+| 🎨 Graphics Design | ✅ 8 Lessons | ✅ Design Matcher Game | ✅ Design Studio |
+| 📝 Content Creation | ✅ 8 Lessons | ✅ Content Mixer Game | ✅ Content Planner |
+
+### 9 Technology Modules (43+ Languages)
+
+**Each language includes:**
+- 3 difficulty levels (Easy, Medium, Hard)
+- 8 exercises per level = 24 total exercises
+- Live code editor with syntax highlighting
+- Smart output simulation for each language
+- Progress tracking and Firebase sync
+
+| Module | Languages |
+|--------|-----------|
+| 🌐 **Web Development** | HTML, CSS, JavaScript, React, TypeScript, Next.js (6) |
+| 📱 **Mobile Development** | React Native, Flutter, Swift, Kotlin (4) |
+| 📊 **Data Science** | Python, R, SQL, Pandas (4) |
+| 🤖 **AI & ML** | Python ML, TensorFlow, PyTorch, Scikit-learn (4) |
+| 🎮 **Game Development** | Unity C#, Unreal, Godot, JavaScript Games (4) |
+| 🔧 **Backend Development** | Node.js, Python, Java, Go, Rust (5) |
+| ☁️ **DevOps & Cloud** | Docker, Kubernetes, AWS, Terraform, GitHub Actions (5) |
+| 🛡️ **Cybersecurity** | Penetration Testing, Network Security, Cryptography, Security Tools (4) |
+| ⛓️ **Blockchain & Database** | Solidity, Web3.js, Ethereum, PostgreSQL, MongoDB, Redis, Firebase (7) |
+
+**Total:** 43+ Programming Languages & Technologies
+
+---
+
+## � **Configuration**
+
+### Key Configuration Files
 
 | File | Purpose |
 |------|---------|
-| `utils/topicConfig.ts` | Topics & modules |
-| `utils/achievementManager.ts` | Badge system |
-| `tailwind.config.ts` | Theme colors |
-| `next.config.js` | Next.js settings |
-| `tsconfig.json` | TypeScript config |
+| `utils/topicConfig.ts` | 7 main topics with game/tutorial/sandbox IDs |
+| `utils/techModules.ts` | 9 modules with 43+ language definitions |
+| `utils/achievementManager.ts` | 12+ achievement badges and triggers |
+| `lib/firebase.ts` | Firebase configuration |
+| `tailwind.config.ts` | Theme colors and design system |
+| `next.config.js` | Next.js 15 configuration |
+| `tsconfig.json` | TypeScript strict mode settings |
+
+### Environment Variables
+
+Create `.env.local`:
+
+```env
+# Firebase Configuration (Required)
+NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_auth_domain
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+```
 
 ---
 
-## 📊 **Content Status**
+## 🎯 **Features in Detail**
 
-All 7 domains include tutorials, games, and sandboxes in the MVP.
+### XP Reward System
 
-| Domain | Tutorials | Games | Sandboxes |
-|--------|-----------|-------|-----------|
-| Software Dev | ✅ Available | ✅ Available | ✅ Available |
-| Web Dev | ✅ Available | ✅ Available | ✅ Available |
-| Mobile App Dev | ✅ Available | ✅ Available | ✅ Available |
-| AI & ML | ✅ Available | ✅ Available | ✅ Available |
-| Data Science | ✅ Available | ✅ Available | ✅ Available |
-| Graphics Design | ✅ Available | ✅ Available | ✅ Available |
-| Content Creation | ✅ Available | ✅ Available | ✅ Available |
+| Activity | XP Earned |
+|----------|-----------|
+| Complete tutorial lesson | 50 XP |
+| Correct quiz answer | 20 XP |
+| Finish quiz game (75%+) | 300 XP bonus |
+| Execute sandbox code | 10 XP |
+| Complete sandbox exercise | 20 XP |
+| Finish sandbox (75%+) | 500 XP bonus |
 
----
+### Achievement System
 
-## 📱 **PWA & Install**
+12+ achievements including:
+- 🎯 First Steps (Complete first tutorial)
+- 🔥 On Fire (3-day streak)
+- ⚡ Speed Demon (Complete 3 tutorials in one day)
+- 🦉 Night Owl (Learn between 10 PM - 6 AM)
+- 🏆 Triple Threat (Complete tutorial + game + sandbox)
+- 🎓 Certified Learner (Earn first certificate)
+- And more...
 
-- Manifest at `public/manifest.json`
-- Service Worker at `public/service-worker.js` (network-first, offline fallback)
-- Automatic icons via `app/icon.png` and `app/apple-icon.png`
-- Install prompt available via `components/Common/InstallPrompt.tsx`
+### Progress Tracking
+
+- **Progress Glass**: Visual fill indicator based on total XP
+- **Firebase Sync**: All progress saved to Firestore
+- **Session Management**: Secure 8-character codes
+- **Real-time Updates**: Instant XP and achievement notifications
+- **Difficulty Progression**: Auto-unlock next difficulty levels
 
 ---
 
 ## 🚢 **Deployment**
 
-- Vercel: push to `main` to auto-deploy
+### Vercel (Recommended)
 
----
+1. Push to GitHub
+2. Connect repository to Vercel
+3. Add Firebase environment variables
+4. Deploy automatically on push to `main`
 
-## 📈 **Monitoring**
+### Manual Build
 
-- `@vercel/speed-insights/next` integrated for Core Web Vitals
+```bash
+npm run build    # Creates optimized production build
+npm start        # Runs production server on port 3000
+```
 
 ---
 
 ## 🤝 **Contributing**
 
-We love contributions! Here's how:
-
-### Areas for Help
-
-- 📖 Complete remaining tutorials (6 topics)
-- 🎮 Create new games (6 topics)
-- 🛠️ Build more sandboxes (6 topics)
-- 🎨 Design new themes
-- 🐛 Bug fixes
-- 📝 Documentation improvements
-- 🔊 Sound effects & music
+Contributions are welcome! Here's how:
 
 ### How to Contribute
 
 ```bash
 # 1. Fork the repository
 # 2. Create a feature branch
-git checkout -b feature/amazing-feature
+git checkout -b feature/your-feature-name
 
 # 3. Make your changes
 # 4. Commit with clear message
-git commit -m "feat: add amazing feature"
+git commit -m "feat: add your feature"
 
 # 5. Push to your fork
-git push origin feature/amazing-feature
+git push origin feature/your-feature-name
 
 # 6. Open a Pull Request
 ```
 
-### Contribution Guidelines
+### Areas for Improvement
 
-- Follow existing code style (ESLint enforced)
-- Add TypeScript types
-- Test your changes
-- Update documentation
+- 🎮 Add more quiz questions to games
+- 📝 Enhance tutorial content
+- 💻 Add more sandbox exercises
+- 🎨 Improve UI/UX design
+- 🐛 Bug fixes and optimizations
+- 📚 Documentation improvements
+- 🔊 Sound effects enhancements
+
+### Code Guidelines
+
+- Follow existing TypeScript patterns
+- Use ESLint and TypeScript strict mode
+- Test changes locally before submitting
+- Update README if adding new features
 
 ---
 
@@ -271,36 +395,29 @@ git push origin feature/amazing-feature
 
 | Browser | Version | Status |
 |---------|---------|--------|
-| Chrome/Edge | 90+ | ✅ Supported |
-| Firefox | 88+ | ✅ Supported |
-| Safari | 14+ | ✅ Supported |
-| Mobile Safari | 14+ | ✅ Supported |
-| Chrome Mobile | Latest | ✅ Supported |
-
----
-
-## 🎨 **Design Philosophy**
-
-- **Beautiful First** — Stunning visuals & smooth animations
-- **Engaging Always** — Multiple learning styles for everyone
-- **No Barriers** — 100% free, no sign-up required
-- **Accessible** — WCAG 2.1 AA compliant
-- **Fast** — Optimized for Lighthouse 85+
+| Chrome | 90+ | ✅ Fully Supported |
+| Edge | 90+ | ✅ Fully Supported |
+| Firefox | 88+ | ✅ Fully Supported |
+| Safari | 14+ | ✅ Fully Supported |
+| Mobile Safari | 14+ | ✅ Fully Supported |
+| Chrome Mobile | Latest | ✅ Fully Supported |
 
 ---
 
 ## 📄 **License**
 
-MIT License © 2025 CodeLikeBasics Contributors
+MIT License © 2025 CodeLikeBasics
 
-Feel free to use this for your own projects!
+Permission is hereby granted, free of charge, to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software.
 
 ---
 
 <div align="center">
 
-**Made with 🎄 for beginners learning the basics!**
+**🎄 Made with love for beginners learning to code! 🎄**
 
-[🌐 Visit CodeLikeBasics](https://code-like-basics.vercel.app) • [⭐ Star on GitHub](#) • [🐛 Report Issues](#)
+[🌐 Live Demo](https://code-like-basics.vercel.app) • [⭐ Star on GitHub](https://github.com/yourusername/codelikebasics) • [🐛 Report Issues](https://github.com/yourusername/codelikebasics/issues)
+
+**Happy Learning! 🚀**
 
 </div>
