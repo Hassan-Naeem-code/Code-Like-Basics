@@ -99,12 +99,12 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      <div className="container mx-auto px-4 py-8 relative z-10">
+      <div className="container mx-auto px-3 md:px-4 py-6 md:py-8 relative z-10">
         {/* Top Bar with User Stats */}
         <motion.div
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8 md:mb-12"
+          className="mb-6 md:mb-10"
         >
           <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-4 md:p-6 border border-white/20 max-w-4xl mx-auto">
             <motion.h1
@@ -156,7 +156,7 @@ export default function DashboardPage() {
         </motion.div>
 
         {/* Modules Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 lg:gap-8 max-w-7xl mx-auto px-2">
           {TECHNOLOGY_MODULES.map((module, index) => (
             <ModuleCard
               key={module.id}

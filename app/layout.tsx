@@ -86,8 +86,8 @@ export default function RootLayout({
   }
 
   return (
-    <html lang="en">
-      <body suppressHydrationWarning className={inter.className}>
+    <html lang="en" className="w-full">
+      <body suppressHydrationWarning className={`${inter.className} w-full min-w-full`}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

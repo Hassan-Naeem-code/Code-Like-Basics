@@ -1,10 +1,11 @@
 'use client'
 
-import { use } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { use, useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { generateComprehensiveTutorial } from '@/utils/comprehensiveTutorialContent'
 import { getLanguageByModuleAndId } from '@/utils/techModules'
 import InteractiveTutorial from '@/components/Tutorials/InteractiveTutorial'
+import { validateSession } from '@/utils/sessionManager'
 
 export default function TutorialPage({
   params,
@@ -12,11 +13,17 @@ export default function TutorialPage({
   params: Promise<{ tutorialId: string }>
 }) {
   const router = useRouter()
-  const searchParams = useSearchParams()
   const { tutorialId } = use(params)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
 
-  // Get difficulty from URL parameter
-  const difficulty = (searchParams.get('difficulty') as 'easy' | 'medium' | 'hard') || 'easy'
+  // Validate session before showing page
+  useEffect(() => {
+    const userCode = validateSession(() => router.push('/'))
+    if (!userCode) {
+      return
+    }
+    setIsAuthenticated(true)
+  }, [router])
 
   // Parse moduleId-languageId format
   const knownModules = [
@@ -94,8 +101,16 @@ export default function TutorialPage({
   const enhancedTutorial = {
     ...tutorial,
     languageId,
-    languageName: language.name,
-    difficulty
+    languageName: language.name
+  }
+
+  // Show loading while checking authentication
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+        <div className="text-white text-2xl">Loading...</div>
+      </div>
+    )
   }
 
   return (
@@ -104,7 +119,6 @@ export default function TutorialPage({
       language={language}
       moduleId={moduleId}
       languageId={languageId}
-      difficulty={difficulty}
     />
   )
 }

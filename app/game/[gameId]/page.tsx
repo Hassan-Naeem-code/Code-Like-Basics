@@ -1,9 +1,10 @@
 'use client'
 
-import { use } from 'react'
+import { use, useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { getLanguageByModuleAndId } from '@/utils/techModules'
 import UniversalGame from '@/components/Games/UniversalGame'
+import { validateSession } from '@/utils/sessionManager'
 
 export default function GamePage({
   params,
@@ -13,6 +14,16 @@ export default function GamePage({
   const router = useRouter()
   const searchParams = useSearchParams()
   const { gameId } = use(params)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+
+  // Validate session before showing page
+  useEffect(() => {
+    const userCode = validateSession(() => router.push('/'))
+    if (!userCode) {
+      return
+    }
+    setIsAuthenticated(true)
+  }, [router])
 
   // Get difficulty from URL parameter
   const difficulty = (searchParams.get('difficulty') as 'easy' | 'medium' | 'hard') || 'easy'
@@ -77,6 +88,15 @@ export default function GamePage({
             Back to Dashboard
           </button>
         </div>
+      </div>
+    )
+  }
+
+  // Show loading while checking authentication
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+        <div className="text-white text-2xl">Loading...</div>
       </div>
     )
   }

@@ -192,15 +192,38 @@ Edit `utils/topicConfig.ts` to add new tech domains.
 
 ## 📊 **Content Status**
 
+All 7 domains include tutorials, games, and sandboxes in the MVP.
+
 | Domain | Tutorials | Games | Sandboxes |
 |--------|-----------|-------|-----------|
-| Software Dev | ✅ Complete | ✅ Complete | ✅ Complete |
-| Web Dev | 🚧 In Progress | 🚧 In Progress | 🚧 In Progress |
-| Mobile Dev | ⏳ Planned | ⏳ Planned | ⏳ Planned |
-| AI & ML | ⏳ Planned | ⏳ Planned | ⏳ Planned |
-| Data Science | ⏳ Planned | ⏳ Planned | ⏳ Planned |
-| Graphics Design | ⏳ Planned | ⏳ Planned | ⏳ Planned |
-| Content Creation | ⏳ Planned | ⏳ Planned | ⏳ Planned |
+| Software Dev | ✅ Available | ✅ Available | ✅ Available |
+| Web Dev | ✅ Available | ✅ Available | ✅ Available |
+| Mobile App Dev | ✅ Available | ✅ Available | ✅ Available |
+| AI & ML | ✅ Available | ✅ Available | ✅ Available |
+| Data Science | ✅ Available | ✅ Available | ✅ Available |
+| Graphics Design | ✅ Available | ✅ Available | ✅ Available |
+| Content Creation | ✅ Available | ✅ Available | ✅ Available |
+
+---
+
+## 📱 **PWA & Install**
+
+- Manifest at `public/manifest.json`
+- Service Worker at `public/service-worker.js` (network-first, offline fallback)
+- Automatic icons via `app/icon.png` and `app/apple-icon.png`
+- Install prompt available via `components/Common/InstallPrompt.tsx`
+
+---
+
+## 🚢 **Deployment**
+
+- Vercel: push to `main` to auto-deploy
+
+---
+
+## 📈 **Monitoring**
+
+- `@vercel/speed-insights/next` integrated for Core Web Vitals
 
 ---
 
@@ -268,7 +291,7 @@ git push origin feature/amazing-feature
 
 ## 📄 **License**
 
-MIT License © 2024 CodeLikeBasics Contributors
+MIT License © 2025 CodeLikeBasics Contributors
 
 Feel free to use this for your own projects!
 
@@ -278,6 +301,6 @@ Feel free to use this for your own projects!
 
 **Made with 🎄 for beginners learning the basics!**
 
-[🌐 Visit CodeLikeBasics](#) • [⭐ Star on GitHub](#) • [🐛 Report Issues](#)
+[🌐 Visit CodeLikeBasics](https://code-like-basics.vercel.app) • [⭐ Star on GitHub](#) • [🐛 Report Issues](#)
 
 </div>

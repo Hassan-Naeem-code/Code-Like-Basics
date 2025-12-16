@@ -32,8 +32,8 @@ function generateChecksum(userCode: string, timestamp: number): string {
  * Validate user code format
  */
 function isValidUserCode(code: string): boolean {
-  // User codes must be exactly 8 characters, lowercase alphanumeric
-  return /^[a-z0-9]{8}$/.test(code)
+  // User codes must be in format: XXXX-XXXX (uppercase alphanumeric with hyphen)
+  return /^[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(code)
 }
 
 /**

@@ -33,7 +33,7 @@ type Props = {
 
 export default function ClientShell({ children }: Props) {
   return (
-    <>
+    <div className="w-full min-w-full overflow-x-hidden">
       {/* Visual effects with isolated error boundaries */}
       <ErrorBoundary
         fallbackTitle="Decorations Error"
@@ -74,8 +74,8 @@ export default function ClientShell({ children }: Props) {
 
       {/* Main content with comprehensive error boundary */}
       <ErrorBoundary>
-        <main className="relative z-10">{children}</main>
+        <main className="relative z-10 w-full">{children}</main>
       </ErrorBoundary>
-    </>
+    </div>
   );
 }
