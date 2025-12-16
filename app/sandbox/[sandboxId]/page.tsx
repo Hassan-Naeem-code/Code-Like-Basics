@@ -1,9 +1,10 @@
 'use client'
 
-import { use } from 'react'
+import { use, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { getLanguageByModuleAndId } from '@/utils/techModules'
 import UniversalSandbox from '@/components/Sandbox/UniversalSandbox'
+import { validateSession } from '@/utils/sessionManager'
 
 export default function SandboxPage({
   params,
@@ -12,6 +13,16 @@ export default function SandboxPage({
 }) {
   const router = useRouter()
   const { sandboxId } = use(params)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+
+  // Validate session before showing page
+  useEffect(() => {
+    const userCode = validateSession(() => router.push('/'))
+    if (!userCode) {
+      return
+    }
+    setIsAuthenticated(true)
+  }, [router])
 
   // Parse moduleId-languageId format
   // We need to find where module ends and language begins
@@ -74,6 +85,15 @@ export default function SandboxPage({
             Back to Dashboard
           </button>
         </div>
+      </div>
+    )
+  }
+
+  // Show loading while checking authentication
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+        <div className="text-white text-2xl">Loading...</div>
       </div>
     )
   }

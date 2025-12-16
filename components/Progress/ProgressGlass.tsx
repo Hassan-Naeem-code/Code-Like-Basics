@@ -479,6 +479,12 @@ function CoffeeMug({ fillPercentage, colors }: { fillPercentage: number; colors:
 // Coke Glass Component with "Coke" Text
 type CokeGlassColors = { liquid: string; bubbles?: string; steam?: string }
 function CokeGlass({ fillPercentage, colors, showBubbles }: { fillPercentage: number; colors: CokeGlassColors; showBubbles: boolean }) {
+  // Normalize fill and ensure a tiny visible base so 1-5% still shows
+  const clampedFill = Math.min(100, Math.max(0, fillPercentage))
+  const effectiveHeight = 145
+  const liquidHeight = Math.max(2, (clampedFill / 100) * effectiveHeight)
+  const liquidY = 35 + (1 - clampedFill / 100) * effectiveHeight
+
   return (
     <div className="relative w-44 h-60">
       <svg viewBox="0 0 140 200" className="w-full h-full drop-shadow-2xl">
@@ -498,14 +504,12 @@ function CokeGlass({ fillPercentage, colors, showBubbles }: { fillPercentage: nu
         <g clipPath="url(#cokeClip)">
           <motion.rect
             x="42"
-            y="35"
+            y={liquidY}
             width="56"
-            height="145"
+            height={liquidHeight}
             fill="url(#cokeLiquid)"
-            initial={{ y: 180 }}
-            animate={{
-              y: 180 - (fillPercentage / 100) * 145,
-            }}
+            initial={{ height: 0, y: 180 }}
+            animate={{ height: liquidHeight, y: liquidY }}
             transition={{
               type: 'spring',
               stiffness: 70,
@@ -514,11 +518,11 @@ function CokeGlass({ fillPercentage, colors, showBubbles }: { fillPercentage: nu
           />
 
           {/* Ice Cubes floating in coke */}
-          {fillPercentage > 25 && (
+          {clampedFill > 25 && (
             <>
               <motion.rect
                 x="52"
-                y={Math.max(50, 180 - (fillPercentage / 100) * 145 + 25)}
+                y={Math.max(50, liquidY + liquidHeight * 0.25)}
                 width="14"
                 height="14"
                 rx="3"
@@ -527,8 +531,8 @@ function CokeGlass({ fillPercentage, colors, showBubbles }: { fillPercentage: nu
                 strokeWidth="1.5"
                 animate={{
                   y: [
-                    Math.max(50, 180 - (fillPercentage / 100) * 145 + 25),
-                    Math.max(50, 180 - (fillPercentage / 100) * 145 + 32),
+                    Math.max(50, liquidY + liquidHeight * 0.25),
+                    Math.max(50, liquidY + liquidHeight * 0.32),
                   ],
                 }}
                 transition={{
@@ -539,7 +543,7 @@ function CokeGlass({ fillPercentage, colors, showBubbles }: { fillPercentage: nu
               />
               <motion.rect
                 x="72"
-                y={Math.max(65, 180 - (fillPercentage / 100) * 145 + 40)}
+                y={Math.max(65, liquidY + liquidHeight * 0.4)}
                 width="12"
                 height="12"
                 rx="2"
@@ -548,8 +552,8 @@ function CokeGlass({ fillPercentage, colors, showBubbles }: { fillPercentage: nu
                 strokeWidth="1.5"
                 animate={{
                   y: [
-                    Math.max(65, 180 - (fillPercentage / 100) * 145 + 40),
-                    Math.max(65, 180 - (fillPercentage / 100) * 145 + 47),
+                    Math.max(65, liquidY + liquidHeight * 0.4),
+                    Math.max(65, liquidY + liquidHeight * 0.47),
                   ],
                 }}
                 transition={{
@@ -630,7 +634,7 @@ function CokeGlass({ fillPercentage, colors, showBubbles }: { fillPercentage: nu
 
       {/* Rising Bubbles for Coke */}
       <AnimatePresence>
-        {showBubbles && fillPercentage > 0 && (
+        {showBubbles && clampedFill > 0 && (
           <div className="absolute inset-0 pointer-events-none">
             {[...Array(18)].map((_, i) => (
               <motion.div
@@ -640,7 +644,7 @@ function CokeGlass({ fillPercentage, colors, showBubbles }: { fillPercentage: nu
                   width: Math.random() * 2 + 1.5 + 'px',
                   height: Math.random() * 2 + 1.5 + 'px',
                   left: `${35 + Math.random() * 32}%`,
-                  bottom: `${(fillPercentage / 100) * 75}%`,
+                  bottom: `${(clampedFill / 100) * 75}%`,
                 }}
                 initial={{ opacity: 0.9, scale: 1 }}
                 animate={{

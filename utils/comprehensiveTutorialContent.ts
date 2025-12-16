@@ -1,14 +1,12 @@
-// COMPREHENSIVE TUTORIAL CONTENT GENERATOR
-// Generates comprehensive tutorial sections teaching the ENTIRE language
-// Covers: Setup → Variables → Loops → Functions → Data Structures → OOP → Files → Projects
+// Clean, typed tutorial content generator
 
 export interface TutorialSection {
   id: string
   title: string
   content: string
-  syntax?: string
-  usage?: string
-  codeExample?: string
+  syntax: string
+  usage: string
+  codeExample: string
 }
 
 export interface Tutorial {
@@ -18,105 +16,56 @@ export interface Tutorial {
   sections: TutorialSection[]
 }
 
-// Language syntax templates for code generation
-const SYNTAX_TEMPLATES = {
-  // Variables
-  variable: {
-    javascript: 'let name = "value";',
-    typescript: 'let name: string = "value";',
-    python: 'name = "value"',
-    java: 'String name = "value";',
-    go: 'name := "value"',
-    rust: 'let name = "value";',
-    csharp: 'string name = "value";',
-    swift: 'let name = "value"',
-    kotlin: 'val name = "value"',
-  },
-  // Functions
-  function: {
-    javascript: 'function greet(name) { return `Hello, ${name}`; }',
-    typescript: 'function greet(name: string): string { return `Hello, ${name}`; }',
-    python: 'def greet(name):\n    return f"Hello, {name}"',
-    java: 'public String greet(String name) { return "Hello, " + name; }',
-    go: 'func greet(name string) string { return "Hello, " + name }',
-    rust: 'fn greet(name: &str) -> String { format!("Hello, {}", name) }',
-  },
-  // Loops
-  forLoop: {
-    javascript: 'for (let i = 0; i < 10; i++) { console.log(i); }',
-    python: 'for i in range(10):\n    print(i)',
-    java: 'for (int i = 0; i < 10; i++) { System.out.println(i); }',
-    go: 'for i := 0; i < 10; i++ { fmt.Println(i) }',
-  },
-  // Classes
-  class: {
-    javascript: 'class Person { constructor(name) { this.name = name; } }',
-    typescript: 'class Person { name: string; constructor(name: string) { this.name = name; } }',
-    python: 'class Person:\n    def __init__(self, name):\n        self.name = name',
-    java: 'public class Person { private String name; public Person(String name) { this.name = name; } }',
-  }
-}
-
-// Generate comprehensive tutorial for ANY language
+// Public API expected by app/tutorial/[tutorialId]/page.tsx
 export function generateComprehensiveTutorial(
   languageId: string,
   languageName: string,
   icon: string,
   description: string
 ): Tutorial {
-  // Detect language type
-  const languageType = detectLanguageType(languageId)
-
-  // Generate appropriate sections based on language type
-  const sections = generateSectionsForLanguageType(languageId, languageName, languageType)
+  const type = detectLanguageType(languageId)
+  const sections = generateSections(languageId, languageName, type)
 
   return {
     title: `Master ${languageName}`,
-    description: `Complete ${languageName} tutorial - from basics to building real projects`,
+    description: description || `Complete ${languageName} tutorial from basics to a mini project`,
     icon,
-    sections
+    sections,
   }
 }
 
-// Detect what type of language/technology this is
-function detectLanguageType(languageId: string): string {
-  if (['html'].includes(languageId)) return 'markup'
-  if (['css'].includes(languageId)) return 'styling'
-  if (['javascript', 'typescript'].includes(languageId)) return 'scripting'
-  if (['react', 'nextjs', 'vue'].includes(languageId)) return 'framework'
-  if (['react-native', 'flutter', 'swift', 'kotlin'].includes(languageId)) return 'mobile'
-  if (['python', 'java', 'go', 'rust', 'csharp'].includes(languageId)) return 'general'
-  if (['nodejs', 'python-backend', 'java-backend'].includes(languageId)) return 'backend'
-  if (['sql', 'postgresql', 'mongodb', 'redis', 'firebase-db'].includes(languageId)) return 'database'
-  if (['tensorflow', 'pytorch', 'scikit-learn', 'python-ml'].includes(languageId)) return 'ml'
-  if (['docker', 'kubernetes', 'terraform', 'aws', 'github-actions'].includes(languageId)) return 'devops'
-  if (['solidity', 'web3js', 'ethereum'].includes(languageId)) return 'blockchain'
+// --- Internal helpers ---
 
-  return 'general' // Default
+type LanguageType =
+  | 'markup'
+  | 'styling'
+  | 'scripting'
+  | 'framework'
+  | 'mobile'
+  | 'backend'
+  | 'database'
+  | 'ml'
+  | 'devops'
+  | 'blockchain'
+  | 'general'
+
+function detectLanguageType(languageId: string): LanguageType {
+  const id = languageId.toLowerCase()
+  if (/(html)/.test(id)) return 'markup'
+  if (/(css|tailwind)/.test(id)) return 'styling'
+  if (/(javascript|typescript|node)/.test(id)) return 'scripting'
+  if (/(react|next|vue|angular)/.test(id)) return 'framework'
+  if (/(react-native|flutter|swift|kotlin)/.test(id)) return 'mobile'
+  if (/(python-backend|nodejs|java-backend|go-backend|rust-backend)/.test(id)) return 'backend'
+  if (/(sql|postgres|postgresql|mongodb|redis|firebase-db|database)/.test(id)) return 'database'
+  if (/(tensorflow|pytorch|scikit|sklearn|python-ml|ai-ml|ml)/.test(id)) return 'ml'
+  if (/(docker|kubernetes|terraform|aws|github-actions|devops)/.test(id)) return 'devops'
+  if (/(solidity|web3|ethereum|blockchain)/.test(id)) return 'blockchain'
+  return 'general'
 }
 
-// Generate sections based on language type
-function generateSectionsForLanguageType(
-  languageId: string,
-  languageName: string,
-  languageType: string
-): TutorialSection[] {
-
-  switch (languageType) {
-    case 'markup':
-      return generateMarkupSections(languageName)
-    case 'styling':
-      return generateStylingSections(languageName)
-    case 'scripting':
-      return generateScriptingSections(languageId, languageName)
-    case 'framework':
-      return generateFrameworkSections(languageId, languageName)
-    case 'mobile':
-      return generateMobileSections(languageId, languageName)
-    case 'general':
-      return generateGeneralPurposeSections(languageId, languageName)
-    case 'backend':
-      return generateBackendSections(languageId, languageName)
+function generateSections(languageId: string, languageName: string, type: LanguageType): TutorialSection[] {
+  switch (type) {
     case 'database':
       return generateDatabaseSections(languageId, languageName)
     case 'ml':
@@ -125,243 +74,177 @@ function generateSectionsForLanguageType(
       return generateDevOpsSections(languageId, languageName)
     case 'blockchain':
       return generateBlockchainSections(languageId, languageName)
+    case 'framework':
+      return generateFrameworkSections(languageId, languageName)
+    case 'mobile':
+      return generateMobileSections(languageId, languageName)
+    case 'backend':
+      return generateBackendSections(languageId, languageName)
     default:
-      return generateGeneralPurposeSections(languageId, languageName)
+      return generateGeneralSections(languageName)
   }
 }
 
-// ============================================
-// MARKUP LANGUAGES (HTML)
-// ============================================
-function generateMarkupSections(lang: string): TutorialSection[] {
+// General purpose path: keep concise but complete
+function generateGeneralSections(lang: string): TutorialSection[] {
   return [
-    { id: '1', title: 'Introduction to HTML', content: 'HTML structures web content using tags and elements.', syntax: '<tag>Content</tag>', usage: 'Create web page structure', codeExample: '<!DOCTYPE html>\n<html>\n<head>\n  <title>My Page</title>\n</head>\n<body>\n  <h1>Hello!</h1>\n</body>\n</html>' },
-    { id: '2', title: 'Document Structure', content: 'Every HTML document has DOCTYPE, html, head, and body.', syntax: '<!DOCTYPE html>', usage: 'Proper document structure', codeExample: '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  <title>Title</title>\n</head>\n<body>\n  <!-- Content -->\n</body>\n</html>' },
-    { id: '3', title: 'Headings and Text', content: 'Use h1-h6 for headings, p for paragraphs, strong and em for emphasis.', syntax: '<h1> to <h6>, <p>', usage: 'Structure text content', codeExample: '<h1>Main Title</h1>\n<h2>Subtitle</h2>\n<p>This is a <strong>paragraph</strong> with <em>emphasis</em>.</p>' },
-    { id: '4', title: 'Links', content: 'Create links with <a> tag.', syntax: '<a href="url">Text</a>', usage: 'Navigation between pages', codeExample: '<a href="https://example.com">Visit</a>\n<a href="page.html">Internal Link</a>\n<a href="#section">Jump to Section</a>' },
-    { id: '5', title: 'Images', content: 'Embed images with <img> tag.', syntax: '<img src="path" alt="desc">', usage: 'Display images', codeExample: '<img src="photo.jpg" alt="Description" width="300">' },
-    { id: '6', title: 'Lists', content: 'Create ordered (ol) and unordered (ul) lists.', syntax: '<ul>, <ol>, <li>', usage: 'Organize items', codeExample: '<ul>\n  <li>Item 1</li>\n  <li>Item 2</li>\n</ul>\n\n<ol>\n  <li>First</li>\n  <li>Second</li>\n</ol>' },
-    { id: '7', title: 'Tables', content: 'Display tabular data with tables.', syntax: '<table>, <tr>, <th>, <td>', usage: 'Organize data in rows/columns', codeExample: '<table>\n  <tr>\n    <th>Name</th>\n    <th>Age</th>\n  </tr>\n  <tr>\n    <td>John</td>\n    <td>25</td>\n  </tr>\n</table>' },
-    { id: '8', title: 'Forms - Basics', content: 'Collect user input with forms.', syntax: '<form>, <input>, <button>', usage: 'User data collection', codeExample: '<form action="/submit" method="POST">\n  <label>Name:</label>\n  <input type="text" name="name" required>\n  <button type="submit">Submit</button>\n</form>' },
-    { id: '9', title: 'Forms - Input Types', content: 'HTML5 provides many input types.', syntax: 'text, email, password, number, date, checkbox, radio', usage: 'Different inputs for different data', codeExample: '<input type="email" required>\n<input type="password">\n<input type="number" min="0" max="100">\n<input type="date">\n<input type="checkbox" id="agree">\n<input type="radio" name="choice" value="a">' },
-    { id: '10', title: 'Semantic HTML', content: 'Use semantic tags for better structure.', syntax: '<header>, <nav>, <main>, <article>, <footer>', usage: 'Meaningful structure, better SEO', codeExample: '<header>\n  <nav><!-- Navigation --></nav>\n</header>\n<main>\n  <article><!-- Content --></article>\n</main>\n<footer><!-- Footer --></footer>' },
-    { id: '11', title: 'Div and Span', content: 'Generic containers for grouping.', syntax: '<div>, <span>', usage: 'Layout and styling containers', codeExample: '<div class="container">\n  <p>Text with <span class="highlight">highlighted</span> word.</p>\n</div>' },
-    { id: '12', title: 'Attributes', content: 'Attributes provide additional information.', syntax: 'id, class, style, data-*', usage: 'Customize elements', codeExample: '<div id="main" class="container" data-role="admin">\n  <p style="color: blue;">Content</p>\n</div>' },
-    { id: '13', title: 'Media Elements', content: 'Embed audio and video.', syntax: '<audio>, <video>', usage: 'Multimedia content', codeExample: '<video width="640" height="360" controls>\n  <source src="video.mp4" type="video/mp4">\n</video>' },
-    { id: '14', title: 'Meta Tags', content: 'Metadata for SEO and responsive design.', syntax: '<meta>', usage: 'Page information, SEO', codeExample: '<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<meta name="description" content="Page description">' },
-    { id: '15', title: 'Best Practices', content: 'Use semantic HTML, validate markup, proper indentation.', syntax: 'N/A', usage: 'Maintainable, accessible code', codeExample: '<!-- Good: semantic, clean -->\n<header>\n  <h1>Title</h1>\n  <nav><a href="#home">Home</a></nav>\n</header>\n\n<!-- Bad: non-semantic, inline styles -->\n<div style="color:red">Title</div>' },
-    { id: '16', title: 'Project: Portfolio Page', content: 'Build a personal portfolio webpage.', syntax: 'N/A', usage: 'Apply all HTML skills', codeExample: '<!DOCTYPE html>\n<html>\n<head>\n  <meta charset="UTF-8">\n  <title>My Portfolio</title>\n</head>\n<body>\n  <header>\n    <h1>John Doe</h1>\n    <nav>\n      <a href="#about">About</a>\n      <a href="#projects">Projects</a>\n    </nav>\n  </header>\n  <main>\n    <section id="about">\n      <h2>About Me</h2>\n      <p>I\'m a web developer...</p>\n    </section>\n  </main>\n  <footer>© 2024</footer>\n</body>\n</html>' }
+    { id: '1', title: `Introduction to ${lang}`, content: `What ${lang} is used for and where it shines.`, syntax: 'Overview', usage: 'Understand goals', codeExample: `// Welcome to ${lang}\n// You will learn by building step-by-step.` },
+    { id: '2', title: 'Setup', content: 'Install tools and create your first file/project.', syntax: 'Install + Init', usage: 'Get ready to code', codeExample: 'mkdir hello && cd hello\necho "print(\"Hello\")" > main.py' },
+    { id: '3', title: 'Variables & Types', content: 'Store values and basic types.', syntax: 'number, string, boolean', usage: 'Keep state', codeExample: 'let score = 42;\nconst name = "Alice";\nconst ok = true;' },
+    { id: '4', title: 'Control Flow', content: 'If/else and loops.', syntax: 'if, for/while', usage: 'Branching and repetition', codeExample: 'for (let i = 0; i < 3; i++) {\n  console.log(i)\n}' },
+    { id: '5', title: 'Functions', content: 'Reusable logic with parameters and returns.', syntax: 'function fn(params) => result', usage: 'Organize code', codeExample: 'function greet(who){ return `Hello, ${who}` }\nconsole.log(greet("World"))' },
+    { id: '6', title: 'Collections', content: 'Lists/arrays and maps/dicts.', syntax: '[], {}', usage: 'Handle groups of data', codeExample: 'const nums = [1,2,3];\nconst user = { name: "Alice", age: 25 }' },
+    { id: '7', title: 'OOP Basics', content: 'Classes and objects.', syntax: 'class, constructor, method', usage: 'Model real things', codeExample: 'class Person { constructor(name){ this.name = name } }\nconsole.log(new Person("Bob"))' },
+    { id: '8', title: 'Files & Modules', content: 'Read/write files and split code into modules.', syntax: 'fs/readFile, export/import', usage: 'Persistence and structure', codeExample: '// file utils.js\nexport const add = (a,b)=>a+b\n// file app.js\nimport { add } from "./utils.js"' },
+    { id: '9', title: 'Error Handling', content: 'Try/catch and graceful failures.', syntax: 'try { ... } catch (e) { ... }', usage: 'Robust programs', codeExample: 'try { JSON.parse("bad") } catch(e){ console.error("Oops", e.message) }' },
+    { id: '10', title: 'Testing', content: 'Write simple tests.', syntax: 'assert/expect', usage: 'Prevent regressions', codeExample: 'function add(a,b){return a+b}\nconsole.assert(add(2,3)===5)' },
+    { id: '11', title: 'Async Basics', content: 'Promises/async-await or callbacks.', syntax: 'async/await', usage: 'I/O and waiting', codeExample: 'const wait = (ms)=>new Promise(r=>setTimeout(r,ms))\n(async()=>{ await wait(100); console.log("done") })()' },
+    { id: '12', title: 'Mini Project', content: 'Tie it all together in a small app.', syntax: 'N/A', usage: 'Apply concepts end-to-end', codeExample: '// Build a CLI or web page using the above pieces.' },
   ]
 }
 
-// ============================================
-// STYLING LANGUAGES (CSS)
-// ============================================
-function generateStylingSections(lang: string): TutorialSection[] {
-  return [
-    { id: '1', title: 'Introduction to CSS', content: 'CSS styles HTML elements with colors, layouts, and animations.', syntax: 'selector { property: value; }', usage: 'Visual presentation of webpages', codeExample: 'h1 {\n  color: blue;\n  font-size: 32px;\n  text-align: center;\n}' },
-    { id: '2', title: 'Selectors', content: 'Target elements with element, class, ID selectors.', syntax: 'element, .class, #id', usage: 'Select elements to style', codeExample: 'p { color: black; }\n.highlight { background: yellow; }\n#header { font-size: 24px; }' },
-    { id: '3', title: 'Colors and Backgrounds', content: 'Set colors with hex, RGB, or named colors.', syntax: 'color, background-color, background-image', usage: 'Colorful designs', codeExample: 'h1 { color: #3366cc; }\ndiv { background-color: rgba(255, 0, 0, 0.5); }\n.hero { background: linear-gradient(to right, #ff6b6b, #4ecdc4); }' },
-    { id: '4', title: 'Box Model', content: 'Every element has content, padding, border, margin.', syntax: 'width, height, padding, border, margin', usage: 'Control spacing and sizing', codeExample: '.box {\n  width: 300px;\n  padding: 20px;\n  border: 2px solid black;\n  margin: 10px;\n  box-sizing: border-box;\n}' },
-    { id: '5', title: 'Typography', content: 'Control font family, size, weight, line height.', syntax: 'font-family, font-size, font-weight', usage: 'Beautiful text styling', codeExample: 'body {\n  font-family: Arial, sans-serif;\n  font-size: 16px;\n  line-height: 1.6;\n}\nh1 {\n  font-size: 2.5rem;\n  font-weight: bold;\n}' },
-    { id: '6', title: 'Flexbox', content: 'One-dimensional layout system.', syntax: 'display: flex, justify-content, align-items', usage: 'Flexible layouts', codeExample: '.container {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  gap: 20px;\n}' },
-    { id: '7', title: 'Grid', content: 'Two-dimensional layout system.', syntax: 'display: grid, grid-template-columns', usage: 'Complex layouts', codeExample: '.grid {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  gap: 20px;\n}' },
-    { id: '8', title: 'Positioning', content: 'Control element positioning.', syntax: 'position: static | relative | absolute | fixed', usage: 'Precise element placement', codeExample: '.fixed {\n  position: fixed;\n  top: 0;\n  width: 100%;\n}\n.absolute {\n  position: absolute;\n  top: 10px;\n  right: 10px;\n}' },
-    { id: '9', title: 'Responsive Design', content: 'Media queries for different screen sizes.', syntax: '@media (condition) { styles }', usage: 'Mobile-friendly websites', codeExample: '.container { width: 100%; }\n@media (min-width: 768px) {\n  .container { width: 750px; }\n}\n@media (min-width: 1024px) {\n  .container { width: 1000px; }\n}' },
-    { id: '10', title: 'Transitions', content: 'Smooth property changes.', syntax: 'transition: property duration', usage: 'Animated hover effects', codeExample: 'button {\n  background: blue;\n  transition: background 0.3s ease;\n}\nbutton:hover {\n  background: darkblue;\n}' },
-    { id: '11', title: 'Animations', content: 'Complex motion with keyframes.', syntax: '@keyframes name { ... }', usage: 'Engaging animations', codeExample: '@keyframes fadeIn {\n  from { opacity: 0; }\n  to { opacity: 1; }\n}\n.fade { animation: fadeIn 1s ease; }' },
-    { id: '12', title: 'Transforms', content: 'Rotate, scale, translate elements.', syntax: 'transform: rotate() | scale() | translate()', usage: 'Visual effects', codeExample: '.rotate { transform: rotate(45deg); }\n.scale { transform: scale(1.5); }\n.move { transform: translateX(50px); }' },
-    { id: '13', title: 'Pseudo-classes', content: 'Style element states.', syntax: ':hover, :focus, :nth-child', usage: 'Interactive states', codeExample: 'a:hover { color: red; }\ninput:focus { border-color: blue; }\nli:nth-child(odd) { background: #f9f9f9; }' },
-    { id: '14', title: 'CSS Variables', content: 'Reusable custom properties.', syntax: '--var-name: value; var(--var-name)', usage: 'Maintainable, themeable code', codeExample: ':root {\n  --primary: #3498db;\n  --spacing: 20px;\n}\n.btn {\n  background: var(--primary);\n  padding: var(--spacing);\n}' },
-    { id: '15', title: 'Best Practices', content: 'Organize code, use meaningful names, mobile-first.', syntax: 'N/A', usage: 'Scalable, maintainable CSS', codeExample: '/* Good: organized, mobile-first */\n.card { width: 100%; }\n@media (min-width: 768px) {\n  .card { width: 350px; }\n}\n\n/* Bad: !important, overly specific */\n.bad { color: red !important; }' },
-    { id: '16', title: 'Project: Responsive Landing Page', content: 'Build a complete responsive landing page.', syntax: 'N/A', usage: 'Apply all CSS skills', codeExample: ':root { --primary: #667eea; }\n* { margin: 0; padding: 0; box-sizing: border-box; }\n.hero {\n  background: linear-gradient(135deg, var(--primary), #764ba2);\n  padding: 100px 2rem;\n  text-align: center;\n  color: white;\n}\n.features {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));\n  gap: 2rem;\n}' }
-  ]
-}
-
-// ============================================
-// SCRIPTING LANGUAGES (JavaScript, TypeScript)
-// ============================================
-function generateScriptingSections(languageId: string, lang: string): TutorialSection[] {
-  const isTS = languageId.includes('typescript')
-  const sections: TutorialSection[] = []
-
-  sections.push(
-    { id: '1', title: `Introduction to ${lang}`, content: `${lang} is ${isTS ? 'a typed superset of JavaScript' : 'the programming language of the web'}.`, syntax: isTS ? 'let name: string = "value";' : 'let name = "value";', usage: 'Build interactive web applications', codeExample: isTS ? '// TypeScript\nlet name: string = "Alice";\nfunction greet(person: string): string {\n  return `Hello, ${person}!`;\n}\nconsole.log(greet(name));' : '// JavaScript\nlet name = "Alice";\nfunction greet(person) {\n  return `Hello, ${person}!`;\n}\nconsole.log(greet(name));' },
-    { id: '2', title: 'Variables', content: 'Use let and const to declare variables.', syntax: 'let, const', usage: 'Store data', codeExample: 'const PI = 3.14;\nlet score = 0;\nscore += 10;' },
-    { id: '3', title: 'Data Types', content: 'String, number, boolean, array, object.', syntax: 'string, number, boolean, array, object', usage: 'Different types for different data', codeExample: isTS ? 'let str: string = "hello";\nlet num: number = 42;\nlet arr: number[] = [1, 2, 3];\nlet obj: {name: string} = {name: "Alice"};' : 'let str = "hello";\nlet num = 42;\nlet arr = [1, 2, 3];\nlet obj = {name: "Alice"};' },
-    { id: '4', title: 'Operators', content: 'Arithmetic, comparison, logical operators.', syntax: '+, -, *, /, ===, &&, ||', usage: 'Calculations and comparisons', codeExample: 'let sum = 10 + 5;\nlet isEqual = (5 === 5);\nlet isTrue = true && false;' },
-    { id: '5', title: 'If Statements', content: 'Conditional logic with if/else.', syntax: 'if (condition) { ... } else { ... }', usage: 'Make decisions', codeExample: 'let age = 20;\nif (age >= 18) {\n  console.log("Adult");\n} else {\n  console.log("Minor");\n}' },
-    { id: '6', title: 'Loops', content: 'Repeat code with for and while loops.', syntax: 'for, while', usage: 'Iterate over data', codeExample: 'for (let i = 0; i < 5; i++) {\n  console.log(i);\n}\n\nlet count = 0;\nwhile (count < 5) {\n  console.log(count);\n  count++;\n}' },
-    { id: '7', title: 'Functions', content: 'Reusable blocks of code.', syntax: 'function name() { ... }', usage: 'Organize and reuse code', codeExample: 'function add(a, b) {\n  return a + b;\n}\nconst result = add(5, 3);' },
-    { id: '8', title: 'Arrow Functions', content: 'Concise function syntax.', syntax: '(params) => expression', usage: 'Modern function syntax', codeExample: 'const add = (a, b) => a + b;\nconst greet = name => `Hello, ${name}`;' },
-    { id: '9', title: 'Arrays', content: 'Ordered collections of values.', syntax: '[1, 2, 3]', usage: 'Store lists of data', codeExample: 'let fruits = ["apple", "banana"];\nfruits.push("orange");\nfruits.map(f => f.toUpperCase());' },
-    { id: '10', title: 'Objects', content: 'Key-value pairs.', syntax: '{key: value}', usage: 'Store structured data', codeExample: 'let person = {\n  name: "Alice",\n  age: 25,\n  greet() {\n    console.log(`Hi, I\'m ${this.name}`);\n  }\n};' },
-    { id: '11', title: 'Classes', content: 'Object-oriented programming with classes.', syntax: 'class Name { ... }', usage: 'Create reusable object templates', codeExample: 'class Person {\n  constructor(name) {\n    this.name = name;\n  }\n  greet() {\n    return `Hello, ${this.name}`;\n  }\n}\nconst alice = new Person("Alice");' },
-    { id: '12', title: 'DOM Manipulation', content: 'Select and modify HTML elements.', syntax: 'document.querySelector()', usage: 'Make pages interactive', codeExample: 'const btn = document.querySelector("#myBtn");\nbtn.textContent = "Click me!";\nbtn.addEventListener("click", () => {\n  alert("Clicked!");\n});' },
-    { id: '13', title: 'Events', content: 'Respond to user actions.', syntax: 'addEventListener("event", handler)', usage: 'Interactive user interfaces', codeExample: 'button.addEventListener("click", () => {\n  console.log("Clicked!");\n});\ninput.addEventListener("change", (e) => {\n  console.log(e.target.value);\n});' },
-    { id: '14', title: 'Async/Await', content: 'Handle asynchronous operations.', syntax: 'async/await, Promise', usage: 'API calls, async operations', codeExample: 'async function fetchData() {\n  const response = await fetch("/api/data");\n  const data = await response.json();\n  return data;\n}\nfetchData().then(data => console.log(data));' },
-    { id: '15', title: 'Modules', content: 'Import and export code between files.', syntax: 'import/export', usage: 'Organize code into modules', codeExample: '// math.js\nexport function add(a, b) { return a + b; }\n\n// main.js\nimport { add } from "./math.js";\nconsole.log(add(5, 3));' },
-    { id: '16', title: 'Error Handling', content: 'Handle errors gracefully.', syntax: 'try/catch/finally', usage: 'Prevent crashes', codeExample: 'try {\n  const data = JSON.parse(invalidJSON);\n} catch (error) {\n  console.error("Parse error:", error);\n} finally {\n  console.log("Done");\n}' },
-    { id: '17', title: 'Project: Todo App', content: 'Build a complete todo list application.', syntax: 'N/A', usage: 'Apply all skills', codeExample: 'const todos = [];\nfunction addTodo(text) {\n  todos.push({ id: Date.now(), text, done: false });\n  render();\n}\nfunction toggleTodo(id) {\n  const todo = todos.find(t => t.id === id);\n  todo.done = !todo.done;\n  render();\n}\nfunction render() {\n  const list = document.querySelector("#todo-list");\n  list.innerHTML = todos.map(t => \n    `<li class="${t.done ? "done" : ""}">${t.text}</li>`\n  ).join("");\n}' }
-  )
-
-  return sections
-}
-
-// ============================================
-// GENERAL PURPOSE LANGUAGES (Python, Java, Go, Rust)
-// ============================================
-function generateGeneralPurposeSections(languageId: string, lang: string): TutorialSection[] {
-  // Detect syntax based on language
-  const syntax = getSyntaxForLanguage(languageId)
-
-  return [
-    { id: '1', title: `Introduction to ${lang}`, content: `${lang} is a ${getLanguageDescription(languageId)}.`, syntax: syntax.variable, usage: 'Build applications, scripts, and systems', codeExample: syntax.helloWorld },
-    { id: '2', title: 'Variables', content: 'Store and manipulate data.', syntax: syntax.variable, usage: 'Store data for later use', codeExample: syntax.variableExample },
-    { id: '3', title: 'Data Types', content: `${lang} has various data types for different purposes.`, syntax: 'string, number, boolean, etc.', usage: 'Different types for different data', codeExample: syntax.dataTypes },
-    { id: '4', title: 'Operators', content: 'Perform arithmetic, comparison, and logical operations.', syntax: '+, -, *, /, ==, &&, ||', usage: 'Calculate and compare values', codeExample: syntax.operators },
-    { id: '5', title: 'If/Else Statements', content: 'Make decisions in code.', syntax: syntax.ifStatement, usage: 'Conditional logic', codeExample: syntax.ifExample },
-    { id: '6', title: 'Loops', content: 'Repeat code multiple times.', syntax: syntax.forLoop, usage: 'Iterate over collections', codeExample: syntax.loopExample },
-    { id: '7', title: 'Functions', content: 'Reusable blocks of code.', syntax: syntax.function, usage: 'Organize and reuse code', codeExample: syntax.functionExample },
-    { id: '8', title: 'Lists/Arrays', content: 'Ordered collections of items.', syntax: syntax.array, usage: 'Store multiple values', codeExample: syntax.arrayExample },
-    { id: '9', title: 'Dictionaries/Maps', content: 'Key-value pairs.', syntax: syntax.map, usage: 'Associate keys with values', codeExample: syntax.mapExample },
-    { id: '10', title: 'Classes', content: 'Object-oriented programming with classes.', syntax: syntax.class, usage: 'Create custom types', codeExample: syntax.classExample },
-    { id: '11', title: 'Inheritance', content: 'Extend classes to reuse code.', syntax: 'class Child extends Parent', usage: 'Code reuse through inheritance', codeExample: syntax.inheritanceExample },
-    { id: '12', title: 'File Reading', content: 'Read data from files.', syntax: syntax.fileRead, usage: 'Load data from disk', codeExample: syntax.fileReadExample },
-    { id: '13', title: 'File Writing', content: 'Write data to files.', syntax: syntax.fileWrite, usage: 'Save data to disk', codeExample: syntax.fileWriteExample },
-    { id: '14', title: 'Error Handling', content: 'Handle errors gracefully.', syntax: syntax.errorHandling, usage: 'Prevent crashes', codeExample: syntax.errorExample },
-    { id: '15', title: 'Modules/Packages', content: 'Organize code into reusable modules.', syntax: syntax.import, usage: 'Code organization', codeExample: syntax.importExample },
-    { id: '16', title: 'Project: Calculator', content: 'Build a functional calculator.', syntax: 'N/A', usage: 'Apply all concepts', codeExample: syntax.calculatorExample }
-  ]
-}
-
-// Helper to get language-specific syntax
-function getSyntaxForLanguage(languageId: string) {
-  if (languageId === 'python' || languageId.includes('python')) {
-    return {
-      variable: 'name = value',
-      helloWorld: '# Python\nprint("Hello, World!")',
-      variableExample: 'name = "Alice"\nage = 25\nis_student = True',
-      dataTypes: 'text = "hello"  # str\nnumber = 42  # int\npi = 3.14  # float\nactive = True  # bool',
-      operators: 'sum = 10 + 5\nis_equal = (5 == 5)\nis_true = True and False',
-      ifStatement: 'if condition:\n    # code\nelse:\n    # code',
-      ifExample: 'age = 20\nif age >= 18:\n    print("Adult")\nelse:\n    print("Minor")',
-      forLoop: 'for i in range(10):',
-      loopExample: 'for i in range(5):\n    print(i)\n\nfor item in ["a", "b", "c"]:\n    print(item)',
-      function: 'def name(params):',
-      functionExample: 'def greet(name):\n    return f"Hello, {name}"\n\nresult = greet("Alice")',
-      array: '[1, 2, 3]',
-      arrayExample: 'fruits = ["apple", "banana"]\nfruits.append("orange")\nprint(fruits[0])',
-      map: '{key: value}',
-      mapExample: 'person = {\n    "name": "Alice",\n    "age": 25\n}\nprint(person["name"])',
-      class: 'class Name:',
-      classExample: 'class Person:\n    def __init__(self, name):\n        self.name = name\n    def greet(self):\n        return f"Hi, I\'m {self.name}"\n\nalice = Person("Alice")',
-      inheritanceExample: 'class Student(Person):\n    def __init__(self, name, grade):\n        super().__init__(name)\n        self.grade = grade',
-      fileRead: 'with open("file.txt", "r") as f:',
-      fileReadExample: 'with open("data.txt", "r") as file:\n    content = file.read()\n    print(content)',
-      fileWrite: 'with open("file.txt", "w") as f:',
-      fileWriteExample: 'with open("output.txt", "w") as file:\n    file.write("Hello, File!")',
-      errorHandling: 'try/except/finally',
-      errorExample: 'try:\n    result = 10 / 0\nexcept ZeroDivisionError:\n    print("Cannot divide by zero")\nfinally:\n    print("Done")',
-      import: 'import module or from module import function',
-      importExample: 'import math\nprint(math.pi)\n\nfrom datetime import datetime\nprint(datetime.now())',
-      calculatorExample: 'def add(a, b): return a + b\ndef subtract(a, b): return a - b\ndef multiply(a, b): return a * b\ndef divide(a, b): return a / b if b != 0 else "Error"\n\nprint(add(5, 3))'
-    }
-  }
-
-  // Default generic syntax (works for most languages)
-  return {
-    variable: 'let name = value',
-    helloWorld: `// ${languageId}\nconsole.log("Hello, World!");`,
-    variableExample: 'let name = "Alice";\nlet age = 25;',
-    dataTypes: 'string, number, boolean, array, object',
-    operators: 'Arithmetic: +, -, *, /\nComparison: ==, !=, <, >\nLogical: &&, ||, !',
-    ifStatement: 'if (condition) { } else { }',
-    ifExample: 'if (age >= 18) {\n  console.log("Adult");\n}',
-    forLoop: 'for (let i = 0; i < 10; i++) { }',
-    loopExample: 'for (let i = 0; i < 5; i++) {\n  console.log(i);\n}',
-    function: 'function name(params) { }',
-    functionExample: 'function greet(name) {\n  return `Hello, ${name}`;\n}',
-    array: '[1, 2, 3]',
-    arrayExample: 'let arr = [1, 2, 3];\narr.push(4);',
-    map: '{key: value}',
-    mapExample: 'let obj = {name: "Alice", age: 25};',
-    class: 'class Name { }',
-    classExample: 'class Person {\n  constructor(name) {\n    this.name = name;\n  }\n}',
-    inheritanceExample: 'class Student extends Person { }',
-    fileRead: 'Read file syntax',
-    fileReadExample: '// File reading example',
-    fileWrite: 'Write file syntax',
-    fileWriteExample: '// File writing example',
-    errorHandling: 'try/catch',
-    errorExample: 'try {\n  // code\n} catch (error) {\n  console.error(error);\n}',
-    import: 'import/export',
-    importExample: 'import { module } from "package";',
-    calculatorExample: '// Calculator implementation'
-  }
-}
-
-function getLanguageDescription(languageId: string): string {
-  const descriptions: Record<string, string> = {
-    python: 'versatile, beginner-friendly language used for web dev, data science, AI, and automation',
-    java: 'powerful, object-oriented language used for enterprise applications, Android development, and backend systems',
-    javascript: 'dynamic language that powers the web, running in browsers and on servers',
-    typescript: 'typed superset of JavaScript for building large-scale applications',
-    go: 'simple, efficient language designed by Google for building fast, reliable software',
-    rust: 'systems programming language focused on safety, speed, and concurrency',
-    csharp: 'modern, object-oriented language from Microsoft for building Windows apps, games, and web services',
-    swift: 'powerful language for iOS and Mac app development',
-    kotlin: 'modern language for Android development and server-side applications',
-  }
-  return descriptions[languageId] || 'powerful programming language'
-}
-
-// Stub functions for other categories (similar structure to above)
-function generateFrameworkSections(languageId: string, lang: string): TutorialSection[] {
-  return [
-    { id: '1', title: `Introduction to ${lang}`, content: `${lang} is a popular framework for building modern web applications.`, syntax: 'Component-based architecture', usage: 'Build interactive UIs', codeExample: `// ${lang} component example\nimport React from 'react';\n\nfunction App() {\n  return <h1>Hello, World!</h1>;\n}\n\nexport default App;` },
-    // Add 15+ more sections: Components, Props, State, Hooks, Routing, etc.
-  ]
-}
-
-function generateMobileSections(languageId: string, lang: string): TutorialSection[] {
-  return [
-    { id: '1', title: `Introduction to ${lang}`, content: `${lang} is used for building mobile applications.`, syntax: 'Mobile development framework', usage: 'Build iOS and Android apps', codeExample: `// ${lang} mobile app example` },
-    // Add 15+ more sections
-  ]
-}
-
-function generateBackendSections(languageId: string, lang: string): TutorialSection[] {
-  return [
-    { id: '1', title: `Introduction to ${lang}`, content: `${lang} is used for building server-side applications and APIs.`, syntax: 'Server-side programming', usage: 'Build backends and APIs', codeExample: `// ${lang} server example` },
-    // Add 15+ more sections: HTTP, REST APIs, Databases, Authentication, etc.
-  ]
-}
-
+// Database path (SQL & NoSQL). Keep SQL features neutral if ID doesn’t specify engine
 function generateDatabaseSections(languageId: string, lang: string): TutorialSection[] {
+  const isSQL = /(sql|postgres|postgresql)/.test(languageId.toLowerCase())
   return [
-    { id: '1', title: `Introduction to ${lang}`, content: `${lang} is a database system for storing and querying data.`, syntax: 'Database queries', usage: 'Store and retrieve data', codeExample: `-- ${lang} query example\nSELECT * FROM users WHERE age > 18;` },
-    // Add 15+ more sections: CRUD, Joins, Indexes, Transactions, etc.
+    { id: '1', title: `Introduction to ${lang}`, content: `${lang} overview and when to use it.`, syntax: 'Tables/Collections', usage: 'Store and query data', codeExample: isSQL ? 'SELECT version();' : 'db.stats()' },
+    { id: '2', title: 'Setup & Connect', content: 'Install, run server, and connect.', syntax: 'Connection string', usage: 'Talk to database', codeExample: isSQL ? 'psql postgresql://user:pass@localhost:5432/app' : 'mongo mongodb://localhost:27017/app' },
+    { id: '3', title: 'Create Schema', content: 'Create tables/collections with fields and constraints.', syntax: isSQL ? 'CREATE TABLE' : 'createCollection', usage: 'Structure data', codeExample: isSQL ? 'CREATE TABLE users(id SERIAL PRIMARY KEY, email TEXT UNIQUE, age INT);' : 'db.createCollection("users")' },
+    { id: '4', title: 'CRUD - Insert', content: 'Add new records/documents.', syntax: isSQL ? 'INSERT' : 'insertOne', usage: 'Write data', codeExample: isSQL ? "INSERT INTO users(email,age) VALUES('a@b.com', 30);" : 'db.users.insertOne({email:"a@b.com", age:30})' },
+    { id: '5', title: 'CRUD - Read', content: 'Query and filter.', syntax: isSQL ? 'SELECT ... WHERE' : 'find({ filter })', usage: 'Read data', codeExample: isSQL ? 'SELECT id,email FROM users WHERE age >= 21;' : 'db.users.find({ age: { $gte: 21 } }, { email: 1 })' },
+    { id: '6', title: 'CRUD - Update/Delete', content: 'Modify or remove data.', syntax: isSQL ? 'UPDATE / DELETE' : 'updateOne / deleteOne', usage: 'Maintain data', codeExample: isSQL ? "UPDATE users SET age=31 WHERE email='a@b.com';" : 'db.users.updateOne({email:"a@b.com"}, {$set:{age:31}})' },
+    { id: '7', title: isSQL ? 'Joins & Relationships' : 'Lookup & References', content: 'Combine related data.', syntax: isSQL ? 'JOIN' : '$lookup', usage: 'Query relations', codeExample: isSQL ? 'SELECT o.id,u.email FROM orders o JOIN users u ON o.user_id=u.id;' : 'db.orders.aggregate([{ $lookup:{ from:"users", localField:"userId", foreignField:"_id", as:"user"}}])' },
+    { id: '8', title: 'Indexes', content: 'Speed up queries with indexes.', syntax: isSQL ? 'CREATE INDEX' : 'createIndex', usage: 'Performance', codeExample: isSQL ? 'CREATE INDEX idx_users_email ON users(email);' : 'db.users.createIndex({ email: 1 }, { unique: true })' },
+    { id: '9', title: 'Transactions', content: 'Atomic multi-write operations (if supported).', syntax: isSQL ? 'BEGIN/COMMIT/ROLLBACK' : 'session.startTransaction()', usage: 'Consistency', codeExample: isSQL ? 'BEGIN; UPDATE accounts SET balance=balance-100 WHERE id=1; UPDATE accounts SET balance=balance+100 WHERE id=2; COMMIT;' : '// start session + transaction, then commit/abort' },
+    { id: '10', title: 'Aggregations', content: 'Grouping and analytics.', syntax: isSQL ? 'GROUP BY, window functions' : 'aggregate pipeline', usage: 'Reports', codeExample: isSQL ? 'SELECT country, COUNT(*) FROM users GROUP BY country;' : 'db.users.aggregate([{ $group: { _id: "$country", total: { $sum: 1 } } }])' },
+    { id: '11', title: 'Security', content: 'Least privilege and parameterized queries.', syntax: 'Roles / Prepared statements', usage: 'Protect data', codeExample: isSQL ? 'GRANT SELECT ON ALL TABLES IN SCHEMA public TO readonly;' : 'db.createUser({user:"reader", pwd:"pwd", roles:[{role:"read", db:"app"}]})' },
+    { id: '12', title: 'Backups & Performance', content: 'Backups, restores, and query plans.', syntax: 'dump/restore, EXPLAIN', usage: 'Reliability & speed', codeExample: isSQL ? 'EXPLAIN ANALYZE SELECT * FROM users WHERE email = \"a@b.com\";' : 'db.users.find({ email: \"a@b.com\" }).explain("executionStats")' },
+    { id: '13', title: 'Mini Project', content: 'Design schema and build a tiny report API.', syntax: 'N/A', usage: 'Apply skills', codeExample: '// Build /users and /reports endpoints using the above.' },
   ]
 }
 
+// ML path: ensure Python basics first for Python ML
 function generateMLSections(languageId: string, lang: string): TutorialSection[] {
-  return [
-    { id: '1', title: `Introduction to ${lang}`, content: `${lang} is a machine learning framework.`, syntax: 'ML models and training', usage: 'Build AI/ML models', codeExample: `# ${lang} ML example` },
-    // Add 15+ more sections
+  const id = languageId.toLowerCase()
+  const isPyTorch = /pytorch/.test(id)
+  const isTF = /(tensorflow|tf)/.test(id)
+  const isSk = /(scikit|sklearn)/.test(id)
+  const usesPython = /(python|tensorflow|pytorch|scikit|sklearn)/.test(id)
+
+  const importLine = isPyTorch
+    ? 'import torch\nimport torch.nn as nn\nimport torch.optim as optim'
+    : isTF
+      ? 'import tensorflow as tf'
+      : 'import numpy as np\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LinearRegression'
+
+  const sections: TutorialSection[] = [
+    { id: '1', title: `Introduction to ${lang}`, content: `${lang} overview: you will start with Python basics, then ML.`, syntax: 'Python + ML libs', usage: 'Train and evaluate models', codeExample: importLine },
+    { id: '2', title: 'Environment Setup', content: 'Create venv and install libraries.', syntax: 'venv + pip', usage: 'Isolate dependencies', codeExample: 'python -m venv venv\nsource venv/bin/activate\npip install numpy pandas scikit-learn matplotlib' },
+    { id: '3', title: 'Python Basics: Variables & Types', content: 'Numbers, strings, booleans, lists, dicts.', syntax: 'name = "Alice"; age = 30', usage: 'Manipulate data', codeExample: 'name = "Alice"\nage = 30\nnums = [1,2,3]\nuser = {"name": name, "age": age}' },
+    { id: '4', title: 'Control Flow & Functions', content: 'If/else, loops, and functions.', syntax: 'if, for, def', usage: 'Encapsulate logic', codeExample: 'def normalize(xs):\n    s = sum(xs)\n    return [x/s for x in xs]\nprint(normalize([1,2,3]))' },
+    { id: '5', title: 'NumPy Essentials', content: 'ndarray, shapes, vectorized ops.', syntax: 'np.array, mean, dot', usage: 'Fast math', codeExample: 'import numpy as np\nX = np.array([[1,2],[3,4]])\nprint(X.mean())' },
+    { id: '6', title: 'pandas Basics', content: 'Load CSV, inspect, filter.', syntax: 'pd.read_csv, df.head()', usage: 'Prep data', codeExample: 'import pandas as pd\ndf = pd.read_csv("data.csv")\nprint(df.head())' },
+    { id: '7', title: 'Train/Test Split', content: 'Split data for fair evaluation.', syntax: 'train_test_split', usage: 'Avoid overfitting', codeExample: 'from sklearn.model_selection import train_test_split\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)' },
+    { id: '8', title: 'Baseline Regression', content: 'Fit a simple regressor.', syntax: 'LinearRegression', usage: 'Predict numbers', codeExample: 'from sklearn.linear_model import LinearRegression\nmodel = LinearRegression().fit(X_train, y_train)' },
+    { id: '9', title: 'Classification Intro', content: 'Logistic regression or simple NN.', syntax: isTF || isPyTorch ? 'Dense layer + Sigmoid' : 'LogisticRegression', usage: 'Predict classes', codeExample: isPyTorch ? 'model = nn.Sequential(nn.Linear(2,1), nn.Sigmoid())' : isTF ? 'model = tf.keras.Sequential([tf.keras.layers.Dense(1, activation="sigmoid")])' : 'from sklearn.linear_model import LogisticRegression\nclf = LogisticRegression().fit(X_train, y_train)' },
+    { id: '10', title: 'Evaluation Metrics', content: 'Accuracy, F1, RMSE for regression.', syntax: 'accuracy_score, classification_report', usage: 'Measure quality', codeExample: 'from sklearn.metrics import accuracy_score, classification_report\ny_pred = clf.predict(X_test)\nprint(accuracy_score(y_test, y_pred))' },
+    { id: '11', title: 'Save & Load Models', content: 'Persist trained models.', syntax: 'joblib / tf/pytorch save', usage: 'Reuse models', codeExample: isPyTorch ? 'torch.save(model.state_dict(), "model.pt")' : isTF ? 'model.save("./model")' : 'import joblib\njoblib.dump(model, "model.joblib")' },
+    { id: '12', title: 'Mini Project', content: 'Train a small model and evaluate properly.', syntax: 'N/A', usage: 'Apply pipeline', codeExample: '# Combine steps: load → split → train → eval → save' },
   ]
+
+  return usesPython ? sections : sections.slice(0, 1) // If non-Python ML id, keep generic
 }
 
 function generateDevOpsSections(languageId: string, lang: string): TutorialSection[] {
   return [
-    { id: '1', title: `Introduction to ${lang}`, content: `${lang} is a tool for ${languageId.includes('docker') ? 'containerization' : languageId.includes('kubernetes') ? 'container orchestration' : 'infrastructure management'}.`, syntax: 'DevOps automation', usage: 'Automate deployment and infrastructure', codeExample: `# ${lang} configuration example` },
-    // Add 15+ more sections
+    { id: '1', title: `Introduction to ${lang}`, content: 'DevOps overview: build, ship, run.', syntax: 'Pipelines & infra as code', usage: 'Automate delivery', codeExample: '# DevOps brings dev and ops together' },
+    { id: '2', title: 'Dockerfile Basics', content: 'Build container images.', syntax: 'FROM, COPY, RUN, CMD', usage: 'Containerize apps', codeExample: 'FROM node:20-alpine\nWORKDIR /app\nCOPY . .\nRUN npm ci\nCMD ["npm","start"]' },
+    { id: '3', title: 'Compose / Local Orchestration', content: 'Run multi-service apps locally.', syntax: 'docker compose', usage: 'Dev environment', codeExample: 'services:\n  web:\n    build: .\n    ports: ["3000:3000"]\n  db:\n    image: postgres:16' },
+    { id: '4', title: 'Kubernetes Primer', content: 'Deploy to a cluster.', syntax: 'Deployment, Service', usage: 'Scale reliably', codeExample: 'apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: web\nspec:\n  replicas: 2\n  template:\n    spec:\n      containers:\n        - image: my/web:latest' },
+    { id: '5', title: 'Terraform Basics', content: 'Provision infra declaratively.', syntax: 'resource, variable', usage: 'Reproducible infra', codeExample: 'resource "aws_s3_bucket" "b" {\n  bucket = "my-bucket"\n}' },
+    { id: '6', title: 'CI Pipeline', content: 'Automate build/test/lint.', syntax: 'GitHub Actions YAML', usage: 'Consistency', codeExample: 'name: ci\non: [push]\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n      - run: npm ci && npm test' },
+    { id: '7', title: 'Observability', content: 'Logs/metrics/traces.', syntax: 'OpenTelemetry / Prometheus', usage: 'Find issues fast', codeExample: '# Export metrics and add alerts for error rate' },
+    { id: '8', title: 'Mini Project', content: 'Build → Test → Ship a sample app.', syntax: 'N/A', usage: 'Apply pipeline', codeExample: '# Wire Docker + CI + simple deploy target' },
   ]
 }
 
 function generateBlockchainSections(languageId: string, lang: string): TutorialSection[] {
+  const isSolidity = /solidity/.test(languageId.toLowerCase())
   return [
-    { id: '1', title: `Introduction to ${lang}`, content: `${lang} is used for blockchain and smart contract development.`, syntax: 'Blockchain programming', usage: 'Build decentralized applications', codeExample: `// ${lang} smart contract example` },
-    // Add 15+ more sections
+    { id: '1', title: `Introduction to ${lang}`, content: `${lang} overview: build decentralized apps and smart contracts.`, syntax: 'Smart contracts', usage: 'Blockchain development', codeExample: isSolidity ? '// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ncontract HelloWorld {\n  string public message = "Hello, Blockchain!";\n}' : 'import Web3 from "web3";\nconst web3 = new Web3(provider);' },
+    { id: '2', title: 'Setup Environment', content: 'Install tools: Hardhat/Truffle for Solidity, Web3.js for JS.', syntax: 'npm install', usage: 'Dev environment', codeExample: 'npm install --save-dev hardhat\nnpx hardhat init' },
+    { id: '3', title: 'Smart Contract Basics', content: 'Variables, functions, and modifiers.', syntax: 'contract, function, modifier', usage: 'Write logic', codeExample: isSolidity ? 'contract Counter {\n  uint256 public count = 0;\n  function increment() public {\n    count += 1;\n  }\n}' : '// Web3.js interacts with contracts' },
+    { id: '4', title: 'Data Types & Storage', content: 'uint, address, mapping, arrays.', syntax: 'uint, address, mapping', usage: 'Store blockchain data', codeExample: 'mapping(address => uint256) public balances;\naddress public owner;\nuint256[] public numbers;' },
+    { id: '5', title: 'Functions & Visibility', content: 'public, private, internal, external.', syntax: 'function visibility', usage: 'Control access', codeExample: 'function publicFunc() public {}\nfunction privateFunc() private {}\nfunction internalFunc() internal {}\nfunction externalFunc() external {}' },
+    { id: '6', title: 'Events', content: 'Log state changes for frontend tracking.', syntax: 'event, emit', usage: 'Notify listeners', codeExample: 'event Transfer(address indexed from, address indexed to, uint256 value);\n\nfunction transfer(address to, uint256 amount) public {\n  emit Transfer(msg.sender, to, amount);\n}' },
+    { id: '7', title: 'Payable Functions', content: 'Send and receive ETH/native tokens.', syntax: 'payable, msg.value', usage: 'Handle payments', codeExample: 'function deposit() public payable {\n  balances[msg.sender] += msg.value;\n}\n\nfunction withdraw(uint256 amount) public {\n  payable(msg.sender).transfer(amount);\n}' },
+    { id: '8', title: 'Inheritance', content: 'Extend contracts for code reuse.', syntax: 'is, super', usage: 'Modular contracts', codeExample: 'contract Base {\n  uint256 public data;\n}\n\ncontract Child is Base {\n  function setData(uint256 _data) public {\n    data = _data;\n  }\n}' },
+    { id: '9', title: 'Testing', content: 'Write tests with Hardhat/Mocha.', syntax: 'expect, describe, it', usage: 'Ensure correctness', codeExample: 'const { expect } = require("chai");\n\ndescribe("Counter", function() {\n  it("should increment", async function() {\n    const Counter = await ethers.getContractFactory("Counter");\n    const counter = await Counter.deploy();\n    await counter.increment();\n    expect(await counter.count()).to.equal(1);\n  });\n});' },
+    { id: '10', title: 'Deployment', content: 'Deploy to testnet/mainnet.', syntax: 'hardhat run scripts/deploy.js', usage: 'Go live', codeExample: 'async function main() {\n  const Contract = await ethers.getContractFactory("MyContract");\n  const contract = await Contract.deploy();\n  console.log("Deployed to:", contract.address);\n}\n\nmain();' },
+    { id: '11', title: 'Frontend Integration', content: 'Connect dApp to MetaMask with Web3.js/ethers.js.', syntax: 'window.ethereum, ethers.providers', usage: 'User interaction', codeExample: 'const provider = new ethers.providers.Web3Provider(window.ethereum);\nawait provider.send("eth_requestAccounts", []);\nconst signer = provider.getSigner();\nconst contract = new ethers.Contract(address, abi, signer);' },
+    { id: '12', title: 'Security Best Practices', content: 'Reentrancy guards, access control, audits.', syntax: 'nonReentrant, onlyOwner', usage: 'Prevent exploits', codeExample: 'import "@openzeppelin/contracts/security/ReentrancyGuard.sol";\nimport "@openzeppelin/contracts/access/Ownable.sol";\n\ncontract Secure is ReentrancyGuard, Ownable {\n  function withdraw() public nonReentrant onlyOwner {\n    // Safe withdrawal\n  }\n}' },
+    { id: '13', title: 'Mini Project', content: 'Build a simple token or voting dApp.', syntax: 'N/A', usage: 'Apply concepts', codeExample: '// Create ERC20 token or voting contract + frontend' },
+  ]
+}
+
+function generateFrameworkSections(languageId: string, lang: string): TutorialSection[] {
+  const isReact = /react/.test(languageId.toLowerCase())
+  const isNext = /next/.test(languageId.toLowerCase())
+  const isVue = /vue/.test(languageId.toLowerCase())
+
+  return [
+    { id: '1', title: `Introduction to ${lang}`, content: `${lang} is a modern framework for building web applications.`, syntax: 'Component-based', usage: 'Build UIs', codeExample: isReact ? 'import React from "react";\n\nfunction App() {\n  return <h1>Hello React</h1>;\n}' : isVue ? '<template><h1>{{ message }}</h1></template>\n<script>\nexport default {\n  data() { return { message: "Hello Vue" } }\n}\n</script>' : `console.log("${lang} framework")` },
+    { id: '2', title: 'Components', content: 'Reusable UI pieces.', syntax: 'Component', usage: 'Modular code', codeExample: isReact ? 'function Greeting({ name }) {\n  return <h1>Hello, {name}!</h1>;\n}' : 'Component structure' },
+    { id: '3', title: 'State Management', content: 'Manage component data.', syntax: isReact ? 'useState' : isVue ? 'data()' : 'state', usage: 'Track changes', codeExample: isReact ? 'const [count, setCount] = useState(0);' : 'data() { return { count: 0 } }' },
+    { id: '4', title: 'Props', content: 'Pass data between components.', syntax: 'props', usage: 'Component communication', codeExample: '<Child name="Alice" age={25} />' },
+    { id: '5', title: 'Events', content: 'Handle user interactions.', syntax: 'onClick, onChange', usage: 'Interactivity', codeExample: '<button onClick={() => setCount(count + 1)}>Click</button>' },
+    { id: '6', title: 'Lists & Keys', content: 'Render dynamic lists.', syntax: 'map(), key', usage: 'Display arrays', codeExample: '{items.map(item => <li key={item.id}>{item.name}</li>)}' },
+    { id: '7', title: 'Forms', content: 'Handle user input.', syntax: 'input, value, onChange', usage: 'Data entry', codeExample: '<input value={text} onChange={e => setText(e.target.value)} />' },
+    { id: '8', title: 'Lifecycle/Effects', content: 'Side effects and cleanup.', syntax: isReact ? 'useEffect' : 'mounted()', usage: 'API calls, subscriptions', codeExample: isReact ? 'useEffect(() => {\n  fetchData();\n}, []);' : 'mounted() { this.fetchData(); }' },
+    { id: '9', title: 'Routing', content: 'Navigate between pages.', syntax: isNext ? 'Link, useRouter' : 'Router', usage: 'Multi-page apps', codeExample: isNext ? '<Link href="/about">About</Link>' : '<router-link to="/about">About</router-link>' },
+    { id: '10', title: 'API Integration', content: 'Fetch data from backend.', syntax: 'fetch, axios', usage: 'Load data', codeExample: 'const data = await fetch("/api/users").then(r => r.json());' },
+    { id: '11', title: isNext ? 'API Routes' : 'Global State', content: isNext ? 'Build backend APIs in Next.js' : 'Share state across app', syntax: isNext ? 'app/api/route.ts' : 'Context/Vuex', usage: isNext ? 'Full-stack' : 'State sharing', codeExample: isNext ? 'export async function GET() {\n  return Response.json({ data: [] });\n}' : 'State management example' },
+    { id: '12', title: 'Mini Project', content: 'Build a todo app or blog.', syntax: 'N/A', usage: 'Apply all skills', codeExample: '// Combine components, state, routing, and API calls' },
+  ]
+}
+
+function generateMobileSections(languageId: string, lang: string): TutorialSection[] {
+  const isRN = /react-native/.test(languageId.toLowerCase())
+  const isFlutter = /flutter/.test(languageId.toLowerCase())
+  const isSwift = /swift/.test(languageId.toLowerCase())
+
+  return [
+    { id: '1', title: `Introduction to ${lang}`, content: `${lang} for building mobile apps.`, syntax: 'Mobile framework', usage: 'iOS/Android apps', codeExample: isRN ? 'import { View, Text } from "react-native";\n\nfunction App() {\n  return <View><Text>Hello Mobile</Text></View>;\n}' : isFlutter ? 'import \'package:flutter/material.dart\';\n\nvoid main() => runApp(MyApp());\n\nclass MyApp extends StatelessWidget {\n  Widget build(context) => MaterialApp(home: Text("Hello"));\n}' : 'import UIKit\nprint("Hello iOS")' },
+    { id: '2', title: 'UI Components', content: 'Build layouts with native components.', syntax: isRN ? 'View, Text, Image' : isFlutter ? 'Widget, Container' : 'UIView', usage: 'Create UI', codeExample: isRN ? '<View style={{ padding: 20 }}><Text>Content</Text></View>' : 'Container(padding: EdgeInsets.all(20), child: Text("Content"))' },
+    { id: '3', title: 'Styling', content: 'Style your components.', syntax: 'StyleSheet / TextStyle', usage: 'Beautiful UIs', codeExample: isRN ? 'const styles = StyleSheet.create({ container: { flex: 1, backgroundColor: "white" } });' : 'TextStyle(fontSize: 24, fontWeight: FontWeight.bold)' },
+    { id: '4', title: 'State Management', content: 'Manage component state.', syntax: isRN ? 'useState' : 'setState', usage: 'Interactive UIs', codeExample: isRN ? 'const [count, setCount] = useState(0);' : 'setState(() { count++; });' },
+    { id: '5', title: 'Lists', content: 'Display scrollable lists.', syntax: isRN ? 'FlatList' : 'ListView.builder', usage: 'Show data', codeExample: isRN ? '<FlatList data={items} renderItem={({item}) => <Text>{item}</Text>} />' : 'ListView.builder(itemBuilder: (context, index) => Text(items[index]))' },
+    { id: '6', title: 'Navigation', content: 'Navigate between screens.', syntax: 'Navigator', usage: 'Multi-screen apps', codeExample: isRN ? 'navigation.navigate("Details")' : 'Navigator.push(context, route)' },
+    { id: '7', title: 'Forms & Input', content: 'Get user input.', syntax: 'TextInput / TextField', usage: 'Data entry', codeExample: isRN ? '<TextInput value={text} onChangeText={setText} />' : 'TextField(controller: controller)' },
+    { id: '8', title: 'API Calls', content: 'Fetch data from backend.', syntax: 'fetch / http package', usage: 'Load data', codeExample: 'const data = await fetch(url).then(r => r.json());' },
+    { id: '9', title: 'Local Storage', content: 'Persist data locally.', syntax: 'AsyncStorage / SharedPreferences', usage: 'Save data', codeExample: isRN ? 'await AsyncStorage.setItem("key", value);' : 'prefs.setString("key", value);' },
+    { id: '10', title: 'Animations', content: 'Smooth animations.', syntax: 'Animated / Animation', usage: 'Engaging UIs', codeExample: isRN ? 'Animated.timing(fadeAnim, { toValue: 1 }).start();' : 'AnimationController animation;' },
+    { id: '11', title: 'Platform-Specific Code', content: 'Handle iOS/Android differences.', syntax: 'Platform.OS / Platform.select', usage: 'Platform features', codeExample: isRN ? 'Platform.OS === "ios" ? iosCode : androidCode' : 'Platform differences' },
+    { id: '12', title: 'Mini Project', content: 'Build a todo or weather app.', syntax: 'N/A', usage: 'Apply concepts', codeExample: '// Create full mobile app with state, navigation, and API' },
+  ]
+}
+
+function generateBackendSections(languageId: string, lang: string): TutorialSection[] {
+  const isNode = /node/.test(languageId.toLowerCase())
+  const isPython = /python/.test(languageId.toLowerCase())
+
+  return [
+    { id: '1', title: `Introduction to ${lang}`, content: `${lang} for building server-side applications.`, syntax: 'Server framework', usage: 'Build APIs', codeExample: isNode ? 'const express = require("express");\nconst app = express();\napp.get("/", (req, res) => res.send("Hello"));\napp.listen(3000);' : 'from flask import Flask\napp = Flask(__name__)\n@app.route("/")\ndef home(): return "Hello"\napp.run()' },
+    { id: '2', title: 'Routing', content: 'Define API endpoints.', syntax: 'GET, POST, PUT, DELETE', usage: 'Handle requests', codeExample: isNode ? 'app.get("/users", (req, res) => res.json({ users: [] }));' : '@app.route("/users")\ndef get_users(): return jsonify(users=[])' },
+    { id: '3', title: 'Request Handling', content: 'Access request data.', syntax: 'req.params, req.query, req.body', usage: 'Extract data', codeExample: 'const { id } = req.params;\nconst { page } = req.query;\nconst { name } = req.body;' },
+    { id: '4', title: 'Middleware', content: 'Add functionality to request pipeline.', syntax: 'app.use(middleware)', usage: 'Auth, logging, CORS', codeExample: isNode ? 'app.use(express.json());\napp.use(cors());' : 'from flask_cors import CORS\nCORS(app)' },
+    { id: '5', title: 'Database Integration', content: 'Connect to database.', syntax: 'mongoose / SQLAlchemy', usage: 'Store data', codeExample: isNode ? 'const User = mongoose.model("User", schema);\nconst users = await User.find();' : 'user = User.query.filter_by(email=email).first()' },
+    { id: '6', title: 'Authentication', content: 'Secure endpoints with JWT.', syntax: 'JWT tokens', usage: 'User auth', codeExample: 'const token = jwt.sign({ userId }, SECRET);\nverify(token, SECRET);' },
+    { id: '7', title: 'Error Handling', content: 'Handle errors gracefully.', syntax: 'try/catch, error middleware', usage: 'Prevent crashes', codeExample: 'try {\n  await operation();\n} catch (error) {\n  res.status(500).json({ error: error.message });\n}' },
+    { id: '8', title: 'File Uploads', content: 'Handle file uploads.', syntax: 'multer / werkzeug', usage: 'Accept files', codeExample: isNode ? 'app.post("/upload", upload.single("file"), (req, res) => {});' : 'file = request.files["file"]\nfile.save(path)' },
+    { id: '9', title: 'Validation', content: 'Validate request data.', syntax: 'express-validator / marshmallow', usage: 'Data quality', codeExample: isNode ? 'body("email").isEmail()' : 'schema.load(request.json)' },
+    { id: '10', title: 'Environment Variables', content: 'Manage configuration.', syntax: 'dotenv / os.environ', usage: 'Keep secrets safe', codeExample: 'require("dotenv").config();\nconst PORT = process.env.PORT;' },
+    { id: '11', title: 'Testing', content: 'Test API endpoints.', syntax: 'jest/supertest / pytest', usage: 'Ensure quality', codeExample: 'test("GET /users", async () => {\n  const res = await request(app).get("/users");\n  expect(res.status).toBe(200);\n});' },
+    { id: '12', title: 'Mini Project', content: 'Build a REST API with CRUD operations.', syntax: 'N/A', usage: 'Apply all concepts', codeExample: '// Create blog API or task manager with database' },
   ]
 }

@@ -1,9 +1,12 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { useUserStore } from '@/stores/userStore'
 import { Award, Lock } from 'lucide-react'
+import { validateSession } from '@/utils/sessionManager'
+import { getUserProfile, getLanguageProgress } from '@/lib/firebaseService'
+import { TECHNOLOGY_MODULES } from '@/utils/techModules'
 
 interface Achievement {
   id: string
@@ -11,6 +14,7 @@ interface Achievement {
   description: string
   icon: string
   color: string
+  condition: (profile: any, progressMap: Map<string, any>) => boolean
 }
 
 const ALL_ACHIEVEMENTS: Achievement[] = [
@@ -20,6 +24,12 @@ const ALL_ACHIEVEMENTS: Achievement[] = [
     description: 'Complete your first tutorial',
     icon: '🎯',
     color: 'from-blue-500 to-blue-700',
+    condition: (profile, progressMap) => {
+      for (const progress of progressMap.values()) {
+        if (progress.tutorialProgress?.completed) return true
+      }
+      return false
+    },
   },
   {
     id: 'game-master',
@@ -27,93 +37,210 @@ const ALL_ACHIEVEMENTS: Achievement[] = [
     description: 'Win any game on hard difficulty',
     icon: '🎮',
     color: 'from-purple-500 to-purple-700',
+    condition: (profile, progressMap) => {
+      for (const progress of progressMap.values()) {
+        if (progress.completedDifficulties?.game?.includes('hard')) return true
+      }
+      return false
+    },
   },
   {
     id: 'scholar',
     title: 'Scholar',
-    description: 'Complete all tutorials in one topic',
+    description: 'Complete all tutorials in one module',
     icon: '📚',
     color: 'from-green-500 to-green-700',
+    condition: (profile, progressMap) => {
+      for (const mod of TECHNOLOGY_MODULES) {
+        let allTutorialsComplete = true
+        for (const language of mod.languages) {
+          const languageKey = `${mod.id}-${language.id}`
+          const progress = progressMap.get(languageKey)
+          if (!progress?.tutorialProgress?.completed) {
+            allTutorialsComplete = false
+            break
+          }
+        }
+        if (allTutorialsComplete && mod.languages.length > 0) return true
+      }
+      return false
+    },
   },
   {
     id: 'speed-demon',
     title: 'Speed Demon',
-    description: 'Complete a game in under 2 minutes',
+    description: 'Earn 500+ XP quickly',
     icon: '⚡',
     color: 'from-yellow-500 to-orange-600',
-  },
-  {
-    id: 'perfect-score',
-    title: 'Perfect Score',
-    description: 'Win a game with 0 mistakes',
-    icon: '💯',
-    color: 'from-pink-500 to-rose-700',
+    condition: (profile, progressMap) => (profile.totalXP || 0) > 500,
   },
   {
     id: 'experimenter',
     title: 'Experimenter',
-    description: 'Spend 30 minutes in sandboxes',
+    description: 'Complete sandbox exercises',
     icon: '🔬',
     color: 'from-cyan-500 to-blue-600',
+    condition: (profile, progressMap) => {
+      for (const progress of progressMap.values()) {
+        if (progress.completedDifficulties?.sandbox && progress.completedDifficulties.sandbox.length > 0) {
+          return true
+        }
+      }
+      return false
+    },
   },
   {
     id: 'completionist',
     title: 'Completionist',
-    description: 'Finish one entire topic all 3 ways',
+    description: 'Finish one language all 3 ways',
     icon: '🏅',
     color: 'from-orange-500 to-red-600',
+    condition: (profile, progressMap) => {
+      for (const progress of progressMap.values()) {
+        const tutorialDone = progress.tutorialProgress?.completed
+        const gameDone = progress.completedDifficulties?.game?.length === 3
+        const sandboxDone = progress.completedDifficulties?.sandbox?.length === 3
+        if (tutorialDone && gameDone && sandboxDone) return true
+      }
+      return false
+    },
   },
   {
     id: 'legend',
     title: 'Legend',
-    description: 'Complete all 7 topics',
+    description: 'Complete all modules',
     icon: '👑',
     color: 'from-yellow-400 to-yellow-600',
-  },
-  {
-    id: 'speedrunner',
-    title: 'Speedrunner',
-    description: 'Get time bonus in 5 games',
-    icon: '🏃',
-    color: 'from-indigo-500 to-purple-600',
-  },
-  {
-    id: 'thinker',
-    title: 'Thinker',
-    description: 'Score 100% on any tutorial quiz',
-    icon: '🧠',
-    color: 'from-teal-500 to-emerald-600',
+    condition: (profile, progressMap) => {
+      let completedModules = 0
+      for (const mod of TECHNOLOGY_MODULES) {
+        let moduleComplete = false
+        for (const language of mod.languages) {
+          const languageKey = `${mod.id}-${language.id}`
+          const progress = progressMap.get(languageKey)
+          if (progress?.tutorialProgress?.completed) {
+            moduleComplete = true
+            break
+          }
+        }
+        if (moduleComplete) completedModules++
+      }
+      return completedModules === TECHNOLOGY_MODULES.length
+    },
   },
   {
     id: 'streak-master',
     title: 'Streak Master',
-    description: 'Maintain a 7-day streak',
+    description: 'Maintain a streak',
     icon: '🔥',
     color: 'from-red-500 to-orange-600',
+    condition: (profile, progressMap) => (profile.streak || 0) >= 3,
   },
   {
-    id: 'triple-threat',
-    title: 'Triple Threat',
-    description: 'Complete tutorial, game, and sandbox in one day',
-    icon: '🎭',
-    color: 'from-violet-500 to-purple-700',
+    id: 'hard-mode-hero',
+    title: 'Hard Mode Hero',
+    description: 'Complete hard difficulty challenges',
+    icon: '💪',
+    color: 'from-red-600 to-pink-600',
+    condition: (profile, progressMap) => {
+      let hardCount = 0
+      for (const progress of progressMap.values()) {
+        if (progress.completedDifficulties?.game?.includes('hard')) hardCount++
+        if (progress.completedDifficulties?.sandbox?.includes('hard')) hardCount++
+      }
+      return hardCount >= 3
+    },
+  },
+  {
+    id: 'xp-hunter',
+    title: 'XP Hunter',
+    description: 'Earn 1000 XP',
+    icon: '💎',
+    color: 'from-purple-500 to-indigo-600',
+    condition: (profile, progressMap) => (profile.totalXP || 0) >= 1000,
+  },
+  {
+    id: 'multi-linguist',
+    title: 'Multi-Linguist',
+    description: 'Complete tutorials in 5 languages',
+    icon: '🌍',
+    color: 'from-teal-500 to-emerald-600',
+    condition: (profile, progressMap) => {
+      let completedLanguages = 0
+      for (const progress of progressMap.values()) {
+        if (progress.tutorialProgress?.completed) completedLanguages++
+      }
+      return completedLanguages >= 5
+    },
   },
 ]
 
 export default function AchievementsPage() {
-  const { user, loadFromStorage } = useUserStore()
+  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(true)
+  const [userProfile, setUserProfile] = useState<any>(null)
+  const [languageProgressMap, setLanguageProgressMap] = useState<Map<string, any>>(new Map())
+  const [unlockedAchievements, setUnlockedAchievements] = useState<string[]>([])
 
   useEffect(() => {
-    loadFromStorage()
-  }, [loadFromStorage])
+    const loadData = async () => {
+      const userCode = validateSession(() => router.push('/'))
+      if (!userCode) {
+        return
+      }
 
-  const unlockedIds = user.achievements
-  const unlockedCount = unlockedIds.length
+      try {
+        // Load user profile
+        const profile = await getUserProfile(userCode)
+        if (profile) {
+          setUserProfile(profile)
+        }
+
+        // Load all language progress
+        const progressMap = new Map<string, any>()
+        for (const mod of TECHNOLOGY_MODULES) {
+          for (const language of mod.languages) {
+            const languageKey = `${mod.id}-${language.id}`
+            const progress = await getLanguageProgress(userCode, languageKey)
+            if (progress) {
+              progressMap.set(languageKey, progress)
+            }
+          }
+        }
+        setLanguageProgressMap(progressMap)
+
+        // Check which achievements are unlocked
+        const unlocked: string[] = []
+        for (const achievement of ALL_ACHIEVEMENTS) {
+          if (achievement.condition(profile, progressMap)) {
+            unlocked.push(achievement.id)
+          }
+        }
+        setUnlockedAchievements(unlocked)
+      } catch (error) {
+        console.error('Error loading achievements:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    loadData()
+  }, [router])
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+        <div className="text-white text-2xl">Loading achievements...</div>
+      </div>
+    )
+  }
+
+  const unlockedCount = unlockedAchievements.length
   const totalCount = ALL_ACHIEVEMENTS.length
   const progressPercentage = Math.round((unlockedCount / totalCount) * 100)
 
   return (
-    <div className="min-h-screen pb-20">
+    <div className="min-h-screen pb-20 bg-gradient-to-br from-red-900 via-red-800 to-red-700">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <motion.div
@@ -138,7 +265,7 @@ export default function AchievementsPage() {
             </div>
             <div className="w-full bg-white/20 rounded-full h-4 overflow-hidden">
               <motion.div
-                className="bg-gradient-to-r from-christmas-gold to-yellow-400 h-full rounded-full"
+                className="bg-gradient-to-r from-yellow-400 to-orange-500 h-full rounded-full"
                 initial={{ width: 0 }}
                 animate={{ width: `${progressPercentage}%` }}
                 transition={{ duration: 1 }}
@@ -150,14 +277,14 @@ export default function AchievementsPage() {
         {/* Achievements Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {ALL_ACHIEVEMENTS.map((achievement, index) => {
-            const isUnlocked = unlockedIds.includes(achievement.id)
+            const isUnlocked = unlockedAchievements.includes(achievement.id)
 
             return (
               <motion.div
                 key={achievement.id}
                 className={`
                   glass-card p-6 text-center relative overflow-hidden
-                  ${isUnlocked ? 'ring-2 ring-christmas-gold' : 'opacity-70'}
+                  ${isUnlocked ? 'ring-2 ring-yellow-400' : 'opacity-70'}
                 `}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -189,7 +316,7 @@ export default function AchievementsPage() {
                   )}
 
                   {/* Title */}
-                  <h3 className={`text-xl font-bold mb-2 ${isUnlocked ? 'text-christmas-gold' : 'text-white/50'}`}>
+                  <h3 className={`text-xl font-bold mb-2 ${isUnlocked ? 'text-yellow-400' : 'text-white/50'}`}>
                     {achievement.title}
                   </h3>
 
@@ -201,13 +328,13 @@ export default function AchievementsPage() {
                   {/* Unlocked Badge */}
                   {isUnlocked && (
                     <motion.div
-                      className="mt-4 inline-flex items-center space-x-1 bg-christmas-gold/20 border border-christmas-gold rounded-full px-3 py-1"
+                      className="mt-4 inline-flex items-center space-x-1 bg-yellow-400/20 border border-yellow-400 rounded-full px-3 py-1"
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ delay: 0.2 }}
                     >
-                      <Award className="w-4 h-4 text-christmas-gold" />
-                      <span className="text-christmas-gold text-xs font-semibold">Unlocked</span>
+                      <Award className="w-4 h-4 text-yellow-400" />
+                      <span className="text-yellow-400 text-xs font-semibold">Unlocked</span>
                     </motion.div>
                   )}
                 </div>
@@ -242,7 +369,7 @@ export default function AchievementsPage() {
             transition={{ delay: 0.5 }}
           >
             <div className="text-8xl mb-4">🎊</div>
-            <h3 className="text-3xl font-bold text-christmas-gold mb-2">
+            <h3 className="text-3xl font-bold text-yellow-400 mb-2">
               Congratulations!
             </h3>
             <p className="text-white/90 text-xl">

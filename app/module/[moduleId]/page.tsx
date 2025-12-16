@@ -111,7 +111,7 @@ export default function ModuleLanguagesPage() {
             <Sparkles className="w-5 h-5 md:w-6 md:h-6 text-yellow-400" />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6 max-w-7xl mx-auto px-2">
             {selectedModule.languages.map((language, index) => (
               <LanguageCard
                 key={language.id}
@@ -128,12 +128,12 @@ export default function ModuleLanguagesPage() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="max-w-4xl mx-auto bg-white/10 backdrop-blur-lg rounded-2xl p-4 md:p-6 lg:p-8 border border-white/20"
+          className="max-w-4xl mx-auto bg-white/10 backdrop-blur-lg rounded-2xl p-4 md:p-6 lg:p-8 border border-white/20 mx-2"
         >
           <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-3 md:mb-4 text-center">
             📚 How Learning Works
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 text-white/90">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6 text-white/90">
             <div className="text-center">
               <div className="text-3xl md:text-4xl mb-2">📖</div>
               <h4 className="font-bold mb-2 text-sm md:text-base">Tutorial</h4>

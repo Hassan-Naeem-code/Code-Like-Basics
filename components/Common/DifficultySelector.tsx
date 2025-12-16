@@ -7,7 +7,8 @@ interface DifficultySelectorProps {
   onSelectDifficulty: (difficulty: 'easy' | 'medium' | 'hard') => void
   onClose: () => void
   languageName: string
-  type: 'tutorial' | 'game'
+  type: 'game' | 'sandbox' | 'tutorial'
+  completedDifficulties?: ('easy' | 'medium' | 'hard')[]
 }
 
 export default function DifficultySelector({
@@ -15,6 +16,7 @@ export default function DifficultySelector({
   onClose,
   languageName,
   type,
+  completedDifficulties = [],
 }: DifficultySelectorProps) {
   const difficulties = [
     {
@@ -66,7 +68,7 @@ export default function DifficultySelector({
             Choose Your Difficulty Level
           </motion.h2>
           <p className="text-xl text-white/80">
-            {type === 'tutorial' ? 'Learning' : 'Playing'} <span className="text-blue-400 font-semibold">{languageName}</span>
+            {type === 'sandbox' ? 'Practicing' : 'Playing'} <span className="text-blue-400 font-semibold">{languageName}</span>
           </p>
           <p className="text-sm text-white/60 mt-2">
             Your progress will be saved automatically and you can continue anytime!
@@ -75,49 +77,63 @@ export default function DifficultySelector({
 
         {/* Difficulty Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-          {difficulties.map((diff, index) => (
-            <motion.button
-              key={diff.level}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              onClick={() => onSelectDifficulty(diff.level)}
-              whileHover={{ scale: 1.05, y: -5 }}
-              whileTap={{ scale: 0.95 }}
-              className={`${diff.bgColor} ${diff.borderColor} border-2 rounded-2xl p-6 text-left transition-all hover:shadow-2xl hover:border-opacity-100 group`}
-            >
-              {/* Icon */}
-              <div className={`inline-flex p-4 rounded-xl bg-gradient-to-br ${diff.color} mb-4 group-hover:scale-110 transition-transform`}>
-                <diff.icon className="w-8 h-8 text-white" />
-              </div>
+          {difficulties.map((diff, index) => {
+            const isCompleted = completedDifficulties.includes(diff.level)
+            return (
+              <motion.button
+                key={diff.level}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                onClick={() => onSelectDifficulty(diff.level)}
+                whileHover={{ scale: 1.05, y: -5 }}
+                whileTap={{ scale: 0.95 }}
+                disabled={isCompleted}
+                className={`${diff.bgColor} ${diff.borderColor} border-2 rounded-2xl p-6 text-left transition-all hover:shadow-2xl hover:border-opacity-100 group relative ${
+                  isCompleted ? 'opacity-60 cursor-not-allowed' : ''
+                }`}
+              >
+                {isCompleted && (
+                  <div className="absolute top-3 right-3 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    Completed
+                  </div>
+                )}
+                {/* Icon */}
+                <div className={`inline-flex p-4 rounded-xl bg-gradient-to-br ${diff.color} mb-4 group-hover:scale-110 transition-transform`}>
+                  <diff.icon className="w-8 h-8 text-white" />
+                </div>
 
-              {/* Title */}
-              <h3 className={`text-2xl font-bold ${diff.textColor} mb-2 group-hover:text-white transition-colors`}>
-                {diff.title}
-              </h3>
+                {/* Title */}
+                <h3 className={`text-2xl font-bold ${diff.textColor} mb-2 group-hover:text-white transition-colors`}>
+                  {diff.title}
+                </h3>
 
-              {/* Description */}
-              <p className="text-white/70 text-sm leading-relaxed">
-                {diff.description}
-              </p>
+                {/* Description */}
+                <p className="text-white/70 text-sm leading-relaxed">
+                  {diff.description}
+                </p>
 
-              {/* Level Badge */}
-              <div className="mt-4 flex items-center gap-2">
-                {[...Array(index + 1)].map((_, i) => (
-                  <div
-                    key={i}
-                    className={`h-2 w-8 rounded-full bg-gradient-to-r ${diff.color}`}
-                  />
-                ))}
-                {[...Array(2 - index)].map((_, i) => (
-                  <div
-                    key={i + index + 1}
-                    className="h-2 w-8 rounded-full bg-white/20"
-                  />
-                ))}
-              </div>
-            </motion.button>
-          ))}
+                {/* Level Badge */}
+                <div className="mt-4 flex items-center gap-2">
+                  {[...Array(index + 1)].map((_, i) => (
+                    <div
+                      key={i}
+                      className={`h-2 w-8 rounded-full bg-gradient-to-r ${diff.color}`}
+                    />
+                  ))}
+                  {[...Array(2 - index)].map((_, i) => (
+                    <div
+                      key={i + index + 1}
+                      className="h-2 w-8 rounded-full bg-white/20"
+                    />
+                  ))}
+                </div>
+              </motion.button>
+            )
+          })}
         </div>
 
         {/* Cancel Button */}

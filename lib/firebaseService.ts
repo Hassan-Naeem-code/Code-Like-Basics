@@ -26,6 +26,28 @@ export interface LanguageProgress {
     hints?: number
     score?: number
   }
+  sandboxProgress?: {
+    easy?: {
+      currentExercise: number
+      completedExercises: number[]
+      completed: boolean
+    }
+    medium?: {
+      currentExercise: number
+      completedExercises: number[]
+      completed: boolean
+    }
+    hard?: {
+      currentExercise: number
+      completedExercises: number[]
+      completed: boolean
+    }
+  }
+  completedDifficulties?: {
+    tutorial?: ('easy' | 'medium' | 'hard')[]
+    game?: ('easy' | 'medium' | 'hard')[]
+    sandbox?: ('easy' | 'medium' | 'hard')[]
+  }
   lastAccessed: Timestamp
 }
 
@@ -190,6 +212,22 @@ export async function emptyGlass(code: string): Promise<void> {
   } catch (error) {
     console.error('Error emptying glass:', error)
     throw new Error('Failed to empty glass. Please try again.')
+  }
+}
+
+/**
+ * Forces the glass to full for milestone rewards
+ */
+export async function fillGlass(code: string): Promise<void> {
+  try {
+    const userRef = doc(db, USERS_COLLECTION, code)
+    await updateDoc(userRef, {
+      glassProgress: 100,
+      lastActive: Timestamp.now(),
+    })
+  } catch (error) {
+    console.error('Error filling glass:', error)
+    throw new Error('Failed to fill glass. Please try again.')
   }
 }
 
@@ -362,7 +400,8 @@ export async function updateGameProgress(
     lives?: number
     hints?: number
     score?: number
-  }
+  },
+  difficulty?: 'easy' | 'medium' | 'hard'
 ): Promise<void> {
   try {
     const userRef = doc(db, USERS_COLLECTION, code)
@@ -389,6 +428,12 @@ export async function updateGameProgress(
       hints: gameState?.hints,
       score: gameState?.score,
     }
+    
+    // If game is completed and difficulty is provided, mark globally complete
+    if (completed && difficulty) {
+      markDifficultyCompleteGlobally(languageProgress[languageKey], difficulty)
+    }
+    
     languageProgress[languageKey].lastAccessed = Timestamp.now()
 
     await updateDoc(userRef, {
@@ -399,4 +444,132 @@ export async function updateGameProgress(
     console.error('Error updating game progress:', error)
     throw new Error('Failed to save game progress. Please try again.')
   }
+}
+
+/**
+ * Updates sandbox progress for a language at a specific difficulty
+ */
+export async function updateSandboxProgress(
+  code: string,
+  languageKey: string,
+  difficulty: 'easy' | 'medium' | 'hard',
+  currentExercise: number,
+  completedExercises: number[],
+  totalExercises: number
+): Promise<void> {
+  try {
+    const userRef = doc(db, USERS_COLLECTION, code)
+    const userDoc = await getDoc(userRef)
+
+    if (!userDoc.exists()) {
+      throw new Error('User not found')
+    }
+
+    const userData = userDoc.data() as UserProfile
+    const languageProgress = userData.languageProgress || {}
+
+    if (!languageProgress[languageKey]) {
+      throw new Error('Language progress not initialized')
+    }
+
+    const isCompleted = completedExercises.length >= totalExercises
+
+    // Initialize sandboxProgress if it doesn't exist
+    if (!languageProgress[languageKey].sandboxProgress) {
+      languageProgress[languageKey].sandboxProgress = {}
+    }
+
+    // Update progress for specific difficulty
+    languageProgress[languageKey].sandboxProgress![difficulty] = {
+      currentExercise,
+      completedExercises,
+      completed: isCompleted,
+    }
+
+    // If sandbox is completed, mark difficulty complete globally (for both game and sandbox)
+    if (isCompleted) {
+      markDifficultyCompleteGlobally(languageProgress[languageKey], difficulty)
+    }
+
+    languageProgress[languageKey].lastAccessed = Timestamp.now()
+
+    await updateDoc(userRef, {
+      languageProgress,
+      lastActive: Timestamp.now(),
+    })
+  } catch (error) {
+    console.error('Error updating sandbox progress:', error)
+    throw new Error('Failed to save sandbox progress. Please try again.')
+  }
+}
+
+/**
+ * Get all globally completed difficulties (merged from all modes)
+ */
+export function getGlobalCompletedDifficulties(
+  completedDifficulties?: {
+    tutorial?: ('easy' | 'medium' | 'hard')[]
+    game?: ('easy' | 'medium' | 'hard')[]
+    sandbox?: ('easy' | 'medium' | 'hard')[]
+  }
+): ('easy' | 'medium' | 'hard')[] {
+  if (!completedDifficulties) return []
+
+  const allCompleted = new Set<'easy' | 'medium' | 'hard'>()
+
+  // For game and sandbox, they share completion (completing one completes both)
+  // Merge game and sandbox difficulties
+  if (completedDifficulties.game) {
+    completedDifficulties.game.forEach(d => allCompleted.add(d))
+  }
+  if (completedDifficulties.sandbox) {
+    completedDifficulties.sandbox.forEach(d => allCompleted.add(d))
+  }
+
+  return Array.from(allCompleted)
+}
+
+/**
+ * Mark a difficulty as complete across Game and Sandbox modes
+ * This ensures that once a difficulty is completed in either Game or Sandbox, it's marked complete for both
+ */
+function markDifficultyCompleteGlobally(
+  languageProgress: LanguageProgress,
+  difficulty: 'easy' | 'medium' | 'hard'
+): void {
+  if (!languageProgress.completedDifficulties) {
+    languageProgress.completedDifficulties = {}
+  }
+
+  // Add to both game and sandbox arrays (they share completion)
+  const modes: ('game' | 'sandbox')[] = ['game', 'sandbox']
+  modes.forEach(mode => {
+    if (!languageProgress.completedDifficulties![mode]) {
+      languageProgress.completedDifficulties![mode] = []
+    }
+    if (!languageProgress.completedDifficulties![mode]!.includes(difficulty)) {
+      languageProgress.completedDifficulties![mode]!.push(difficulty)
+    }
+  })
+}
+
+/**
+ * Get the next available difficulty for a user in sandbox/game
+ */
+export function getNextDifficulty(
+  completedDifficulties?: ('easy' | 'medium' | 'hard')[]
+): 'easy' | 'medium' | 'hard' | null {
+  if (!completedDifficulties || completedDifficulties.length === 0) {
+    return 'easy'
+  }
+  if (!completedDifficulties.includes('easy')) {
+    return 'easy'
+  }
+  if (!completedDifficulties.includes('medium')) {
+    return 'medium'
+  }
+  if (!completedDifficulties.includes('hard')) {
+    return 'hard'
+  }
+  return null // All difficulties completed
 }

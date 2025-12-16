@@ -5,6 +5,7 @@ import ProgressGlass from './ProgressGlass'
 import SantaDrinkingAnimation from './SantaDrinkingAnimation'
 import { getUserProfile, emptyGlass } from '@/lib/firebaseService'
 import type { UserProfile } from '@/lib/firebaseService'
+import { getSession } from '@/utils/sessionManager'
 
 // Global event emitter for profile refresh
 export const triggerProfileRefresh = () => {
@@ -19,7 +20,7 @@ export default function GlobalProgressGlass() {
 
   useEffect(() => {
     const loadUserProfile = async () => {
-      const userCode = localStorage.getItem('userCode')
+      const userCode = getSession()
       if (!userCode) return
 
       const profile = await getUserProfile(userCode)

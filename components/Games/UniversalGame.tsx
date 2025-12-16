@@ -11,12 +11,14 @@ import {
   initializeLanguageProgress,
   updateGameProgress,
   addUserXP,
-  getUserProfile
+  getUserProfile,
+  fillGlass
 } from '@/lib/firebaseService'
 import confetti from 'canvas-confetti'
 import Certificate from '@/components/Common/Certificate'
 import { triggerAchievementCheck } from '@/components/Common/AchievementProvider'
 import { triggerProfileRefresh } from '@/components/Progress/GlobalProgressGlass'
+import { getSession } from '@/utils/sessionManager'
 
 interface UniversalGameProps {
   language: Language
@@ -40,6 +42,7 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
   const [userName, setUserName] = useState<string>('')
   const [allCompleted, setAllCompleted] = useState(false)
   const [showCertificate, setShowCertificate] = useState(false)
+  const [showCelebration, setShowCelebration] = useState(false)
 
   const languageKey = `${moduleId}-${languageId}`
 
@@ -52,7 +55,7 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
   useEffect(() => {
     const loadProgress = async () => {
       setIsLoading(true)
-      const code = localStorage.getItem('userCode')
+      const code = getSession()
       setUserCode(code)
 
       if (!code) {
@@ -119,7 +122,8 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
           lives: currentLives ?? lives,
           hints: currentHints ?? hints,
           score: currentScore ?? score,
-        }
+        },
+        difficulty // Pass difficulty to mark globally complete when done
       )
     } catch (error) {
       console.error('Error saving game progress:', error)
@@ -160,7 +164,7 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
         })
 
         // Check if all levels complete
-        const isFullyCompleted = newCompleted.length === totalLevels
+        const isFullyCompleted = newCompleted.length >= totalLevels
 
         if (isFullyCompleted) {
           setAllCompleted(true)
@@ -168,11 +172,15 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
           // Bonus XP for completing all levels
           if (userCode) {
             await addUserXP(userCode, 300) // 300 XP bonus
+            await fillGlass(userCode)
 
             // Trigger profile refresh and achievement check
             triggerProfileRefresh()
             triggerAchievementCheck()
           }
+
+          // Show celebration first
+          setShowCelebration(true)
 
           confetti({
             particleCount: 200,
@@ -180,10 +188,11 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
             origin: { y: 0.6 },
           })
 
-          // Show certificate after 2 seconds
+          // Show certificate after celebration
           setTimeout(() => {
+            setShowCelebration(false)
             setShowCertificate(true)
-          }, 2000)
+          }, 4000)
         }
 
         // Save progress with updated score
@@ -283,6 +292,54 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-pink-900 pb-20">
+      {/* Celebration Modal */}
+      <AnimatePresence>
+        {showCelebration && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.5, opacity: 0 }}
+              className="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl md:rounded-3xl p-6 sm:p-8 md:p-10 lg:p-12 text-center shadow-2xl max-w-md mx-4"
+            >
+              <motion.div
+                animate={{ rotate: 360, scale: [1, 1.2, 1] }}
+                transition={{ duration: 1, repeat: 3 }}
+              >
+                <Trophy className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 mx-auto text-white mb-4 sm:mb-5 md:mb-6" />
+              </motion.div>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 md:mb-4">
+                Congratulations! 🎉
+              </h2>
+              <p className="text-lg sm:text-xl md:text-2xl text-white/90 mb-3 md:mb-4">
+                You completed the {language.name} game at {getDifficultyLabel()} level!
+              </p>
+              <p className="text-base sm:text-lg md:text-xl text-white/80">
+                +300 XP Bonus!
+              </p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Certificate Modal */}
+      <AnimatePresence>
+        {showCertificate && userName && (
+          <Certificate
+            userName={userName}
+            languageName={language.name}
+            difficulty={difficulty}
+            type="game"
+            onClose={() => setShowCertificate(false)}
+          />
+        )}
+      </AnimatePresence>
+
       <div className="container mx-auto px-2 sm:px-4 py-4 md:py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-4 md:mb-8 flex-wrap gap-2 md:gap-4">
@@ -298,7 +355,7 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
             <span className="sm:hidden">Back</span>
           </motion.button>
 
-          <div className="flex items-center gap-1.5 sm:gap-2 md:gap-4 flex-wrap">
+          <div className="flex items-center gap-1.5 sm:gap-2 md:gap-4 flex-wrap w-full justify-center md:justify-start">
             {/* Lives */}
             <div className="flex items-center gap-1 sm:gap-2 bg-red-500/20 backdrop-blur-lg rounded-xl px-2 sm:px-3 md:px-4 py-1.5 md:py-2">
               {[...Array(3)].map((_, i) => (
@@ -321,7 +378,7 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
             </button>
 
             {/* Score */}
-            <div className="bg-white/10 backdrop-blur-lg rounded-xl px-2 sm:px-4 md:px-6 py-1.5 md:py-2">
+            <div className="bg-white/10 backdrop-blur-lg rounded-xl px-2 sm:px-4 md:px-6 py-1.5 md:py-2 min-w-[120px] text-center">
               <p className="text-white font-bold text-sm sm:text-base md:text-xl">Score: {score}</p>
             </div>
           </div>
@@ -331,9 +388,9 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-4 md:mb-8"
+          className="text-center mb-3 md:mb-6"
         >
-          <div className="text-4xl sm:text-5xl md:text-6xl mb-3 md:mb-4">{language.icon}</div>
+          <div className="text-4xl sm:text-5xl md:text-6xl mb-2 md:mb-3">{language.icon}</div>
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-2 px-2">
             {language.name} Quiz Challenge
           </h1>
@@ -346,7 +403,7 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
         </motion.div>
 
         {/* Progress Bar */}
-        <div className="max-w-4xl mx-auto mb-4 md:mb-8">
+        <div className="max-w-4xl mx-auto mb-3 md:mb-6 px-2">
           <div className="flex items-center justify-between mb-2 text-xs sm:text-sm md:text-base">
             <p className="text-white font-semibold">
               Level {currentLevel + 1} of {totalLevels}
