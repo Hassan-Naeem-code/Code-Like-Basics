@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowLeft, ArrowRight, BookOpen, Code2, Play } from 'lucide-react'
+import { ArrowLeft, ArrowRight, BookOpen, Code2, Play, Rocket } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import ReactMarkdown from 'react-markdown'
 import { Tutorial } from '@/utils/comprehensiveTutorialContent'
 import { Language } from '@/utils/techModules'
 import {
@@ -27,6 +28,7 @@ export default function InteractiveTutorial({
   languageId,
 }: InteractiveTutorialProps) {
   const router = useRouter()
+  const [showIntro, setShowIntro] = useState(true) // Start with intro screen
   const [currentSection, setCurrentSection] = useState(0)
   const [completedSections, setCompletedSections] = useState<number[]>([])
   const [editorCode, setEditorCode] = useState('')
@@ -68,6 +70,10 @@ export default function InteractiveTutorial({
           const boundedSection = Math.min(Math.max(saved.currentSection, 0), Math.max(totalSections - 1, 0))
           setCurrentSection(boundedSection)
           setCompletedSections(saved.completedSections ?? [])
+          // Skip intro if user has already started the tutorial
+          if (saved.currentSection > 0 || (saved.completedSections && saved.completedSections.length > 0)) {
+            setShowIntro(false)
+          }
         } else {
           // Initialize if missing
           await initializeLanguageProgress(code, languageKey, 'easy', totalSections, 10)
@@ -119,9 +125,29 @@ export default function InteractiveTutorial({
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 flex items-center justify-center p-4">
-        <div className="text-center text-white">
-          <div className="text-5xl mb-3">📚</div>
-          <p className="text-xl font-semibold">Loading your tutorial...</p>
+        <div className="flex flex-col items-center gap-6">
+          {/* Book icon with pulse animation */}
+          <div className="text-7xl animate-pulse">📚</div>
+
+          {/* Modern Animated Spinner */}
+          <div className="relative">
+            {/* Outer rotating ring */}
+            <div className="w-16 h-16 rounded-full border-4 border-white/20 border-t-white animate-spin"></div>
+            {/* Inner pulsing circle */}
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-white/20 rounded-full animate-pulse"></div>
+          </div>
+
+          {/* Animated text */}
+          <p className="text-white text-xl font-semibold animate-pulse">
+            Loading your tutorial...
+          </p>
+
+          {/* Animated dots */}
+          <div className="flex gap-2">
+            <div className="w-2.5 h-2.5 bg-white rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+            <div className="w-2.5 h-2.5 bg-white rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+            <div className="w-2.5 h-2.5 bg-white rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+          </div>
         </div>
       </div>
     )
@@ -140,6 +166,112 @@ export default function InteractiveTutorial({
           >
             Back to Dashboard
           </button>
+        </div>
+      </div>
+    )
+  }
+
+  // Introduction Screen (W3Schools style - shown before lessons)
+  if (showIntro && sections.length > 0) {
+    const introSection = sections[0] // Get the first section which has the intro content
+
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900">
+        {/* Header */}
+        <div className="bg-white/10 backdrop-blur-lg border-b border-white/20">
+          <div className="container mx-auto px-4 py-4">
+            <div className="flex items-center justify-between">
+              <button
+                onClick={() => router.push(`/module/${moduleId}`)}
+                className="flex items-center gap-2 text-white/80 hover:text-white transition-colors"
+              >
+                <ArrowLeft className="w-5 h-5" />
+                <span className="hidden sm:inline">Back</span>
+              </button>
+
+              <div className="flex items-center gap-3">
+                <div className="text-3xl">{language.icon}</div>
+                <div>
+                  <h1 className="text-white font-bold text-lg md:text-xl">{language.name}</h1>
+                  <p className="text-white/60 text-xs md:text-sm">Complete Tutorial</p>
+                </div>
+              </div>
+
+              <div className="text-white/80 text-sm">
+                Introduction
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Introduction Content */}
+        <div className="container mx-auto px-4 py-8 md:py-12 max-w-4xl">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="bg-white rounded-2xl shadow-2xl p-6 md:p-10 lg:p-12"
+          >
+            {/* Welcome Icon */}
+            <div className="flex justify-center mb-8">
+              <div className="text-7xl md:text-8xl">{language.icon}</div>
+            </div>
+
+            {/* Markdown Content */}
+            <div className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-h1:text-4xl prose-h1:font-bold prose-h1:mb-6 prose-h2:text-2xl prose-h2:font-bold prose-h2:mt-8 prose-h2:mb-4 prose-p:text-gray-700 prose-p:leading-relaxed prose-li:text-gray-700 prose-strong:text-gray-900 prose-strong:font-semibold">
+              <ReactMarkdown>{introSection.content}</ReactMarkdown>
+            </div>
+
+            {/* Code Example */}
+            {introSection.codeExample && (
+              <div className="mt-8 bg-gray-900 rounded-xl p-6 overflow-x-auto">
+                <div className="flex items-center gap-2 mb-3">
+                  <Code2 className="w-5 h-5 text-green-400" />
+                  <h3 className="text-white font-semibold">Example Code</h3>
+                </div>
+                <pre className="text-green-400 font-mono text-sm">
+                  <code>{introSection.codeExample}</code>
+                </pre>
+              </div>
+            )}
+
+            {/* Start Tutorial Button */}
+            <div className="mt-10 flex justify-center">
+              <button
+                onClick={() => setShowIntro(false)}
+                className="group flex items-center gap-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold text-lg px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+              >
+                <Rocket className="w-6 h-6 group-hover:animate-bounce" />
+                Start Tutorial - {totalSections} Lessons
+                <ArrowRight className="w-6 h-6" />
+              </button>
+            </div>
+
+            {/* Features Preview */}
+            <div className="mt-12 grid md:grid-cols-3 gap-6">
+              <div className="text-center">
+                <div className="bg-blue-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <BookOpen className="w-6 h-6 text-blue-600" />
+                </div>
+                <h4 className="font-semibold text-gray-900 mb-1">{totalSections} Lessons</h4>
+                <p className="text-sm text-gray-600">From basics to advanced</p>
+              </div>
+              <div className="text-center">
+                <div className="bg-green-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Code2 className="w-6 h-6 text-green-600" />
+                </div>
+                <h4 className="font-semibold text-gray-900 mb-1">Interactive Code</h4>
+                <p className="text-sm text-gray-600">Try examples yourself</p>
+              </div>
+              <div className="text-center">
+                <div className="bg-purple-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Play className="w-6 h-6 text-purple-600" />
+                </div>
+                <h4 className="font-semibold text-gray-900 mb-1">Hands-on Practice</h4>
+                <p className="text-sm text-gray-600">Learn by doing</p>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </div>
     )
@@ -206,11 +338,9 @@ export default function InteractiveTutorial({
               </div>
             </div>
 
-            {/* Content */}
-            <div className="prose prose-lg max-w-none">
-              <p className="text-gray-700 text-lg leading-relaxed mb-6">
-                {section.content}
-              </p>
+            {/* Content - Rendered with Markdown */}
+            <div className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-h2:text-xl prose-h2:font-bold prose-h2:mt-6 prose-h2:mb-3 prose-h3:text-lg prose-h3:font-semibold prose-h3:mt-4 prose-h3:mb-2 prose-p:text-gray-700 prose-p:leading-relaxed prose-li:text-gray-700 prose-strong:text-gray-900 prose-strong:font-semibold prose-ul:my-4 prose-ol:my-4">
+              <ReactMarkdown>{section.content}</ReactMarkdown>
 
               {/* Syntax Box */}
               {section.syntax && (
