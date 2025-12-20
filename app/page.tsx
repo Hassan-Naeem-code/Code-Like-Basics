@@ -19,18 +19,31 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // Try to migrate old session format if exists
-    migrateOldSession()
+    const checkSession = async () => {
+      try {
+        // Try to migrate old session format if exists
+        migrateOldSession()
 
-    // Check if user already has a valid session
-    const existingCode = getSession()
+        // Check if user already has a valid session
+        const existingCode = getSession()
 
-    if (existingCode) {
-      // User already onboarded, redirect to dashboard
-      router.push('/dashboard')
-    } else {
-      setIsLoading(false)
+        if (existingCode) {
+          // User already onboarded, redirect to dashboard
+          router.push('/dashboard')
+          // Set a timeout in case redirect fails
+          setTimeout(() => {
+            setIsLoading(false)
+          }, 2000)
+        } else {
+          setIsLoading(false)
+        }
+      } catch (error) {
+        console.error('Session check error:', error)
+        setIsLoading(false)
+      }
     }
+
+    checkSession()
   }, [router])
 
   const handleUserTypeSelect = (type: 'new' | 'returning') => {
@@ -76,7 +89,27 @@ export default function Home() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
-        <div className="text-white text-2xl">Loading...</div>
+        <div className="flex flex-col items-center gap-6">
+          {/* Modern Animated Spinner */}
+          <div className="relative">
+            {/* Outer rotating ring */}
+            <div className="w-20 h-20 rounded-full border-4 border-white/20 border-t-white animate-spin"></div>
+            {/* Inner pulsing circle */}
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-white/20 rounded-full animate-pulse"></div>
+          </div>
+
+          {/* Animated text */}
+          <div className="text-white text-xl font-semibold animate-pulse">
+            Loading your experience...
+          </div>
+
+          {/* Animated dots */}
+          <div className="flex gap-2">
+            <div className="w-3 h-3 bg-white rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+            <div className="w-3 h-3 bg-white rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+            <div className="w-3 h-3 bg-white rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+          </div>
+        </div>
       </div>
     )
   }
