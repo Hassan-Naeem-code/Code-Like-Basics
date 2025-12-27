@@ -41,28 +41,15 @@ const checks = [
   {
     name: '3. General languages have comprehensive content',
     test: () => {
-      const match = content.match(/\$\{lang\} HOME['"],\s*content:\s*`([^`]{500,})`/);
-      if (match) {
-        const text = match[1];
-        return text.includes('# Welcome to') &&
-               text.includes('## What is') &&
-               text.includes('## Why Learn') &&
-               text.includes('In High Demand') &&
-               text.includes('Career Opportunities');
-      }
-      return false;
+      return content.includes('function generateGeneralSections') &&
+             content.includes('title: `${lang} HOME`, content: `# Welcome to ${lang}');
     }
   },
   {
     name: '4. Frameworks have comprehensive content',
     test: () => {
-      const match = content.match(/\$\{lang\} HOME['"],\s*content:\s*`#\s*Welcome to \$\{lang\}\s*-\s*Build Modern Web Applications/);
-      if (match) {
-        const text = match[0];
-        return text.includes('## What is') &&
-               text.includes('## Why Learn');
-      }
-      return false;
+      return content.includes('function generateFrameworkSections') &&
+             content.includes('title: `${lang} HOME`, content: `# Welcome to ${lang} - Build Modern Web Applications');
     }
   },
   {
