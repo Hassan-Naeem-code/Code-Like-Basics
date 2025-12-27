@@ -109,7 +109,9 @@ export default function InteractiveTutorial({
 
   const handleRunCode = () => {
     // Simple output simulation
-    setOutput(`✓ Code executed successfully!\n\n// Output:\n${editorCode}\n\n// In a real environment, this would execute and show results.`)
+    setOutput(
+      `✓ Simulation: Previewing your code below.\n\n// This is a mock run for learning purposes.\n// Real execution will be available soon for supported languages.\n\n--- Begin Preview ---\n${editorCode}\n--- End Preview ---`
+    )
   }
 
   const saveProgress = async (newSection: number, completed: number[]) => {
@@ -340,7 +342,7 @@ export default function InteractiveTutorial({
 
             {/* Content - Rendered with Markdown */}
             <div className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-h2:text-xl prose-h2:font-bold prose-h2:mt-6 prose-h2:mb-3 prose-h3:text-lg prose-h3:font-semibold prose-h3:mt-4 prose-h3:mb-2 prose-p:text-gray-700 prose-p:leading-relaxed prose-li:text-gray-700 prose-strong:text-gray-900 prose-strong:font-semibold prose-ul:my-4 prose-ol:my-4">
-              <ReactMarkdown>{section.content}</ReactMarkdown>
+              <ReactMarkdown>{(section.content && section.content.trim().length >= 200) ? section.content : `## What You'll Learn\n${section.title}\n\n## Lesson Overview\nThis section is being enriched. Explore the concepts of ${section.title} with clear guidance, examples, and practice tasks.\n\n### Example\n\n\`\`\`txt\n${section.title} example\n\`\`\`\n\n### Best Practices\n- Use small, focused examples\n- Practice iteratively\n- Keep code readable\n\n### Practice\n- Write a small demo using ${section.title}\n- Add one improvement (like validation or styling)`}</ReactMarkdown>
 
               {/* Syntax Box */}
               {section.syntax && (
