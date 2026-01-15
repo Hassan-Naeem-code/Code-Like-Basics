@@ -11,6 +11,7 @@ import type { UserProfile } from '@/lib/firebaseService'
 import { useUserStore } from '@/stores/userStore'
 import { validateSession, clearSession } from '@/utils/sessionManager'
 import { XP_REWARDS } from '@/hooks/useXP'
+import { SkeletonDashboard } from '@/components/Common/Skeleton'
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -78,13 +79,8 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-purple-dark via-brand-purple to-brand-blue-dark">
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-        >
-          <Sparkles className="w-16 h-16 text-brand-gold" />
-        </motion.div>
+      <div className="min-h-screen p-6 md:p-8 lg:p-12">
+        <SkeletonDashboard />
       </div>
     )
   }

@@ -9,6 +9,8 @@ import ErrorBoundary from "../Common/ErrorBoundary";
 import { getSession } from "@/utils/sessionManager";
 import { ToastProvider, setGlobalToast, useToast } from "../Common/Toast";
 import OfflineBanner from "../Common/OfflineBanner";
+import useKeyboardNavigation from "@/hooks/useKeyboardNavigation";
+import { useThemeStore } from "@/stores/themeStore";
 
 // Client-only shell to lazy-load heavy visual components
 const GlobalLearningTree = dynamic(
@@ -20,6 +22,10 @@ const AICoachButton = dynamic(() => import("../AICoach/AICoachButton"), {
   loading: () => null,
 });
 const AICoachPopup = dynamic(() => import("../AICoach/AICoachPopup"), {
+  ssr: false,
+  loading: () => null,
+});
+const KeyboardShortcutsHelp = dynamic(() => import("../Common/KeyboardShortcutsHelp"), {
   ssr: false,
   loading: () => null,
 });
@@ -42,22 +48,39 @@ function ToastInitializer() {
 export default function ClientShell({ children }: Props) {
   const pathname = usePathname();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { loadTheme } = useThemeStore();
+
+  // Initialize keyboard navigation
+  useKeyboardNavigation({ enabled: true });
+
+  useEffect(() => {
+    // Load theme on mount
+    loadTheme();
+  }, [loadTheme]);
 
   useEffect(() => {
     // Check if user is authenticated
     const session = getSession();
     setIsAuthenticated(!!session);
 
-    // Also listen for storage events (when session is created/changed)
+    // Listen for storage changes from OTHER tabs
     const handleStorageChange = () => {
       const session = getSession();
       setIsAuthenticated(!!session);
     };
 
+    // Listen for session changes in SAME tab (custom event)
+    const handleSessionChange = (e: Event) => {
+      const customEvent = e as CustomEvent<{ authenticated: boolean }>;
+      setIsAuthenticated(customEvent.detail.authenticated);
+    };
+
     window.addEventListener('storage', handleStorageChange);
-    
+    window.addEventListener('session-changed', handleSessionChange);
+
     return () => {
       window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('session-changed', handleSessionChange);
     };
   }, [pathname]); // Re-check on route change
 
@@ -65,6 +88,13 @@ export default function ClientShell({ children }: Props) {
     <ToastProvider>
       <ToastInitializer />
       <OfflineBanner />
+      <KeyboardShortcutsHelp />
+
+      {/* Skip to main content for keyboard users */}
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
+
       <div className="w-full min-w-full overflow-x-hidden">
         {/* Progress tracking with isolated error boundary */}
         <ErrorBoundary
@@ -98,7 +128,9 @@ export default function ClientShell({ children }: Props) {
 
         {/* Main content with comprehensive error boundary */}
         <ErrorBoundary>
-          <main className="relative z-10 w-full">{children}</main>
+          <main id="main-content" className="relative z-10 w-full" role="main">
+            {children}
+          </main>
         </ErrorBoundary>
       </div>
     </ToastProvider>

@@ -4,10 +4,11 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { Home, Trophy, BookOpen, LogOut, Hammer } from 'lucide-react'
+import { Home, Trophy, BookOpen, LogOut, Hammer, Keyboard } from 'lucide-react'
 import { useUserStore } from '@/stores/userStore'
 import { useEffect, useState } from 'react'
 import { clearSession, getSession } from '@/utils/sessionManager'
+import ThemeToggle from '../Common/ThemeToggle'
 
 export default function Navbar() {
   const router = useRouter()
@@ -25,20 +26,28 @@ export default function Navbar() {
     loadFromStorage()
     checkAuth()
 
-    // Listen for storage changes (instant update when session changes)
+    // Listen for storage changes from OTHER tabs
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'user_session' || e.key === null) {
+      if (e.key === 'userSession' || e.key === null) {
         checkAuth()
       }
     }
-    window.addEventListener('storage', handleStorageChange)
 
-    // Also poll less frequently as a fallback (every 30 seconds instead of 1 second)
-    const interval = setInterval(checkAuth, 30000)
+    // Listen for session changes in SAME tab (custom event)
+    const handleSessionChange = (e: Event) => {
+      const customEvent = e as CustomEvent<{ authenticated: boolean }>
+      setIsAuthenticated(customEvent.detail.authenticated)
+      if (customEvent.detail.authenticated) {
+        loadFromStorage()
+      }
+    }
+
+    window.addEventListener('storage', handleStorageChange)
+    window.addEventListener('session-changed', handleSessionChange)
 
     return () => {
-      clearInterval(interval)
       window.removeEventListener('storage', handleStorageChange)
+      window.removeEventListener('session-changed', handleSessionChange)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadFromStorage])
@@ -102,9 +111,21 @@ export default function Navbar() {
           ))}
         </div>
 
-        {/* User Stats */}
+        {/* User Stats & Controls */}
         <div className="flex items-center space-x-1.5 sm:space-x-2 xl:space-x-4">
-          {/* <SoundToggle /> */}
+          {/* Theme Toggle */}
+          <ThemeToggle className="hidden sm:flex" />
+
+          {/* Keyboard Shortcuts */}
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('show-shortcuts-help'))}
+            className="hidden xl:flex p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all focus:outline-none focus:ring-2 focus:ring-brand-gold"
+            title="Keyboard shortcuts (Ctrl+/)"
+            aria-label="Show keyboard shortcuts"
+          >
+            <Keyboard className="w-5 h-5 text-white/80" />
+          </button>
+
           <div className="glass-card px-1.5 sm:px-2 xl:px-4 py-1 sm:py-1.5 xl:py-2 flex items-center space-x-1 sm:space-x-1.5 xl:space-x-3">
             <div className="flex items-center space-x-0.5">
               <span className="text-sm sm:text-base xl:text-xl">⭐</span>

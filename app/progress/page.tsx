@@ -8,6 +8,7 @@ import { validateSession } from '@/utils/sessionManager'
 import { getUserProfile, getLanguageProgress, getGlobalCompletedDifficulties, type UserProfile } from '@/lib/firebaseService'
 import { TECHNOLOGY_MODULES } from '@/utils/techModules'
 import Certificate from '@/components/Common/Certificate'
+import { Skeleton, SkeletonProgressTree } from '@/components/Common/Skeleton'
 
 interface LanguageProgressData {
   tutorialProgress: number
@@ -74,8 +75,49 @@ export default function ProgressPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
-        <div className="text-white text-2xl">Loading your progress...</div>
+      <div className="min-h-screen p-6 md:p-8">
+        <div className="container mx-auto space-y-8">
+          {/* Header skeleton */}
+          <div className="text-center space-y-4">
+            <Skeleton variant="text" height={48} className="w-64 mx-auto" />
+            <Skeleton variant="text" height={24} className="w-96 mx-auto" />
+          </div>
+
+          {/* Stats skeleton */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="glass-card p-6 flex flex-col items-center space-y-3">
+                <Skeleton variant="circular" width={48} height={48} />
+                <Skeleton variant="text" height={40} className="w-20" />
+                <Skeleton variant="text" height={16} className="w-24" />
+              </div>
+            ))}
+          </div>
+
+          {/* Tree skeleton */}
+          <SkeletonProgressTree />
+
+          {/* Language progress skeleton */}
+          <div className="glass-card p-8 space-y-6">
+            <Skeleton variant="text" height={32} className="w-48" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div key={i} className="bg-white/10 rounded-xl p-6 space-y-4">
+                  <div className="flex items-center gap-3">
+                    <Skeleton variant="circular" width={48} height={48} />
+                    <div className="space-y-2">
+                      <Skeleton variant="text" height={20} className="w-24" />
+                      <Skeleton variant="text" height={14} className="w-16" />
+                    </div>
+                  </div>
+                  <Skeleton variant="rounded" height={8} className="w-full" />
+                  <Skeleton variant="rounded" height={8} className="w-full" />
+                  <Skeleton variant="rounded" height={8} className="w-full" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     )
   }

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Award, Lock } from 'lucide-react'
 import { validateSession } from '@/utils/sessionManager'
+import { Skeleton, SkeletonAchievementCard } from '@/components/Common/Skeleton'
 import { getUserProfile, getLanguageProgress, type UserProfile, type LanguageProgress } from '@/lib/firebaseService'
 import { TECHNOLOGY_MODULES } from '@/utils/techModules'
 
@@ -231,8 +232,34 @@ export default function AchievementsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
-        <div className="text-white text-2xl">Loading achievements...</div>
+      <div className="min-h-screen p-6 md:p-8">
+        <div className="container mx-auto space-y-8">
+          {/* Header skeleton */}
+          <div className="text-center space-y-4">
+            <Skeleton variant="text" height={48} className="w-64 mx-auto" />
+            <Skeleton variant="text" height={24} className="w-80 mx-auto" />
+            {/* Progress bar skeleton */}
+            <div className="max-w-md mx-auto space-y-2">
+              <div className="flex justify-between">
+                <Skeleton variant="text" height={16} className="w-16" />
+                <Skeleton variant="text" height={16} className="w-12" />
+              </div>
+              <Skeleton variant="rounded" height={16} className="w-full" />
+            </div>
+          </div>
+
+          {/* Achievement cards skeleton */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div key={i} className="glass-card p-6 flex flex-col items-center space-y-4">
+                <Skeleton variant="circular" width={64} height={64} />
+                <Skeleton variant="text" height={24} className="w-32" />
+                <Skeleton variant="text" height={16} className="w-40" />
+                <Skeleton variant="rounded" height={28} className="w-24" />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     )
   }

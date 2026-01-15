@@ -59,6 +59,11 @@ export function createSession(userCode: string): boolean {
     localStorage.setItem(SESSION_KEY, JSON.stringify(sessionData))
     localStorage.setItem(SESSION_TIMESTAMP_KEY, now.toString())
 
+    // Dispatch custom event for same-tab listeners
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('session-changed', { detail: { authenticated: true } }))
+    }
+
     return true
   } catch (error) {
     console.error('Error creating session:', error)
@@ -141,6 +146,11 @@ export function clearSession(): void {
     localStorage.removeItem(SESSION_KEY)
     localStorage.removeItem(SESSION_TIMESTAMP_KEY)
     localStorage.removeItem('userCode') // Remove old unsecure key if exists
+
+    // Dispatch custom event for same-tab listeners
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('session-changed', { detail: { authenticated: false } }))
+    }
   } catch (error) {
     console.error('Error clearing session:', error)
   }
