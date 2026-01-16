@@ -146,87 +146,87 @@ export default function ProgressPage() {
         <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <motion.div
-          className="text-center mb-12"
+          className="text-center mb-6 sm:mb-8 md:mb-12"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <h1 className="text-5xl font-bold text-white text-glow mb-4">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl 2xl:text-6xl font-bold text-white text-glow mb-2 sm:mb-3 md:mb-4 px-2">
             📊 Your Progress
           </h1>
-          <p className="text-xl text-white/80">
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl 2xl:text-2xl text-white/80 px-4">
             Track your learning journey across all topics
           </p>
         </motion.div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-8 md:mb-12">
           <motion.div
-            className="glass-card p-6 text-center"
+            className="glass-card p-3 sm:p-4 md:p-6 2xl:p-8 text-center"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.1 }}
           >
-            <Trophy className="w-12 h-12 text-yellow-400 mx-auto mb-3" />
-            <div className="text-4xl font-bold text-yellow-400 mb-2">
+            <Trophy className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 2xl:w-14 2xl:h-14 text-yellow-400 mx-auto mb-2 sm:mb-3" />
+            <div className="text-2xl sm:text-3xl md:text-4xl 2xl:text-5xl font-bold text-yellow-400 mb-1 sm:mb-2">
               Lv.{userProfile.level}
             </div>
-            <div className="text-white/70 text-sm">Your Level</div>
+            <div className="text-white/70 text-xs sm:text-sm 2xl:text-base">Your Level</div>
           </motion.div>
 
           <motion.div
-            className="glass-card p-6 text-center"
+            className="glass-card p-3 sm:p-4 md:p-6 2xl:p-8 text-center"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
           >
-            <Trophy className="w-12 h-12 text-orange-400 mx-auto mb-3" />
-            <div className="text-4xl font-bold text-orange-400 mb-2">
+            <Trophy className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 2xl:w-14 2xl:h-14 text-orange-400 mx-auto mb-2 sm:mb-3" />
+            <div className="text-2xl sm:text-3xl md:text-4xl 2xl:text-5xl font-bold text-orange-400 mb-1 sm:mb-2">
               {userProfile.totalXP}
             </div>
-            <div className="text-white/70 text-sm">Total XP</div>
+            <div className="text-white/70 text-xs sm:text-sm 2xl:text-base">Total XP</div>
           </motion.div>
 
           <motion.div
-            className="glass-card p-6 text-center"
+            className="glass-card p-3 sm:p-4 md:p-6 2xl:p-8 text-center"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.3 }}
           >
-            <Flame className="w-12 h-12 text-red-400 mx-auto mb-3" />
-            <div className="text-4xl font-bold text-red-400 mb-2">
+            <Flame className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 2xl:w-14 2xl:h-14 text-red-400 mx-auto mb-2 sm:mb-3" />
+            <div className="text-2xl sm:text-3xl md:text-4xl 2xl:text-5xl font-bold text-red-400 mb-1 sm:mb-2">
               {userProfile.streak}
             </div>
-            <div className="text-white/70 text-sm">Day Streak</div>
+            <div className="text-white/70 text-xs sm:text-sm 2xl:text-base">Day Streak</div>
           </motion.div>
 
           <motion.div
-            className="glass-card p-6 text-center"
+            className="glass-card p-3 sm:p-4 md:p-6 2xl:p-8 text-center"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.4 }}
           >
-            <TrendingUp className="w-12 h-12 text-green-400 mx-auto mb-3" />
-            <div className="text-4xl font-bold text-green-400 mb-2">
+            <TrendingUp className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 2xl:w-14 2xl:h-14 text-green-400 mx-auto mb-2 sm:mb-3" />
+            <div className="text-2xl sm:text-3xl md:text-4xl 2xl:text-5xl font-bold text-green-400 mb-1 sm:mb-2">
               {avgOverallProgress}%
             </div>
-            <div className="text-white/70 text-sm">Overall Progress</div>
+            <div className="text-white/70 text-xs sm:text-sm 2xl:text-base">Overall Progress</div>
           </motion.div>
         </div>
 
         {/* Learning Tree Progress Section */}
         {userProfile.treeProgress && userProfile.learningGoal && (
           <motion.div
-            className="glass-card p-8 mb-12"
+            className="glass-card p-4 sm:p-6 md:p-8 2xl:p-10 mb-6 sm:mb-8 md:mb-12"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
           >
-            <h2 className="text-3xl font-bold text-white mb-8 flex items-center space-x-3">
-              <TreeDeciduous className="w-8 h-8 text-green-400" />
+            <h2 className="text-xl sm:text-2xl md:text-3xl 2xl:text-4xl font-bold text-white mb-4 sm:mb-6 md:mb-8 flex items-center space-x-2 sm:space-x-3">
+              <TreeDeciduous className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 2xl:w-10 2xl:h-10 text-green-400" />
               <span>Learning Tree</span>
             </h2>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
               {/* Tree Visualization */}
               <div className="flex flex-col items-center justify-center">
                 <div className="relative">
@@ -477,26 +477,26 @@ export default function ProgressPage() {
         )}
 
         {/* Language Progress */}
-        <div className="glass-card p-8">
-          <h2 className="text-3xl font-bold text-white mb-8 flex items-center space-x-3">
+        <div className="glass-card p-4 sm:p-6 md:p-8 2xl:p-10">
+          <h2 className="text-xl sm:text-2xl md:text-3xl 2xl:text-4xl font-bold text-white mb-4 sm:mb-6 md:mb-8 flex items-center space-x-2 sm:space-x-3">
             <span>📚</span>
             <span>Language Progress</span>
           </h2>
 
-          <div className="space-y-8">
+          <div className="space-y-6 sm:space-y-8">
             {TECHNOLOGY_MODULES.map((mod, moduleIdx) => (
               <div key={mod.id}>
                 <motion.h3
-                  className="text-2xl font-bold text-white mb-4 flex items-center gap-2"
+                  className="text-lg sm:text-xl md:text-2xl 2xl:text-3xl font-bold text-white mb-3 sm:mb-4 flex items-center gap-2"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: moduleIdx * 0.1 }}
                 >
-                  <span>{mod.icon}</span>
+                  <span className="text-2xl sm:text-3xl 2xl:text-4xl">{mod.icon}</span>
                   {mod.name}
                 </motion.h3>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
                   {mod.languages.map((language, langIdx) => {
                     const languageKey = `${mod.id}-${language.id}`
                     const progress = languageProgressMap.get(languageKey) || {
@@ -514,29 +514,29 @@ export default function ProgressPage() {
                     return (
                       <motion.div
                         key={languageKey}
-                        className="bg-white/10 rounded-xl p-6 border border-white/20"
+                        className="bg-white/10 rounded-xl p-3 sm:p-4 md:p-6 2xl:p-8 border border-white/20"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: moduleIdx * 0.1 + langIdx * 0.05 }}
                       >
-                        <div className="flex items-center gap-3 mb-4">
-                          <span className="text-3xl">{language.icon}</span>
+                        <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                          <span className="text-2xl sm:text-3xl 2xl:text-4xl">{language.icon}</span>
                           <div>
-                            <h4 className="text-lg font-bold text-white">{language.name}</h4>
-                            <p className="text-sm text-white/60">Avg: {avgProgress}%</p>
+                            <h4 className="text-sm sm:text-base md:text-lg 2xl:text-xl font-bold text-white">{language.name}</h4>
+                            <p className="text-xs sm:text-sm 2xl:text-base text-white/60">Avg: {avgProgress}%</p>
                           </div>
                         </div>
 
                         {/* Tutorial Progress */}
-                        <div className="mb-4">
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="flex items-center gap-2 text-white/70 text-sm">
-                              <BookOpen className="w-4 h-4" />
+                        <div className="mb-3 sm:mb-4">
+                          <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+                            <div className="flex items-center gap-1.5 sm:gap-2 text-white/70 text-xs sm:text-sm 2xl:text-base">
+                              <BookOpen className="w-3 h-3 sm:w-4 sm:h-4 2xl:w-5 2xl:h-5" />
                               Tutorial
                             </div>
-                            <span className="text-white font-semibold text-sm">{progress.tutorialProgress}%</span>
+                            <span className="text-white font-semibold text-xs sm:text-sm 2xl:text-base">{progress.tutorialProgress}%</span>
                           </div>
-                          <div className="w-full bg-white/20 rounded-full h-2">
+                          <div className="w-full bg-white/20 rounded-full h-1.5 sm:h-2 2xl:h-3">
                             <motion.div
                               className="bg-blue-500 h-full rounded-full"
                               initial={{ width: 0 }}
@@ -547,15 +547,15 @@ export default function ProgressPage() {
                         </div>
 
                         {/* Game Progress */}
-                        <div className="mb-4">
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="flex items-center gap-2 text-white/70 text-sm">
-                              <Gamepad2 className="w-4 h-4" />
+                        <div className="mb-3 sm:mb-4">
+                          <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+                            <div className="flex items-center gap-1.5 sm:gap-2 text-white/70 text-xs sm:text-sm 2xl:text-base">
+                              <Gamepad2 className="w-3 h-3 sm:w-4 sm:h-4 2xl:w-5 2xl:h-5" />
                               Game
                             </div>
-                            <span className="text-white font-semibold text-sm">{progress.gameProgress}%</span>
+                            <span className="text-white font-semibold text-xs sm:text-sm 2xl:text-base">{progress.gameProgress}%</span>
                           </div>
-                          <div className="w-full bg-white/20 rounded-full h-2">
+                          <div className="w-full bg-white/20 rounded-full h-1.5 sm:h-2 2xl:h-3">
                             <motion.div
                               className="bg-green-500 h-full rounded-full"
                               initial={{ width: 0 }}
@@ -567,14 +567,14 @@ export default function ProgressPage() {
 
                         {/* Sandbox Progress */}
                         <div>
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="flex items-center gap-2 text-white/70 text-sm">
-                              <Code2 className="w-4 h-4" />
+                          <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+                            <div className="flex items-center gap-1.5 sm:gap-2 text-white/70 text-xs sm:text-sm 2xl:text-base">
+                              <Code2 className="w-3 h-3 sm:w-4 sm:h-4 2xl:w-5 2xl:h-5" />
                               Sandbox
                             </div>
-                            <span className="text-white font-semibold text-sm">{progress.sandboxProgress}%</span>
+                            <span className="text-white font-semibold text-xs sm:text-sm 2xl:text-base">{progress.sandboxProgress}%</span>
                           </div>
-                          <div className="w-full bg-white/20 rounded-full h-2">
+                          <div className="w-full bg-white/20 rounded-full h-1.5 sm:h-2 2xl:h-3">
                             <motion.div
                               className="bg-purple-500 h-full rounded-full"
                               initial={{ width: 0 }}

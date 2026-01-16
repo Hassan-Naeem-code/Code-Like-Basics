@@ -55,16 +55,16 @@ export default function ModuleLanguagesPage() {
         ))}
       </div>
 
-      <div className="container mx-auto px-4 py-4 md:py-8 relative z-10">
+      <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 2xl:px-12 py-4 md:py-8 2xl:py-12 relative z-10 max-w-7xl 2xl:max-w-[1600px]">
         {/* Back Button */}
         <motion.button
           onClick={() => router.push('/dashboard')}
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           whileHover={{ scale: 1.05, x: -5 }}
-          className="flex items-center gap-2 text-white/80 hover:text-white mb-4 md:mb-8 bg-white/10 backdrop-blur-sm px-3 md:px-4 py-2 rounded-xl transition-all text-sm md:text-base"
+          className="flex items-center gap-2 text-white/80 hover:text-white mb-4 md:mb-8 bg-white/10 backdrop-blur-sm px-3 md:px-4 2xl:px-6 py-2 2xl:py-3 rounded-xl 2xl:rounded-2xl transition-all text-sm md:text-base 2xl:text-lg"
         >
-          <ArrowLeft className="w-4 h-4 md:w-5 md:h-5" />
+          <ArrowLeft className="w-4 h-4 md:w-5 md:h-5 2xl:w-6 2xl:h-6" />
           <span>Back to Modules</span>
         </motion.button>
 
@@ -73,30 +73,30 @@ export default function ModuleLanguagesPage() {
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-8 md:mb-12"
+          className="text-center mb-8 md:mb-12 2xl:mb-16"
         >
           <motion.div
-            className="inline-block mb-4 md:mb-6"
+            className="inline-block mb-4 md:mb-6 2xl:mb-8"
             animate={{
               rotate: [0, 10, -10, 0],
               scale: [1, 1.1, 1],
             }}
             transition={{ duration: 3, repeat: Infinity }}
           >
-            <div className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl">{selectedModule.icon}</div>
+            <div className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl 2xl:text-9xl">{selectedModule.icon}</div>
           </motion.div>
 
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent px-2">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl 2xl:text-7xl font-bold mb-3 md:mb-4 2xl:mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent px-2">
             {selectedModule.name}
           </h1>
 
-          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/80 max-w-2xl mx-auto px-4">
+          <p className="text-base sm:text-lg md:text-xl lg:text-2xl 2xl:text-3xl text-white/80 max-w-2xl 2xl:max-w-4xl mx-auto px-4">
             {selectedModule.description}
           </p>
 
           {/* Decorative Line */}
           <motion.div
-            className="h-1 bg-gradient-to-r from-transparent via-purple-500 to-transparent mx-auto mt-4 md:mt-8"
+            className="h-1 2xl:h-1.5 bg-gradient-to-r from-transparent via-purple-500 to-transparent mx-auto mt-4 md:mt-8 2xl:mt-10"
             initial={{ width: 0 }}
             animate={{ width: '50%' }}
             transition={{ duration: 1, delay: 0.3 }}
@@ -104,14 +104,14 @@ export default function ModuleLanguagesPage() {
         </motion.div>
 
         {/* Languages Section */}
-        <div className="mb-6 md:mb-8">
-          <div className="flex items-center justify-center gap-2 md:gap-3 mb-6 md:mb-8 flex-wrap px-2">
-            <Sparkles className="w-5 h-5 md:w-6 md:h-6 text-yellow-400" />
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">Choose a Language</h2>
-            <Sparkles className="w-5 h-5 md:w-6 md:h-6 text-yellow-400" />
+        <div className="mb-6 md:mb-8 2xl:mb-12">
+          <div className="flex items-center justify-center gap-2 md:gap-3 2xl:gap-4 mb-6 md:mb-8 2xl:mb-10 flex-wrap px-2">
+            <Sparkles className="w-5 h-5 md:w-6 md:h-6 2xl:w-8 2xl:h-8 text-yellow-400" />
+            <h2 className="text-xl sm:text-2xl md:text-3xl 2xl:text-4xl font-bold text-white">Choose a Language</h2>
+            <Sparkles className="w-5 h-5 md:w-6 md:h-6 2xl:w-8 2xl:h-8 text-yellow-400" />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6 max-w-7xl mx-auto px-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 sm:gap-4 md:gap-6 2xl:gap-8 max-w-7xl 2xl:max-w-[1600px] mx-auto px-2">
             {selectedModule.languages.map((language, index) => (
               <LanguageCard
                 key={language.id}
@@ -128,30 +128,30 @@ export default function ModuleLanguagesPage() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="max-w-4xl mx-auto bg-white/10 backdrop-blur-lg rounded-2xl p-4 md:p-6 lg:p-8 border border-white/20 mx-2"
+          className="max-w-4xl 2xl:max-w-5xl mx-auto bg-white/10 backdrop-blur-lg rounded-2xl 2xl:rounded-3xl p-4 md:p-6 lg:p-8 2xl:p-10 border border-white/20 mx-2"
         >
-          <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-3 md:mb-4 text-center">
+          <h3 className="text-lg sm:text-xl md:text-2xl 2xl:text-3xl font-bold text-white mb-3 md:mb-4 2xl:mb-6 text-center">
             📚 How Learning Works
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6 text-white/90">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6 2xl:gap-8 text-white/90">
             <div className="text-center">
-              <div className="text-3xl md:text-4xl mb-2">📖</div>
-              <h4 className="font-bold mb-2 text-sm md:text-base">Tutorial</h4>
-              <p className="text-xs md:text-sm">
+              <div className="text-3xl md:text-4xl 2xl:text-5xl mb-2 2xl:mb-3">📖</div>
+              <h4 className="font-bold mb-2 text-sm md:text-base 2xl:text-lg">Tutorial</h4>
+              <p className="text-xs md:text-sm 2xl:text-base">
                 Interactive lessons with syntax, usage, and descriptions. Practice in a live sandbox!
               </p>
             </div>
             <div className="text-center">
-              <div className="text-3xl md:text-4xl mb-2">🎮</div>
-              <h4 className="font-bold mb-2 text-sm md:text-base">Game</h4>
-              <p className="text-xs md:text-sm">
+              <div className="text-3xl md:text-4xl 2xl:text-5xl mb-2 2xl:mb-3">🎮</div>
+              <h4 className="font-bold mb-2 text-sm md:text-base 2xl:text-lg">Game</h4>
+              <p className="text-xs md:text-sm 2xl:text-base">
                 Learn while having fun! Games designed to teach concepts through play.
               </p>
             </div>
             <div className="text-center">
-              <div className="text-3xl md:text-4xl mb-2">💻</div>
-              <h4 className="font-bold mb-2 text-sm md:text-base">Sandbox</h4>
-              <p className="text-xs md:text-sm">
+              <div className="text-3xl md:text-4xl 2xl:text-5xl mb-2 2xl:mb-3">💻</div>
+              <h4 className="font-bold mb-2 text-sm md:text-base 2xl:text-lg">Sandbox</h4>
+              <p className="text-xs md:text-sm 2xl:text-base">
                 Test and experiment with code in a safe environment. Try anything!
               </p>
             </div>

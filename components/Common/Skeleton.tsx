@@ -192,4 +192,84 @@ export const SkeletonDashboard: React.FC = () => (
   </div>
 );
 
+// Skeleton for code editor/sandbox
+export const SkeletonCodeEditor: React.FC = () => (
+  <div className="glass-card p-6 space-y-4">
+    <div className="flex items-center justify-between">
+      <Skeleton variant="text" height={24} className="w-32" />
+      <div className="flex gap-2">
+        <Skeleton variant="rounded" width={80} height={32} />
+        <Skeleton variant="rounded" width={80} height={32} />
+      </div>
+    </div>
+    <Skeleton variant="rounded" height={300} className="w-full" />
+    <div className="flex justify-between">
+      <Skeleton variant="text" height={16} className="w-24" />
+      <Skeleton variant="rounded" width={100} height={36} />
+    </div>
+  </div>
+);
+
+// Skeleton for AI Coach popup
+export const SkeletonAICoach: React.FC = () => (
+  <div className="glass-card p-4 space-y-4 w-80">
+    <div className="flex items-center gap-3">
+      <Skeleton variant="circular" width={40} height={40} />
+      <Skeleton variant="text" height={20} className="w-24" />
+    </div>
+    <div className="space-y-2">
+      <Skeleton variant="text" height={14} className="w-full" />
+      <Skeleton variant="text" height={14} className="w-3/4" />
+      <Skeleton variant="text" height={14} className="w-5/6" />
+    </div>
+    <Skeleton variant="rounded" height={80} className="w-full" />
+    <Skeleton variant="rounded" height={36} className="w-full" />
+  </div>
+);
+
+// Skeleton for Learning Tree
+export const SkeletonLearningTree: React.FC = () => (
+  <div className="glass-card p-6 space-y-4">
+    <div className="flex items-center justify-between">
+      <Skeleton variant="text" height={24} className="w-32" />
+      <Skeleton variant="circular" width={24} height={24} />
+    </div>
+    <div className="flex items-end justify-center gap-3 h-40">
+      <Skeleton variant="rounded" width={20} height={60} />
+      <Skeleton variant="rounded" width={24} height={80} />
+      <Skeleton variant="rounded" width={28} height={100} />
+      <Skeleton variant="rounded" width={24} height={90} />
+      <Skeleton variant="rounded" width={20} height={70} />
+    </div>
+    <div className="text-center">
+      <Skeleton variant="text" height={14} className="w-32 mx-auto" />
+    </div>
+  </div>
+);
+
+// Skeleton for language selection grid
+export const SkeletonLanguageGrid: React.FC<{ count?: number }> = ({ count = 6 }) => (
+  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+    {Array.from({ length: count }).map((_, i) => (
+      <div key={i} className="glass-card p-4 space-y-3">
+        <div className="flex items-center gap-3">
+          <Skeleton variant="rounded" width={40} height={40} />
+          <Skeleton variant="text" height={18} className="flex-1" />
+        </div>
+        <Skeleton variant="text" height={12} className="w-full" />
+        <Skeleton variant="rounded" height={6} className="w-full" />
+      </div>
+    ))}
+  </div>
+);
+
+// Skeleton for search/filter bar
+export const SkeletonSearchBar: React.FC = () => (
+  <div className="flex gap-4 items-center">
+    <Skeleton variant="rounded" height={44} className="flex-1 max-w-md" />
+    <Skeleton variant="rounded" width={120} height={44} />
+    <Skeleton variant="rounded" width={120} height={44} />
+  </div>
+);
+
 export default Skeleton;

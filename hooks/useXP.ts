@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react'
 import { addUserXP } from '@/lib/firebaseService'
 import confetti from 'canvas-confetti'
+import { notifyXPEarned, notifyProgressSaveFailed } from '@/utils/progressNotifications'
 
 export const XP_REWARDS = {
   TUTORIAL_COMPLETE: 100,
@@ -17,7 +18,7 @@ export function useXP(userCode: string | null) {
   const [isAwarding, setIsAwarding] = useState(false)
 
   const awardXP = useCallback(
-    async (amount: number, showConfetti: boolean = true) => {
+    async (amount: number, showConfetti: boolean = true, showNotification: boolean = true) => {
       if (!userCode) {
         console.error('No user code provided')
         return
@@ -38,9 +39,15 @@ export function useXP(userCode: string | null) {
           })
         }
 
+        // Show save confirmation notification
+        if (showNotification) {
+          notifyXPEarned(amount)
+        }
+
         return true
       } catch (error) {
         console.error('Failed to award XP:', error)
+        notifyProgressSaveFailed()
         return false
       } finally {
         setIsAwarding(false)

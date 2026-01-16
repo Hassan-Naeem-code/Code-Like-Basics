@@ -204,3 +204,117 @@ export function migrateOldSession(): boolean {
 export function hasActiveSession(): boolean {
   return getSession() !== null
 }
+
+/**
+ * Get remaining session time in milliseconds
+ * Returns 0 if session is expired or invalid
+ */
+export function getSessionRemainingTime(): number {
+  try {
+    const timestampStr = localStorage.getItem(SESSION_TIMESTAMP_KEY)
+    if (!timestampStr) return 0
+
+    const timestamp = parseInt(timestampStr)
+    const now = Date.now()
+    const elapsed = now - timestamp
+    const remaining = SESSION_VALIDITY_MS - elapsed
+
+    return remaining > 0 ? remaining : 0
+  } catch {
+    return 0
+  }
+}
+
+/**
+ * Check if session is about to expire (within warning threshold)
+ * @param warningThresholdMs - Time before expiration to start warning (default: 5 minutes)
+ */
+export function isSessionExpiringSoon(warningThresholdMs: number = 5 * 60 * 1000): boolean {
+  const remaining = getSessionRemainingTime()
+  return remaining > 0 && remaining <= warningThresholdMs
+}
+
+/**
+ * Extend session by updating the timestamp
+ * This effectively gives the user another 24 hours
+ */
+export function extendSession(): boolean {
+  try {
+    const sessionStr = localStorage.getItem(SESSION_KEY)
+    if (!sessionStr) return false
+
+    const session: SessionData = JSON.parse(sessionStr)
+
+    // Validate session first
+    if (!isValidUserCode(session.userCode)) return false
+
+    const now = Date.now()
+    const newChecksum = generateChecksum(session.userCode, session.createdAt)
+
+    // Verify integrity
+    if (session.checksum !== newChecksum) return false
+
+    // Update timestamps
+    session.lastActive = now
+    localStorage.setItem(SESSION_KEY, JSON.stringify(session))
+    localStorage.setItem(SESSION_TIMESTAMP_KEY, now.toString())
+
+    return true
+  } catch {
+    return false
+  }
+}
+
+// Session expiration warning callback type
+export type SessionExpirationCallback = (remainingMs: number) => void
+
+// Store for expiration watchers
+let expirationWatcher: NodeJS.Timeout | null = null
+let expirationCallbacks: SessionExpirationCallback[] = []
+
+/**
+ * Start watching for session expiration
+ * Calls registered callbacks when session is about to expire
+ */
+export function startSessionExpirationWatcher(
+  checkIntervalMs: number = 60 * 1000, // Check every minute
+  warningThresholdMs: number = 5 * 60 * 1000 // Warn 5 minutes before expiration
+): void {
+  // Clear existing watcher
+  stopSessionExpirationWatcher()
+
+  expirationWatcher = setInterval(() => {
+    const remaining = getSessionRemainingTime()
+
+    if (remaining === 0) {
+      // Session expired
+      expirationCallbacks.forEach(cb => cb(0))
+      stopSessionExpirationWatcher()
+    } else if (remaining <= warningThresholdMs) {
+      // Session expiring soon
+      expirationCallbacks.forEach(cb => cb(remaining))
+    }
+  }, checkIntervalMs)
+}
+
+/**
+ * Stop watching for session expiration
+ */
+export function stopSessionExpirationWatcher(): void {
+  if (expirationWatcher) {
+    clearInterval(expirationWatcher)
+    expirationWatcher = null
+  }
+}
+
+/**
+ * Register a callback for session expiration warnings
+ */
+export function onSessionExpiring(callback: SessionExpirationCallback): () => void {
+  expirationCallbacks.push(callback)
+
+  // Return cleanup function
+  return () => {
+    expirationCallbacks = expirationCallbacks.filter(cb => cb !== callback)
+  }
+}

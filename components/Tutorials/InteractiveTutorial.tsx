@@ -291,7 +291,7 @@ try{${editorCode}}catch(e){console.error(e.message)}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="bg-white rounded-2xl shadow-2xl p-6 md:p-10 lg:p-12"
+            className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 md:p-10 lg:p-12"
           >
             {/* Welcome Icon */}
             <div className="flex justify-center mb-8">
@@ -299,7 +299,7 @@ try{${editorCode}}catch(e){console.error(e.message)}
             </div>
 
             {/* Markdown Content */}
-            <div className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-h1:text-4xl prose-h1:font-bold prose-h1:mb-6 prose-h2:text-2xl prose-h2:font-bold prose-h2:mt-8 prose-h2:mb-4 prose-p:text-gray-700 prose-p:leading-relaxed prose-li:text-gray-700 prose-strong:text-gray-900 prose-strong:font-semibold">
+            <div className="prose prose-lg max-w-none prose-headings:text-gray-900 dark:prose-headings:text-gray-100 prose-h1:text-4xl prose-h1:font-bold prose-h1:mb-6 prose-h2:text-2xl prose-h2:font-bold prose-h2:mt-8 prose-h2:mb-4 prose-p:text-gray-700 dark:prose-p:text-gray-200 prose-p:leading-relaxed prose-li:text-gray-700 dark:prose-li:text-gray-200 prose-strong:text-gray-900 dark:prose-strong:text-gray-100 prose-strong:font-semibold prose-code:text-gray-900 dark:prose-code:text-gray-100">
               <ReactMarkdown>{introSection.content}</ReactMarkdown>
             </div>
 
@@ -331,25 +331,25 @@ try{${editorCode}}catch(e){console.error(e.message)}
             {/* Features Preview */}
             <div className="mt-12 grid md:grid-cols-3 gap-6">
               <div className="text-center">
-                <div className="bg-blue-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <BookOpen className="w-6 h-6 text-blue-600" />
+                <div className="bg-blue-100 dark:bg-blue-900/50 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <BookOpen className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 </div>
-                <h4 className="font-semibold text-gray-900 mb-1">{totalSections} Lessons</h4>
-                <p className="text-sm text-gray-600">From basics to advanced</p>
+                <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">{totalSections} Lessons</h4>
+                <p className="text-sm text-gray-600 dark:text-gray-400">From basics to advanced</p>
               </div>
               <div className="text-center">
-                <div className="bg-green-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Code2 className="w-6 h-6 text-green-600" />
+                <div className="bg-green-100 dark:bg-green-900/50 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Code2 className="w-6 h-6 text-green-600 dark:text-green-400" />
                 </div>
-                <h4 className="font-semibold text-gray-900 mb-1">Interactive Code</h4>
-                <p className="text-sm text-gray-600">Try examples yourself</p>
+                <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">Interactive Code</h4>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Try examples yourself</p>
               </div>
               <div className="text-center">
-                <div className="bg-purple-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Play className="w-6 h-6 text-purple-600" />
+                <div className="bg-purple-100 dark:bg-purple-900/50 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Play className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                 </div>
-                <h4 className="font-semibold text-gray-900 mb-1">Hands-on Practice</h4>
-                <p className="text-sm text-gray-600">Learn by doing</p>
+                <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">Hands-on Practice</h4>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Learn by doing</p>
               </div>
             </div>
           </motion.div>
@@ -398,39 +398,39 @@ try{${editorCode}}catch(e){console.error(e.message)}
       </div>
 
       {/* Main Content: Split Layout */}
-      <div className="grid lg:grid-cols-2 h-[calc(100vh-140px)]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[calc(100vh-140px)] lg:h-[calc(100vh-140px)]">
         {/* Left: Learning Content */}
-        <div className="overflow-y-auto bg-white">
+        <div className="overflow-y-auto bg-white dark:bg-gray-800 order-1 lg:order-1 max-h-[50vh] lg:max-h-none">
           <motion.div
             key={currentSection}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="p-6 md:p-8 lg:p-10"
+            className="p-4 sm:p-5 md:p-6 lg:p-8 xl:p-10 2xl:p-12"
           >
             {/* Section Title */}
-            <div className="flex items-start gap-3 mb-6">
-              <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-3 rounded-xl">
-                <BookOpen className="w-6 h-6 text-white" />
+            <div className="flex items-start gap-2 sm:gap-3 mb-4 sm:mb-6">
+              <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-2 sm:p-3 rounded-lg sm:rounded-xl">
+                <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 2xl:w-7 2xl:h-7 text-white" />
               </div>
               <div className="flex-1">
-                <div className="text-sm text-gray-500 mb-1">Lesson {currentSection + 1}</div>
-                <h2 className="text-2xl md:text-3xl font-bold text-gray-800">{section.title}</h2>
+                <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-1">Lesson {currentSection + 1}</div>
+                <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl 2xl:text-4xl font-bold text-gray-800 dark:text-gray-100">{section.title}</h2>
               </div>
             </div>
 
             {/* Content - Rendered with Markdown */}
-            <div className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-h2:text-xl prose-h2:font-bold prose-h2:mt-6 prose-h2:mb-3 prose-h3:text-lg prose-h3:font-semibold prose-h3:mt-4 prose-h3:mb-2 prose-p:text-gray-700 prose-p:leading-relaxed prose-li:text-gray-700 prose-strong:text-gray-900 prose-strong:font-semibold prose-ul:my-4 prose-ol:my-4">
+            <div className="prose prose-lg max-w-none prose-headings:text-gray-900 dark:prose-headings:text-gray-100 prose-h2:text-xl prose-h2:font-bold prose-h2:mt-6 prose-h2:mb-3 prose-h3:text-lg prose-h3:font-semibold prose-h3:mt-4 prose-h3:mb-2 prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-p:leading-relaxed prose-li:text-gray-700 dark:prose-li:text-gray-300 prose-strong:text-gray-900 dark:prose-strong:text-gray-100 prose-strong:font-semibold prose-ul:my-4 prose-ol:my-4 prose-code:text-gray-900 dark:prose-code:text-gray-100">
               <ReactMarkdown>{(section.content && section.content.trim().length >= 200) ? section.content : `## What You'll Learn\n${section.title}\n\n## Lesson Overview\nThis section is being enriched. Explore the concepts of ${section.title} with clear guidance, examples, and practice tasks.\n\n### Example\n\n\`\`\`txt\n${section.title} example\n\`\`\`\n\n### Best Practices\n- Use small, focused examples\n- Practice iteratively\n- Keep code readable\n\n### Practice\n- Write a small demo using ${section.title}\n- Add one improvement (like validation or styling)`}</ReactMarkdown>
 
               {/* Syntax Box */}
               {section.syntax && (
-                <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg mb-6">
+                <div className="bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-500 p-4 rounded-lg mb-6">
                   <div className="flex items-center gap-2 mb-2">
-                    <Code2 className="w-5 h-5 text-blue-600" />
-                    <h3 className="font-bold text-gray-800 text-base">Syntax</h3>
+                    <Code2 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                    <h3 className="font-bold text-gray-800 dark:text-gray-100 text-base">Syntax</h3>
                   </div>
-                  <code className="text-blue-700 font-mono text-sm block bg-white p-3 rounded">
+                  <code className="text-blue-700 dark:text-blue-300 font-mono text-sm block bg-white dark:bg-gray-900 p-3 rounded">
                     {section.syntax}
                   </code>
                 </div>
@@ -438,16 +438,16 @@ try{${editorCode}}catch(e){console.error(e.message)}
 
               {/* Usage Box */}
               {section.usage && (
-                <div className="bg-purple-50 border-l-4 border-purple-500 p-4 rounded-lg mb-6">
-                  <h3 className="font-bold text-gray-800 mb-2 text-base">When to use:</h3>
-                  <p className="text-gray-700 text-sm">{section.usage}</p>
+                <div className="bg-purple-50 dark:bg-purple-900/30 border-l-4 border-purple-500 p-4 rounded-lg mb-6">
+                  <h3 className="font-bold text-gray-800 dark:text-gray-100 mb-2 text-base">When to use:</h3>
+                  <p className="text-gray-700 dark:text-gray-300 text-sm">{section.usage}</p>
                 </div>
               )}
 
               {/* Example Box */}
               {section.codeExample && (
-                <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded-lg mb-6">
-                  <h3 className="font-bold text-gray-800 mb-3 text-base">Example:</h3>
+                <div className="bg-green-50 dark:bg-green-900/30 border-l-4 border-green-500 p-4 rounded-lg mb-6">
+                  <h3 className="font-bold text-gray-800 dark:text-gray-100 mb-3 text-base">Example:</h3>
                   <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm font-mono">
                     <code>{section.codeExample}</code>
                   </pre>
@@ -456,61 +456,62 @@ try{${editorCode}}catch(e){console.error(e.message)}
             </div>
 
             {/* Navigation Buttons */}
-            <div className="flex items-center justify-between mt-8 pt-6 border-t border-gray-200">
+            <div className="flex items-center justify-between mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-gray-200 dark:border-gray-700 gap-3">
               <button
                 onClick={handlePrevious}
                 disabled={isFirstSection}
-                className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${
+                className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 md:px-6 2xl:px-8 py-2 sm:py-2.5 md:py-3 2xl:py-4 rounded-lg sm:rounded-xl font-semibold transition-all text-xs sm:text-sm md:text-base 2xl:text-lg ${
                   isFirstSection
                     ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
                     : 'bg-gradient-to-r from-gray-600 to-gray-700 text-white hover:shadow-lg'
                 }`}
               >
-                <ArrowLeft className="w-5 h-5" />
-                Previous
+                <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 2xl:w-6 2xl:h-6" />
+                <span className="hidden xs:inline">Previous</span>
+                <span className="xs:hidden">Prev</span>
               </button>
 
               <button
                 onClick={handleNext}
                 disabled={isLastSection}
-                className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${
+                className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 md:px-6 2xl:px-8 py-2 sm:py-2.5 md:py-3 2xl:py-4 rounded-lg sm:rounded-xl font-semibold transition-all text-xs sm:text-sm md:text-base 2xl:text-lg ${
                   isLastSection
                     ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
                     : 'bg-gradient-to-r from-purple-500 to-pink-600 text-white hover:shadow-lg'
                 }`}
               >
                 Next
-                <ArrowRight className="w-5 h-5" />
+                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 2xl:w-6 2xl:h-6" />
               </button>
             </div>
           </motion.div>
         </div>
 
         {/* Right: Code Editor & Preview */}
-        <div className="bg-gray-900 flex flex-col">
-          <div className="bg-gray-800 px-4 py-3 border-b border-gray-700 flex items-center justify-between">
+        <div className="bg-gray-900 flex flex-col order-2 lg:order-2 min-h-[50vh] lg:min-h-0">
+          <div className="bg-gray-800 px-3 sm:px-4 py-2 sm:py-3 border-b border-gray-700 flex items-center justify-between flex-wrap gap-2">
             <div className="flex items-center gap-2 text-white">
-              <Code2 className="w-5 h-5" />
-              <span className="font-semibold">Try it Yourself</span>
+              <Code2 className="w-4 h-4 sm:w-5 sm:h-5 2xl:w-6 2xl:h-6" />
+              <span className="font-semibold text-sm sm:text-base 2xl:text-lg">Try it Yourself</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2">
               {/* Live Preview Toggle for web languages */}
               {isWebLanguage && (
                 <button
                   onClick={() => setShowLivePreview(!showLivePreview)}
-                  className="flex items-center gap-1.5 px-3 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors text-sm"
+                  className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors text-xs sm:text-sm 2xl:text-base"
                   title={showLivePreview ? 'Hide preview' : 'Show preview'}
                 >
-                  {showLivePreview ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  {showLivePreview ? 'Code' : 'Preview'}
+                  {showLivePreview ? <EyeOff className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> : <Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
+                  <span className="hidden xs:inline">{showLivePreview ? 'Code' : 'Preview'}</span>
                 </button>
               )}
               <button
                 onClick={handleRunCode}
                 disabled={isRunning}
-                className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-500 disabled:bg-green-800 text-white rounded-lg transition-colors font-semibold"
+                className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-green-600 hover:bg-green-500 disabled:bg-green-800 text-white rounded-lg transition-colors font-semibold text-xs sm:text-sm 2xl:text-base"
               >
-                <Play className="w-4 h-4" />
+                <Play className="w-3.5 h-3.5 sm:w-4 sm:h-4 2xl:w-5 2xl:h-5" />
                 {isRunning ? 'Running...' : 'Run'}
               </button>
             </div>
@@ -519,10 +520,10 @@ try{${editorCode}}catch(e){console.error(e.message)}
           {/* Editor or Live Preview */}
           {isWebLanguage && showLivePreview ? (
             /* Live Preview for HTML/CSS/JS */
-            <div className="flex-1 bg-white">
+            <div className="flex-1 bg-white min-h-[200px] sm:min-h-[250px] md:min-h-[300px] lg:min-h-0">
               <iframe
                 srcDoc={getLivePreviewHTML()}
-                className="w-full h-full border-0"
+                className="w-full h-full border-0 min-h-[200px] sm:min-h-[250px] md:min-h-[300px] lg:min-h-[400px] 2xl:min-h-[500px]"
                 title="Live Preview"
                 sandbox="allow-scripts"
               />
@@ -532,7 +533,7 @@ try{${editorCode}}catch(e){console.error(e.message)}
             <textarea
               value={editorCode}
               onChange={(e) => setEditorCode(e.target.value)}
-              className="flex-1 bg-gray-900 text-green-400 font-mono text-sm p-4 resize-none focus:outline-none"
+              className="flex-1 bg-gray-900 text-green-400 font-mono text-xs sm:text-sm 2xl:text-base p-3 sm:p-4 2xl:p-6 resize-none focus:outline-none min-h-[200px] sm:min-h-[250px] md:min-h-[300px] lg:min-h-[400px] 2xl:min-h-[500px]"
               placeholder="// Write your code here..."
               spellCheck={false}
             />
@@ -540,9 +541,9 @@ try{${editorCode}}catch(e){console.error(e.message)}
 
           {/* Output */}
           {output && !showLivePreview && (
-            <div className="bg-gray-950 border-t border-gray-700 p-4 max-h-48 overflow-y-auto">
-              <div className="text-gray-400 text-xs mb-2 font-semibold">OUTPUT:</div>
-              <pre className="text-gray-300 text-sm font-mono whitespace-pre-wrap">{output}</pre>
+            <div className="bg-gray-950 border-t border-gray-700 p-3 sm:p-4 2xl:p-5 max-h-32 sm:max-h-40 md:max-h-48 2xl:max-h-64 overflow-y-auto">
+              <div className="text-gray-400 text-[10px] sm:text-xs 2xl:text-sm mb-1.5 sm:mb-2 font-semibold">OUTPUT:</div>
+              <pre className="text-gray-300 text-xs sm:text-sm 2xl:text-base font-mono whitespace-pre-wrap">{output}</pre>
             </div>
           )}
         </div>

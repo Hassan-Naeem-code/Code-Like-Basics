@@ -163,36 +163,36 @@ export default function LanguageCard({ language, moduleId, index }: LanguageCard
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: index * 0.1, duration: 0.4 }}
-        className="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all"
+        className="bg-white rounded-xl sm:rounded-2xl 2xl:rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-all"
       >
         {/* Header */}
         <div
-          className="p-6 text-white relative overflow-hidden"
+          className="p-4 sm:p-5 md:p-6 2xl:p-8 text-white relative overflow-hidden"
           style={{ backgroundColor: language.color }}
         >
           <div className="relative z-10">
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center justify-between mb-2 sm:mb-3">
               <motion.div
-                className="text-5xl"
+                className="text-3xl sm:text-4xl md:text-5xl 2xl:text-6xl"
                 animate={{ rotate: [0, -5, 5, 0] }}
                 transition={{ duration: 2, repeat: Infinity }}
               >
                 {language.icon}
               </motion.div>
-              <div className="flex flex-col gap-2 items-end">
-                <div className={`${getDifficultyColor()} px-3 py-1 rounded-full text-xs font-bold text-white uppercase`}>
+              <div className="flex flex-col gap-1.5 sm:gap-2 items-end">
+                <div className={`${getDifficultyColor()} px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs 2xl:text-sm font-bold text-white uppercase`}>
                   {language.difficulty}
                 </div>
                 {(savedDifficulty || completedDifficulties) && (
-                  <div className={`${getCurrentLearningLevel().color} px-3 py-1 rounded-full text-xs font-bold text-white`}>
+                  <div className={`${getCurrentLearningLevel().color} px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs 2xl:text-sm font-bold text-white`}>
                     Learning: {getCurrentLearningLevel().level}
                   </div>
                 )}
               </div>
             </div>
 
-            <h3 className="text-2xl font-bold mb-2">{language.name}</h3>
-            <p className="text-white/90 text-sm">{language.description}</p>
+            <h3 className="text-lg sm:text-xl md:text-2xl 2xl:text-3xl font-bold mb-1 sm:mb-2">{language.name}</h3>
+            <p className="text-white/90 text-xs sm:text-sm 2xl:text-base line-clamp-2">{language.description}</p>
           </div>
 
           {/* Background Pattern */}
@@ -280,12 +280,12 @@ export default function LanguageCard({ language, moduleId, index }: LanguageCard
         )}
 
         {/* Learning Options */}
-        <div className="p-6">
-          <p className="text-gray-600 text-sm font-semibold mb-4 uppercase tracking-wide">
+        <div className="p-4 sm:p-5 md:p-6 2xl:p-8">
+          <p className="text-gray-600 text-xs sm:text-sm 2xl:text-base font-semibold mb-3 sm:mb-4 uppercase tracking-wide">
             Choose Your Learning Path:
           </p>
 
-          <div className="space-y-3">
+          <div className="space-y-2 sm:space-y-3">
             {/* Tutorial Option */}
             <motion.button
               onHoverStart={() => !tutorialCompleted && setHoveredOption('tutorial')}
@@ -294,7 +294,7 @@ export default function LanguageCard({ language, moduleId, index }: LanguageCard
               whileHover={tutorialCompleted ? {} : { scale: 1.02, x: 5 }}
               whileTap={tutorialCompleted ? {} : { scale: 0.98 }}
               disabled={tutorialCompleted}
-              className={`w-full rounded-xl p-4 flex items-center gap-4 shadow-md transition-all ${
+              className={`w-full rounded-lg sm:rounded-xl p-3 sm:p-4 2xl:p-5 flex items-center gap-3 sm:gap-4 shadow-md transition-all min-h-[60px] sm:min-h-[72px] ${
                 tutorialCompleted
                   ? 'bg-gray-300 cursor-not-allowed opacity-60'
                   : 'bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:shadow-lg'
@@ -305,21 +305,21 @@ export default function LanguageCard({ language, moduleId, index }: LanguageCard
                 transition={{ duration: 0.5 }}
               >
                 {tutorialCompleted ? (
-                  <CheckCircle2 className="w-6 h-6 text-green-600" />
+                  <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 2xl:w-7 2xl:h-7 text-green-600" />
                 ) : (
-                  <BookOpen className="w-6 h-6" />
+                  <BookOpen className="w-5 h-5 sm:w-6 sm:h-6 2xl:w-7 2xl:h-7" />
                 )}
               </motion.div>
-              <div className="flex-1 text-left">
-                <p className={`font-bold text-lg ${tutorialCompleted ? 'text-gray-600' : ''}`}>
+              <div className="flex-1 text-left min-w-0">
+                <p className={`font-bold text-sm sm:text-base md:text-lg 2xl:text-xl ${tutorialCompleted ? 'text-gray-600' : ''}`}>
                   Tutorial
                   {tutorialCompleted ? (
-                    <span className="ml-2 text-sm text-green-600 font-bold">✓ All Levels Mastered</span>
+                    <span className="ml-1.5 sm:ml-2 text-[10px] sm:text-xs md:text-sm text-green-600 font-bold">✓ Mastered</span>
                   ) : tutorialProgress > 0 ? (
-                    <span className="ml-2 text-sm">({tutorialProgress}%)</span>
+                    <span className="ml-1.5 sm:ml-2 text-[10px] sm:text-xs md:text-sm">({tutorialProgress}%)</span>
                   ) : null}
                 </p>
-                <p className={`text-sm ${tutorialCompleted ? 'text-gray-500' : 'text-blue-100'}`}>
+                <p className={`text-[10px] sm:text-xs md:text-sm 2xl:text-base truncate ${tutorialCompleted ? 'text-gray-500' : 'text-blue-100'}`}>
                   {tutorialCompleted ? 'Completed all difficulties' : 'Learn from basics to advanced'}
                 </p>
               </div>
@@ -327,6 +327,7 @@ export default function LanguageCard({ language, moduleId, index }: LanguageCard
                 <motion.div
                   animate={hoveredOption === 'tutorial' ? { x: [0, 5, 0] } : {}}
                   transition={{ duration: 0.5, repeat: Infinity }}
+                  className="text-sm sm:text-base 2xl:text-lg"
                 >
                   →
                 </motion.div>
@@ -341,7 +342,7 @@ export default function LanguageCard({ language, moduleId, index }: LanguageCard
               whileHover={gameCompleted ? {} : { scale: 1.02, x: 5 }}
               whileTap={gameCompleted ? {} : { scale: 0.98 }}
               disabled={gameCompleted}
-              className={`w-full rounded-xl p-4 flex items-center gap-4 shadow-md transition-all ${
+              className={`w-full rounded-lg sm:rounded-xl p-3 sm:p-4 2xl:p-5 flex items-center gap-3 sm:gap-4 shadow-md transition-all min-h-[60px] sm:min-h-[72px] ${
                 gameCompleted
                   ? 'bg-gray-300 cursor-not-allowed opacity-60'
                   : 'bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:shadow-lg'
@@ -352,30 +353,31 @@ export default function LanguageCard({ language, moduleId, index }: LanguageCard
                 transition={{ duration: 0.5 }}
               >
                 {gameCompleted ? (
-                  <CheckCircle2 className="w-6 h-6 text-green-600" />
+                  <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 2xl:w-7 2xl:h-7 text-green-600" />
                 ) : (
-                  <Gamepad2 className="w-6 h-6" />
+                  <Gamepad2 className="w-5 h-5 sm:w-6 sm:h-6 2xl:w-7 2xl:h-7" />
                 )}
               </motion.div>
-              <div className="flex-1 text-left">
-                <p className={`font-bold text-lg ${gameCompleted ? 'text-gray-600' : ''}`}>
+              <div className="flex-1 text-left min-w-0">
+                <p className={`font-bold text-sm sm:text-base md:text-lg 2xl:text-xl ${gameCompleted ? 'text-gray-600' : ''}`}>
                   Play Game
                   {gameCompleted ? (
-                    <span className="ml-2 text-sm text-green-600 font-bold">✓ All Levels Mastered</span>
+                    <span className="ml-1.5 sm:ml-2 text-[10px] sm:text-xs md:text-sm text-green-600 font-bold">✓ Mastered</span>
                   ) : gameProgress > 0 ? (
-                    <span className="ml-2 text-sm">({gameProgress}%)</span>
+                    <span className="ml-1.5 sm:ml-2 text-[10px] sm:text-xs md:text-sm">({gameProgress}%)</span>
                   ) : null}
                 </p>
-                <p className={`text-sm ${gameCompleted ? 'text-gray-500' : 'text-green-100'}`}>
+                <p className={`text-[10px] sm:text-xs md:text-sm 2xl:text-base truncate ${gameCompleted ? 'text-gray-500' : 'text-green-100'}`}>
                   {gameCompleted
                     ? 'Completed all difficulties'
-                    : 'Play quiz levels — score 75%+ to earn your certificate'}
+                    : 'Score 75%+ to earn certificate'}
                 </p>
               </div>
               {!gameCompleted && (
                 <motion.div
                   animate={hoveredOption === 'game' ? { x: [0, 5, 0] } : {}}
                   transition={{ duration: 0.5, repeat: Infinity }}
+                  className="text-sm sm:text-base 2xl:text-lg"
                 >
                   →
                 </motion.div>
@@ -390,7 +392,7 @@ export default function LanguageCard({ language, moduleId, index }: LanguageCard
               whileHover={sandboxCompleted ? {} : { scale: 1.02, x: 5 }}
               whileTap={sandboxCompleted ? {} : { scale: 0.98 }}
               disabled={sandboxCompleted}
-              className={`w-full rounded-xl p-4 flex items-center gap-4 shadow-md transition-all ${
+              className={`w-full rounded-lg sm:rounded-xl p-3 sm:p-4 2xl:p-5 flex items-center gap-3 sm:gap-4 shadow-md transition-all min-h-[60px] sm:min-h-[72px] ${
                 sandboxCompleted
                   ? 'bg-gray-300 cursor-not-allowed opacity-60'
                   : 'bg-gradient-to-r from-purple-500 to-violet-600 text-white hover:shadow-lg'
@@ -401,28 +403,29 @@ export default function LanguageCard({ language, moduleId, index }: LanguageCard
                 transition={{ duration: 0.5 }}
               >
                 {sandboxCompleted ? (
-                  <CheckCircle2 className="w-6 h-6 text-green-600" />
+                  <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 2xl:w-7 2xl:h-7 text-green-600" />
                 ) : (
-                  <Code2 className="w-6 h-6" />
+                  <Code2 className="w-5 h-5 sm:w-6 sm:h-6 2xl:w-7 2xl:h-7" />
                 )}
               </motion.div>
-              <div className="flex-1 text-left">
-                <p className={`font-bold text-lg ${sandboxCompleted ? 'text-gray-600' : ''}`}>
+              <div className="flex-1 text-left min-w-0">
+                <p className={`font-bold text-sm sm:text-base md:text-lg 2xl:text-xl ${sandboxCompleted ? 'text-gray-600' : ''}`}>
                   Sandbox
                   {sandboxCompleted && (
-                    <span className="ml-2 text-sm text-green-600 font-bold">✓ All Levels Mastered</span>
+                    <span className="ml-1.5 sm:ml-2 text-[10px] sm:text-xs md:text-sm text-green-600 font-bold">✓ Mastered</span>
                   )}
                 </p>
-                <p className={`text-sm ${sandboxCompleted ? 'text-gray-500' : 'text-purple-100'}`}>
+                <p className={`text-[10px] sm:text-xs md:text-sm 2xl:text-base truncate ${sandboxCompleted ? 'text-gray-500' : 'text-purple-100'}`}>
                   {sandboxCompleted
                     ? 'Completed all difficulties'
-                    : 'Code exercises — hit 75%+ passing to unlock your certificate'}
+                    : 'Hit 75%+ to unlock certificate'}
                 </p>
               </div>
               {!sandboxCompleted && (
                 <motion.div
                   animate={hoveredOption === 'sandbox' ? { x: [0, 5, 0] } : {}}
                   transition={{ duration: 0.5, repeat: Infinity }}
+                  className="text-sm sm:text-base 2xl:text-lg"
                 >
                   →
                 </motion.div>

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { checkRateLimit, getClientIdentifier, RATE_LIMITS } from '@/utils/rateLimit'
+import { formatErrorWithHints } from '@/utils/errorHints'
 
 // Piston API endpoint (can be overridden via env)
 const PISTON_API = process.env.PISTON_API_URL || 'https://emkc.org/api/v2/piston/execute'
@@ -165,10 +166,13 @@ export async function POST(request: NextRequest) {
 
     // Handle compilation errors
     if (result.compile && result.compile.code !== 0) {
+      const compileError = result.compile.stderr || result.compile.output || 'Compilation failed'
+      const enhancedError = formatErrorWithHints(compileError, pistonConfig.language)
+
       return NextResponse.json({
         success: false,
         output: '',
-        stderr: result.compile.stderr || result.compile.output || 'Compilation failed',
+        stderr: enhancedError,
         exitCode: result.compile.code,
         executionTime,
         stage: 'compile'
@@ -178,8 +182,13 @@ export async function POST(request: NextRequest) {
     // Handle runtime results
     const runResult = result.run || {}
     const output = runResult.stdout || runResult.output || ''
-    const stderr = runResult.stderr || ''
+    const rawStderr = runResult.stderr || ''
     const exitCode = runResult.code ?? 0
+
+    // Enhance stderr with helpful hints if there's an error
+    const stderr = rawStderr && exitCode !== 0
+      ? formatErrorWithHints(rawStderr, pistonConfig.language)
+      : rawStderr
 
     return NextResponse.json({
       success: exitCode === 0,

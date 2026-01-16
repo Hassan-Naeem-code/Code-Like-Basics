@@ -25,7 +25,7 @@ export default function ModuleCard({ module, index, onClick }: ModuleCardProps) 
       onClick={onClick}
       className="cursor-pointer group"
     >
-      <div className={`relative bg-gradient-to-br ${module.gradient} rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all overflow-hidden h-full`}>
+      <div className={`relative bg-gradient-to-br ${module.gradient} rounded-2xl sm:rounded-3xl p-4 sm:p-5 md:p-6 lg:p-8 2xl:p-10 shadow-xl hover:shadow-2xl transition-all overflow-hidden h-full`}>
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
@@ -38,7 +38,7 @@ export default function ModuleCard({ module, index, onClick }: ModuleCardProps) 
         <div className="relative z-10">
           {/* Icon */}
           <motion.div
-            className="text-7xl mb-4"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl 2xl:text-8xl mb-2 sm:mb-3 md:mb-4"
             animate={isHovered ? { rotate: [0, -10, 10, 0], scale: [1, 1.1, 1] } : {}}
             transition={{ duration: 0.5 }}
           >
@@ -46,19 +46,19 @@ export default function ModuleCard({ module, index, onClick }: ModuleCardProps) 
           </motion.div>
 
           {/* Title */}
-          <h3 className="text-3xl font-bold text-white mb-3">
+          <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl 2xl:text-4xl font-bold text-white mb-2 sm:mb-3">
             {module.name}
           </h3>
 
           {/* Description */}
-          <p className="text-white/90 text-lg mb-6">
+          <p className="text-white/90 text-sm sm:text-base md:text-lg lg:text-lg 2xl:text-xl mb-4 sm:mb-5 md:mb-6 line-clamp-2 sm:line-clamp-none">
             {module.description}
           </p>
 
           {/* Language Count Badge */}
           <div className="flex items-center justify-between">
-            <div className="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
-              <p className="text-white font-semibold text-sm">
+            <div className="bg-white/20 backdrop-blur-sm rounded-full px-3 sm:px-4 py-1.5 sm:py-2">
+              <p className="text-white font-semibold text-xs sm:text-sm md:text-base 2xl:text-lg">
                 {module.languages.length} Languages
               </p>
             </div>
@@ -68,7 +68,7 @@ export default function ModuleCard({ module, index, onClick }: ModuleCardProps) 
               animate={isHovered ? { x: [0, 10, 0] } : {}}
               transition={{ duration: 0.5, repeat: Infinity }}
             >
-              <ArrowRight className="w-6 h-6 text-white" />
+              <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 2xl:w-8 2xl:h-8 text-white" />
             </motion.div>
           </div>
         </div>

@@ -29,6 +29,10 @@ const KeyboardShortcutsHelp = dynamic(() => import("../Common/KeyboardShortcutsH
   ssr: false,
   loading: () => null,
 });
+const SessionExpirationWarning = dynamic(() => import("../Common/SessionExpirationWarning"), {
+  ssr: false,
+  loading: () => null,
+});
 
 type Props = {
   children: ReactNode;
@@ -116,6 +120,9 @@ export default function ClientShell({ children }: Props) {
             <AICoachPopup />
           </ErrorBoundary>
         )}
+
+        {/* Session expiration warning - Only show for authenticated users */}
+        {isAuthenticated && <SessionExpirationWarning />}
 
         {/* Navigation with isolated error boundary */}
         <ErrorBoundary

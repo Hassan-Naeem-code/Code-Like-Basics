@@ -12,6 +12,51 @@ interface NewUserFormProps {
   onBack: () => void
 }
 
+// Security: Sanitize input to prevent XSS attacks
+const sanitizeName = (input: string): string => {
+  // Remove HTML tags and special characters that could be used for XSS
+  return input
+    .replace(/<[^>]*>/g, '') // Remove HTML tags
+    .replace(/[<>'"&]/g, '') // Remove potentially dangerous characters
+    .trim()
+    .slice(0, 50) // Limit length
+}
+
+// Validate name format - only allow letters, spaces, hyphens, and apostrophes
+const isValidName = (name: string): boolean => {
+  const sanitized = sanitizeName(name)
+  // Allow letters (including unicode), spaces, hyphens, and apostrophes
+  const namePattern = /^[\p{L}\s'-]{2,50}$/u
+  return namePattern.test(sanitized) && sanitized.length >= 2
+}
+
+// Validate age more strictly
+const isValidAge = (ageStr: string): { valid: boolean; age: number; error?: string } => {
+  // Remove any non-numeric characters
+  const cleanAge = ageStr.replace(/[^0-9]/g, '')
+
+  // Check if it's a valid number
+  if (cleanAge !== ageStr.trim()) {
+    return { valid: false, age: 0, error: 'Age must contain only numbers' }
+  }
+
+  const ageNum = parseInt(cleanAge, 10)
+
+  if (isNaN(ageNum)) {
+    return { valid: false, age: 0, error: 'Please enter a valid number' }
+  }
+
+  if (ageNum < 5) {
+    return { valid: false, age: ageNum, error: 'You must be at least 5 years old' }
+  }
+
+  if (ageNum > 120) {
+    return { valid: false, age: ageNum, error: 'Please enter a valid age (under 120)' }
+  }
+
+  return { valid: true, age: ageNum }
+}
+
 export default function NewUserForm({ onComplete, onBack }: NewUserFormProps) {
   const [name, setName] = useState('')
   const [age, setAge] = useState('')
@@ -20,25 +65,52 @@ export default function NewUserForm({ onComplete, onBack }: NewUserFormProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  // Handle name input with sanitization
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    // Only allow valid characters while typing
+    if (value === '' || /^[\p{L}\s'-]*$/u.test(value)) {
+      setName(value.slice(0, 50)) // Limit to 50 chars
+    }
+  }
+
+  // Handle age input - only allow numbers
+  const handleAgeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    // Only allow digits
+    if (value === '' || /^\d{0,3}$/.test(value)) {
+      setAge(value)
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
 
-    if (!name.trim()) {
+    // Sanitize and validate name
+    const sanitizedName = sanitizeName(name)
+
+    if (!sanitizedName) {
       setError('Please enter your name')
       return
     }
 
-    const ageNum = parseInt(age)
-    if (isNaN(ageNum) || ageNum < 5 || ageNum > 120) {
-      setError('Please enter a valid age (5-120)')
+    if (!isValidName(sanitizedName)) {
+      setError('Name must be 2-50 characters and contain only letters, spaces, hyphens, or apostrophes')
+      return
+    }
+
+    // Validate age
+    const ageValidation = isValidAge(age)
+    if (!ageValidation.valid) {
+      setError(ageValidation.error || 'Please enter a valid age (5-120)')
       return
     }
 
     setLoading(true)
 
     try {
-      const code = await createUserProfile(name.trim(), ageNum)
+      const code = await createUserProfile(sanitizedName, ageValidation.age)
       setGeneratedCode(code)
 
       // Celebrate!
@@ -48,7 +120,15 @@ export default function NewUserForm({ onComplete, onBack }: NewUserFormProps) {
         origin: { y: 0.6 },
       })
     } catch (err) {
-      setError('Failed to create your account. Please try again.')
+      // Provide more specific error messages
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error'
+      if (errorMessage.includes('network') || errorMessage.includes('fetch')) {
+        setError('Connection error. Please check your internet and try again.')
+      } else if (errorMessage.includes('unique')) {
+        setError('Could not generate a unique code. Please try again.')
+      } else {
+        setError('Failed to create your account. Please try again.')
+      }
       console.error(err)
     } finally {
       setLoading(false)
@@ -142,40 +222,54 @@ export default function NewUserForm({ onComplete, onBack }: NewUserFormProps) {
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Name Input */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label htmlFor="name-input" className="block text-sm font-semibold text-gray-700 mb-2">
                     What&apos;s your name?
                   </label>
                   <div className="relative">
-                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" aria-hidden="true" />
                     <input
+                      id="name-input"
                       type="text"
                       value={name}
-                      onChange={(e) => setName(e.target.value)}
+                      onChange={handleNameChange}
                       placeholder="Enter your name"
                       className="w-full pl-12 pr-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-brand-purple focus:outline-none transition-colors text-gray-800"
                       disabled={loading}
+                      maxLength={50}
+                      autoComplete="name"
+                      aria-describedby="name-hint"
                     />
                   </div>
+                  <p id="name-hint" className="text-xs text-gray-500 mt-1">
+                    2-50 characters, letters only
+                  </p>
                 </div>
 
                 {/* Age Input */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label htmlFor="age-input" className="block text-sm font-semibold text-gray-700 mb-2">
                     How old are you?
                   </label>
                   <div className="relative">
-                    <Cake className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <Cake className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" aria-hidden="true" />
                     <input
-                      type="number"
+                      id="age-input"
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
                       value={age}
-                      onChange={(e) => setAge(e.target.value)}
+                      onChange={handleAgeChange}
                       placeholder="Enter your age"
-                      min="5"
-                      max="120"
                       className="w-full pl-12 pr-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-brand-purple focus:outline-none transition-colors text-gray-800"
                       disabled={loading}
+                      maxLength={3}
+                      autoComplete="off"
+                      aria-describedby="age-hint"
                     />
                   </div>
+                  <p id="age-hint" className="text-xs text-gray-500 mt-1">
+                    Must be between 5 and 120
+                  </p>
                 </div>
 
                 {/* Error Message */}

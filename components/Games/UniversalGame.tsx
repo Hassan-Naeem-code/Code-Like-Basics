@@ -21,6 +21,7 @@ import Certificate from '@/components/Common/Certificate'
 import { triggerAchievementCheck } from '@/components/Common/AchievementProvider'
 import { triggerProfileRefresh } from '@/components/Progress/GlobalLearningTree'
 import { getSession } from '@/utils/sessionManager'
+import { notifyProgressSaveFailed } from '@/utils/progressNotifications'
 
 interface UniversalGameProps {
   language: Language
@@ -135,6 +136,8 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
       )
     } catch (error) {
       console.error('Error saving game progress:', error)
+      // Notify user that save failed so they know to retry
+      notifyProgressSaveFailed('Game progress could not be saved. Please check your connection.')
     }
   }
 
@@ -379,6 +382,7 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
             animate={{ opacity: 1, x: 0 }}
             whileHover={{ scale: 1.05, x: -5 }}
             className="flex items-center gap-1 md:gap-2 text-white/80 hover:text-white bg-white/10 backdrop-blur-sm px-2 sm:px-3 md:px-4 py-1.5 md:py-2 rounded-xl transition-all text-sm md:text-base"
+            aria-label={`Go back to ${language.name} module`}
           >
             <ArrowLeft className="w-4 h-4 md:w-5 md:h-5" />
             <span className="hidden sm:inline">Back to {language.name}</span>
@@ -386,14 +390,25 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
           </motion.button>
 
           <div className="flex items-center gap-1.5 sm:gap-2 md:gap-4 flex-wrap w-full justify-center md:justify-start">
-            {/* Lives */}
-            <div className="flex items-center gap-1 sm:gap-2 bg-red-500/20 backdrop-blur-lg rounded-xl px-2 sm:px-3 md:px-4 py-1.5 md:py-2">
+            {/* Lives - Accessible with text and visual indicators */}
+            <div
+              className="flex items-center gap-1 sm:gap-2 bg-red-500/20 backdrop-blur-lg rounded-xl px-2 sm:px-3 md:px-4 py-1.5 md:py-2"
+              role="status"
+              aria-label={`${lives} lives remaining out of 3`}
+            >
               {[...Array(3)].map((_, i) => (
-                <Heart
-                  key={i}
-                  className={`w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 ${i < lives ? 'text-red-500 fill-red-500' : 'text-gray-500'}`}
-                />
+                <span key={i} className="relative">
+                  <Heart
+                    className={`w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 ${i < lives ? 'text-red-500 fill-red-500' : 'text-gray-500'}`}
+                    aria-hidden="true"
+                  />
+                  {/* Visual indicator for colorblind users */}
+                  {i >= lives && (
+                    <span className="absolute inset-0 flex items-center justify-center text-[8px] sm:text-[10px] text-gray-400 font-bold">✕</span>
+                  )}
+                </span>
               ))}
+              <span className="sr-only">{lives} of 3 lives</span>
             </div>
 
             {/* Hints */}
@@ -401,8 +416,9 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
               onClick={handleUseHint}
               disabled={hints === 0 || selectedAnswer !== null}
               className="flex items-center gap-1 sm:gap-2 bg-yellow-500/20 backdrop-blur-lg rounded-xl px-2 sm:px-3 md:px-4 py-1.5 md:py-2 text-yellow-300 disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm md:text-base"
+              aria-label={`Use a hint. ${hints} hints remaining`}
             >
-              <Lightbulb className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
+              <Lightbulb className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" aria-hidden="true" />
               <span className="hidden sm:inline">{hints} Hints</span>
               <span className="sm:hidden">{hints}</span>
             </button>
@@ -446,12 +462,13 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
               exit={{ opacity: 0, y: -20 }}
               className="max-w-4xl mx-auto mb-4 px-2"
             >
-              <div className="bg-yellow-500/20 border border-yellow-500/50 backdrop-blur-lg rounded-xl p-4 flex items-center gap-3">
-                <Lightbulb className="w-6 h-6 text-yellow-400 flex-shrink-0" />
+              <div className="bg-yellow-500/20 border border-yellow-500/50 backdrop-blur-lg rounded-xl p-4 flex items-center gap-3" role="alert">
+                <Lightbulb className="w-6 h-6 text-yellow-400 flex-shrink-0" aria-hidden="true" />
                 <p className="text-yellow-200 font-medium">{hintMessage}</p>
                 <button
                   onClick={() => setHintMessage(null)}
                   className="ml-auto text-yellow-400 hover:text-yellow-200"
+                  aria-label="Dismiss hint"
                 >
                   ✕
                 </button>
@@ -463,14 +480,22 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
         {/* Progress Bar */}
         <div className="max-w-4xl mx-auto mb-3 md:mb-6 px-2">
           <div className="flex items-center justify-between mb-2 text-xs sm:text-sm md:text-base">
-            <p className="text-white font-semibold">
+            <p className="text-white font-semibold" id="level-label">
               Level {currentLevel + 1} of {totalLevels}
             </p>
-            <p className="text-white/70">
+            <p className="text-white/70" id="progress-label">
               {completedLevels.length} / {totalLevels} completed
             </p>
           </div>
-          <div className="h-2 md:h-3 bg-white/10 rounded-full overflow-hidden">
+          <div
+            className="h-2 md:h-3 bg-white/10 rounded-full overflow-hidden"
+            role="progressbar"
+            aria-valuenow={Math.round((completedLevels.length / totalLevels) * 100)}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-labelledby="progress-label"
+            aria-label={`Quiz progress: ${completedLevels.length} of ${totalLevels} levels completed`}
+          >
             <motion.div
               className="h-full bg-gradient-to-r from-green-400 to-emerald-500"
               initial={{ width: 0 }}
@@ -505,15 +530,36 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
               {question.question}
             </h2>
 
-            <div className="space-y-2 sm:space-y-3 md:space-y-4">
+            <div
+              className="space-y-2 sm:space-y-3 md:space-y-4"
+              role="listbox"
+              aria-label="Answer options"
+            >
               {question.options.map((option, index) => (
                 <motion.button
                   key={index}
                   onClick={() => handleAnswerSelect(index)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      handleAnswerSelect(index)
+                    }
+                  }}
                   disabled={selectedAnswer !== null}
                   whileHover={selectedAnswer === null ? { scale: 1.02, x: 5 } : {}}
                   whileTap={selectedAnswer === null ? { scale: 0.98 } : {}}
-                  className={`w-full p-3 sm:p-4 md:p-6 rounded-xl md:rounded-2xl font-semibold text-left transition-all text-sm sm:text-base ${
+                  role="option"
+                  aria-selected={selectedAnswer === index}
+                  aria-label={`Option ${String.fromCharCode(65 + index)}: ${option}${
+                    selectedAnswer !== null
+                      ? index === question.correctAnswer
+                        ? ' (Correct answer)'
+                        : selectedAnswer === index
+                        ? ' (Your answer - Incorrect)'
+                        : ''
+                      : ''
+                  }`}
+                  className={`w-full p-4 sm:p-4 md:p-5 lg:p-6 2xl:p-8 min-h-[52px] sm:min-h-[56px] md:min-h-[64px] rounded-xl md:rounded-2xl font-semibold text-left transition-all text-sm sm:text-base md:text-lg 2xl:text-xl focus:outline-none focus:ring-2 focus:ring-brand-gold focus:ring-offset-2 ${
                     selectedAnswer === null
                       ? 'bg-gray-100 hover:bg-gray-200 text-gray-800'
                       : selectedAnswer === index
@@ -526,10 +572,14 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
                   }`}
                 >
                   <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
-                    <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full bg-white/20 flex items-center justify-center font-bold text-sm sm:text-base">
+                    <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 2xl:w-12 2xl:h-12 rounded-full bg-white/20 flex items-center justify-center font-bold text-sm sm:text-base 2xl:text-lg flex-shrink-0" aria-hidden="true">
                       {String.fromCharCode(65 + index)}
                     </div>
                     <span className="flex-1">{option}</span>
+                    {/* Visual indicators for answered state */}
+                    {selectedAnswer !== null && index === question.correctAnswer && (
+                      <Check className="w-5 h-5 sm:w-6 sm:h-6 2xl:w-7 2xl:h-7 flex-shrink-0" aria-hidden="true" />
+                    )}
                   </div>
                 </motion.button>
               ))}

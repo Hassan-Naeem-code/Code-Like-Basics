@@ -606,11 +606,11 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
             <span className="sm:hidden">Back</span>
           </motion.button>
 
-          <div className="flex items-center gap-2 sm:gap-3 md:gap-4 bg-white/10 backdrop-blur-lg rounded-xl px-3 sm:px-4 md:px-6 py-2 md:py-3 flex-wrap">
-            <div className="text-3xl sm:text-4xl md:text-5xl">{language.icon}</div>
+          <div className="flex items-center gap-2 sm:gap-3 md:gap-4 2xl:gap-6 bg-white/10 backdrop-blur-lg rounded-xl 2xl:rounded-2xl px-3 sm:px-4 md:px-6 2xl:px-8 py-2 md:py-3 2xl:py-4 flex-wrap">
+            <div className="text-3xl sm:text-4xl md:text-5xl 2xl:text-6xl">{language.icon}</div>
             <div>
-              <h1 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-white leading-tight">{language.name} Sandbox</h1>
-              <p className="text-white/70 text-xs sm:text-sm leading-tight">
+              <h1 className="text-base sm:text-lg md:text-xl lg:text-2xl 2xl:text-3xl font-bold text-white leading-tight">{language.name} Sandbox</h1>
+              <p className="text-white/70 text-xs sm:text-sm 2xl:text-base leading-tight">
                 {currentDifficulty.charAt(0).toUpperCase() + currentDifficulty.slice(1)} Level
               </p>
             </div>
@@ -746,7 +746,7 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
 
         {/* Editor and Output */}
         {!allDifficultiesCompleted && (
-        <div className="grid lg:grid-cols-2 gap-3 md:gap-4 lg:gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-4 lg:gap-6 2xl:gap-8">
           {/* Code Editor */}
           <div className="bg-gray-900 rounded-xl md:rounded-2xl overflow-hidden shadow-2xl">
             <div className="bg-gray-800 px-3 sm:px-4 md:px-6 py-2 md:py-3 flex items-center gap-2 border-b border-gray-700">
@@ -759,7 +759,7 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
             <textarea
               value={code}
               onChange={(e) => setCode(e.target.value)}
-              className="w-full h-64 sm:h-96 md:h-[500px] lg:h-[600px] bg-gray-900 text-green-400 font-mono text-xs sm:text-sm p-3 sm:p-4 md:p-6 focus:outline-none resize-none"
+              className="w-full h-64 sm:h-80 md:h-[400px] lg:h-[500px] xl:h-[550px] 2xl:h-[650px] bg-gray-900 text-green-400 font-mono text-xs sm:text-sm md:text-base 2xl:text-lg p-3 sm:p-4 md:p-6 2xl:p-8 focus:outline-none resize-none"
               spellCheck={false}
               placeholder={`Write your ${language.name} code here...`}
             />
@@ -803,7 +803,7 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
 
             {/* Live Preview iframe for web languages */}
             {isWebLanguage && showLivePreview ? (
-              <div className="w-full h-64 sm:h-96 md:h-[500px] lg:h-[600px] bg-white">
+              <div className="w-full h-64 sm:h-80 md:h-[400px] lg:h-[500px] xl:h-[550px] 2xl:h-[650px] bg-white">
                 <iframe
                   srcDoc={getLivePreviewHTML()}
                   className="w-full h-full border-0"
@@ -813,7 +813,7 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
               </div>
             ) : (
               /* Text output for non-web languages or when preview is off */
-              <div className="w-full h-64 sm:h-96 md:h-[500px] lg:h-[600px] bg-gray-900 text-gray-300 font-mono text-xs sm:text-sm p-3 sm:p-4 md:p-6 overflow-auto whitespace-pre-wrap">
+              <div className="w-full h-64 sm:h-80 md:h-[400px] lg:h-[500px] xl:h-[550px] 2xl:h-[650px] bg-gray-900 text-gray-300 font-mono text-xs sm:text-sm md:text-base 2xl:text-lg p-3 sm:p-4 md:p-6 2xl:p-8 overflow-auto whitespace-pre-wrap">
                 {output || (isWebLanguage
                   ? '// Toggle to "Live Preview" to see your code rendered in real-time, or click "Test Run" to execute.'
                   : '// Click "Test Run" to see the output here...'
