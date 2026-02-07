@@ -6,9 +6,9 @@
 
 ![Status](https://img.shields.io/badge/Status-MVP_Live-success)
 ![Version](https://img.shields.io/badge/Version-1.0.0-blue)
-![Next.js](https://img.shields.io/badge/Next.js-15.5.9-black)
+![Next.js](https://img.shields.io/badge/Next.js-15.0-black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)
-![Firebase](https://img.shields.io/badge/Firebase-11.1-orange)
+![Firebase](https://img.shields.io/badge/Firebase-12.6-orange)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
 [🚀 Live Demo](https://code-like-basics.vercel.app) • [✨ Features](#-key-features) • [📚 Content](#-learning-content) • [💻 Tech Stack](#-tech-stack)
@@ -28,11 +28,17 @@
 | 📚 10 Tech Modules | ✅ Complete | 43+ languages with tutorials, games, sandboxes |
 | 🎮 Gamification | ✅ Complete | XP system, levels, streaks, achievements |
 | 📜 Certificates | ✅ Complete | Downloadable certificates for 75%+ completion |
-| 🤖 AI Coach | ✅ Complete | AI-powered learning assistant |
-| 🌙 Dark Mode | ✅ Complete | Full dark mode support |
+| 🤖 AI Coach | ✅ Complete | AI-powered learning assistant (Groq/Llama 3.1) |
+| 🌙 Dark Mode | ✅ Complete | Full dark mode support with persistence |
 | 📱 Responsive Design | ✅ Complete | TV, Desktop, Laptop, Tablet, Phone |
 | ♿ Accessibility | ✅ Complete | WCAG 2.1 Level A compliant |
 | 🔄 Real-time Sync | ✅ Complete | Progress syncs across the app instantly |
+| 📲 PWA Support | ✅ Complete | Installable app with offline support via service worker |
+| 🔒 Security | ✅ Complete | CSP headers, rate limiting, input sanitization (DOMPurify) |
+| 🍪 Cookie Consent | ✅ Complete | GDPR-compliant cookie banner |
+| 🖱️ Drag & Drop Games | ✅ Complete | Interactive drag-and-drop game modes (@dnd-kit) |
+| 🔊 Sound Effects | ✅ Complete | Toggle-able sound system for interactions |
+| 🗂️ Projects Workspace | ✅ Complete | Mini-projects for hands-on practice |
 
 ### 🚧 Planned for Phase 2
 
@@ -41,8 +47,9 @@
 | 🏆 Leaderboards | High | Global and friend-based rankings |
 | 📅 Daily Challenges | High | Daily quests with bonus XP |
 | 👥 Social Features | High | Share achievements, add friends |
-| 🎮 More Game Types | Medium | Drag-drop, matching, debugging games |
+| 🎮 More Game Types | Medium | Matching, debugging games |
 | 🔐 Email/Password Auth | Medium | Account recovery support |
+| 🌍 Internationalization | Medium | Multi-language UI support |
 
 ---
 
@@ -188,11 +195,13 @@ npm run dev
 ### Available Commands
 
 ```bash
-npm run dev          # Start development server (localhost:3000)
-npm run build        # Build optimized production bundle
+npm run dev          # Start development server with lint check (localhost:3000)
+npm run build        # Production build with lint + type-check + next build
 npm start            # Run production server
 npm run lint         # Run ESLint for code quality
-npm run type-check   # TypeScript type checking
+npm run lint:check   # Lint with zero-warning threshold
+npm run lint:fix     # Auto-fix linting issues
+npm run type-check   # TypeScript type checking (tsc --noEmit)
 ```
 
 ---
@@ -239,25 +248,34 @@ npm run type-check   # TypeScript type checking
 
 | Category | Technologies |
 |----------|---------------|
-| **Framework** | Next.js 15.5.9 with App Router |
+| **Framework** | Next.js 15.0 with App Router |
 | **Frontend** | React 18.3, TypeScript 5.3 |
 | **Styling** | Tailwind CSS 3.4, Custom CSS Variables |
-| **Animations** | Framer Motion 11.15, canvas-confetti |
-| **State Management** | Zustand 5.0 (for global state) |
-| **Database** | Firebase 11.1 (Firestore) |
-| **AI Integration** | Groq API (AI Coach) |
+| **Animations** | Framer Motion 11.0, canvas-confetti 1.9 |
+| **State Management** | Zustand 4.5 (global state), @tanstack/react-query 5.x (server state) |
+| **Database** | Firebase 12.6 (Firestore) |
+| **AI Integration** | Groq API (Llama 3.1 - AI Coach) |
 | **Code Execution** | Piston API (20+ languages) |
-| **UI Components** | Lucide React 0.468 (icons) |
+| **Drag & Drop** | @dnd-kit/core 6.1, @dnd-kit/sortable 8.0 |
+| **UI Components** | Lucide React 0.445 (icons) |
+| **Security** | isomorphic-dompurify 2.34, rate limiting, CSP headers |
+| **Markdown** | react-markdown 10.1 |
+| **Screenshots** | html2canvas 1.4 (certificates) |
+| **Analytics** | @vercel/speed-insights 1.3 |
 | **Deployment** | Vercel |
 
 ### Key Technical Features
 
 - **Server Components**: Optimized performance with React Server Components
+- **Server State Caching**: React Query for efficient data fetching and caching
 - **Real-time Sync**: Window event system for instant progress updates
-- **Dark Mode**: Full dark mode with Tailwind `dark:` variants
+- **Dark Mode**: Full dark mode with Tailwind `dark:` variants and persistence
+- **PWA**: Installable progressive web app with service worker and offline support
 - **Mobile Optimization**: Touch-friendly code editor, proper keyboard handling
-- **Type Safety**: Full TypeScript coverage
+- **Type Safety**: Full TypeScript coverage with 700+ centralized type definitions
 - **Lazy Loading**: Dynamic imports for heavy components
+- **Input Sanitization**: DOMPurify for XSS protection on user content
+- **Rate Limiting**: Per-IP rate limiting on API routes
 
 ---
 
@@ -267,6 +285,7 @@ npm run type-check   # TypeScript type checking
 Code-Like-Basics/
 ├── app/                        # Next.js 15 App Router
 │   ├── page.tsx               # Onboarding flow
+│   ├── layout.tsx             # Root layout with providers
 │   ├── dashboard/             # Main dashboard
 │   ├── tutorial/[tutorialId]/ # Interactive tutorials
 │   ├── game/[gameId]/         # Quiz games
@@ -274,7 +293,10 @@ Code-Like-Basics/
 │   ├── module/[moduleId]/     # Language selection
 │   ├── achievements/          # Achievements page
 │   ├── progress/              # Progress tracking
-│   └── projects/              # Projects page
+│   ├── projects/              # Projects workspace
+│   └── api/                   # API routes
+│       ├── ai-coach/chat/     # AI assistant endpoint
+│       └── code/execute/      # Code execution endpoint
 │
 ├── components/
 │   ├── Layout/                # Navbar, ClientShell
@@ -282,18 +304,22 @@ Code-Like-Basics/
 │   ├── Dashboard/             # ModuleCard, LanguageCard, SearchFilter
 │   ├── Progress/              # LearningTree, TreeCelebration
 │   ├── Tutorials/             # InteractiveTutorial, TutorialPlayer
-│   ├── Games/                 # UniversalGame, GameHUD
+│   ├── Games/                 # UniversalGame, GameHUD, DragDrop
 │   ├── Sandbox/               # UniversalSandbox, SandboxContainer
 │   ├── Common/                # Certificate, Toast, DifficultySelector
-│   └── AICoach/               # AICoachButton, AICoachPopup
+│   ├── AICoach/               # AICoachButton, AICoachPopup
+│   ├── Projects/              # Project workspace components
+│   └── Providers/             # React Query provider
 │
+├── types/                     # Centralized TypeScript type definitions
 ├── games/                     # Game implementations (7 topics)
 ├── tutorials/                 # Tutorial content (7 topics)
-├── stores/                    # Zustand stores
-├── utils/                     # Utility functions
+├── stores/                    # Zustand stores (user, tutorial, game, theme, AI)
+├── utils/                     # Utility functions & content data
 ├── hooks/                     # Custom React hooks
 ├── lib/                       # Firebase integration
-└── public/                    # Static assets
+├── styles/                    # Global styles & CSS variables
+└── public/                    # Static assets, PWA manifest, service worker, icons
 ```
 
 ---
@@ -309,12 +335,13 @@ Create `.env.local` in the root directory:
 NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key_here
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project_id.appspot.com
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project_id.firebasestorage.app
 NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
 NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
 
 # AI Coach (Optional)
 GROQ_API_KEY=your_groq_api_key
+GROQ_MODEL=llama-3.1-8b-instant
 ```
 
 ---
@@ -349,6 +376,7 @@ GROQ_API_KEY=your_groq_api_key
 | `?` | Toggle keyboard shortcuts help |
 | `D` | Toggle dark mode |
 | `H` | Go to home/dashboard |
+| `M` | Toggle sound/music |
 
 ---
 
@@ -370,6 +398,11 @@ The project includes GitHub Actions for:
 - ✅ Automated builds
 - ✅ Security scanning
 
+### Git Hooks
+
+Custom git hooks are configured via `.githooks/` directory:
+- Pre-commit lint checks are automatically set up via `npm run prepare`
+
 ---
 
 ## 🤝 Contributing
@@ -381,8 +414,8 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 - 🏆 **Leaderboards**: Global and friend rankings
 - 📅 **Daily Challenges**: Habit-building features
 - 👥 **Social Features**: Share progress, add friends
-- 🎮 **Game Variety**: New game types (drag-drop, matching)
-- 🌍 **i18n**: Multi-language support
+- 🎮 **Game Variety**: New game types (matching, debugging)
+- 🌍 **i18n**: Multi-language UI support
 
 ---
 
@@ -401,7 +434,7 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## 📄 License
 
-MIT License © 2025 CodeLikeBasics
+MIT License © 2025-2026 CodeLikeBasics
 
 ---
 
@@ -413,8 +446,12 @@ Built with:
 - [Tailwind CSS](https://tailwindcss.com/) - Styling
 - [Framer Motion](https://www.framer.com/motion/) - Animations
 - [Zustand](https://zustand-demo.pmnd.rs/) - State management
+- [React Query](https://tanstack.com/query) - Server state management
+- [dnd-kit](https://dndkit.com/) - Drag and drop interactions
 - [Piston API](https://piston.readthedocs.io/) - Code execution
-- [Groq](https://groq.com/) - AI integration
+- [Groq](https://groq.com/) - AI integration (Llama 3.1)
+- [DOMPurify](https://github.com/cure53/DOMPurify) - Input sanitization
+- [Vercel](https://vercel.com/) - Hosting and analytics
 
 ---
 
